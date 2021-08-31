@@ -1,0 +1,32 @@
+{% extends 'parciales/questions.html' %}
+{% block preguntas_opciones %}
+    {% for categoria in categorias %}
+        <tr class="table-info">
+            <td class="titulos" style="text-align: center" colspan="2"><h5>{{ categoria.name|upper }}</h5></td>
+        </tr>
+        {% for pregunta in preguntas %}
+            {% ifequal pregunta.category_id categoria.id %}
+                <tr>
+                    <td style="max-width: 100%" ><label id="display">{{ forloop.counter }}) </label>{{ pregunta.title }}</td>
+                </tr>
+            {% endifequal %}
+        {% endfor %}
+    {% endfor %}
+
+{% endblock %}
+{% block javascritp_extra %}
+    <script>
+    var i = 0;
+    increment();
+    function increment() {
+        $("#display").removeAttr("id");
+        $('#preguntas tbody tr td').each(function () {
+            let html = ''
+            i++;
+            html = $(this).text();
+            $('label').attr("id",""+ i +"");
+            console.log(i +'). '+ html + '\n');
+        });
+    }
+    </script>
+{% endblock %}

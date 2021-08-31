@@ -1,0 +1,22 @@
+{% extends 'parciales/list.html' %}
+{% block cols %}
+    <th>N°</th>
+    <th>Nombre</th>
+    <th>Identificación</th>
+    <th>Acción</th>
+{% endblock %}
+<!--Filas de la tabla-->
+{% block filas %}
+    {% for item in object_list %}
+        <tr>
+            <td>{{ item.id }}</td>
+            <td>{{ item.name }}</td>
+            <td>{{ item.identify }}</td>
+            <td>
+                <a href="{% url 'eva:co-evaluation' item.pk %}" class="rounded-circle btn btn-outline-secondary btn-sm edit" title="Evaluar">
+                    <i class="fas fa-pencil-alt"></i>
+                </a>
+            </td>
+        </tr>
+    {% endfor %}
+ {% endblock %}

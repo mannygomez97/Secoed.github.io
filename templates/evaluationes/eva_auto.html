@@ -1,0 +1,124 @@
+{% extends 'partials/base.html' %}
+
+{% load static %}
+
+{% block css%}
+{% include 'partials/css.html' %}
+{% endblock %}
+{% block extra_css %}
+    <link href="{% static 'libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" />
+    <!-- Responsive datatable examples -->
+    <link href="{% static 'libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'libs/sweetalert2/sweetalert2.min.css' %}" rel="stylesheet" type="text/css" />
+{% endblock %}
+{% block contents %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                {% if ciclo.is_active %}
+                    {% if comprobacion %}
+                        <div class="card-header">
+                            <div class="col-title" style="alignment: center">
+                                <h1>{{ tipo_evaluacion }}</h1>
+                                <h4>Ciclo: {{ ciclo }}</h4>
+                            </div>
+                        </div>
+                        <div class="card-body">
+                            <div id="{% block id_error %}{% endblock %}"></div>
+                            <form id="{% block form_name %}{% endblock %}" action="{% block action %}{% endblock %}"  method="POST">
+                                {% csrf_token %}
+                                <section class="intro first">
+                                    <p>Buenos días,</p>
+                                    <p>Por favor, dedique unos minutos de su tiempo para rellenar el siguiente cuestionario.</p>
+                                </section>
+                                <section class="intro first">
+                                    <H2 style="alignment: center">Tabla de Valoración</H2>
+                                </section>
+                                <div class="head-info">
+                                    <div class="col-md-3">No cumple: 1</div>
+                                    <div class="col-md-3">Medianamente cumple: 2</div>
+                                    <div class="col-md-3">Usualmente cumple: 3</div>
+                                    <div class="col-md-3">Si cumple: 4</div>
+                                </div>
+                                <table class="table table-bordered rwd_auto">
+                                    <tbody>
+                                        <colgroup span="1"></colgroup>
+                                        <tr class="table-active">
+                                            <th class="aling-text" rowspan="2">
+                                                <h3>INDICADORES</h3>
+                                            </th>
+                                            <th class="aling-text" colspan="4">OPCIONES</th>
+                                        </tr>
+                                        <tr class="table-info">
+                                            <th>1</th>
+                                            <th>2</th>
+                                            <th>3</th>
+                                            <th>4</th>
+                                        </tr>
+                                    </tbody>
+                                    {% block form_eva %}
+
+                                    {% endblock %}
+                                </table>
+                            </form>
+                        </div>
+                    {% else %}
+                        <div class="x_panel">
+                            <div class="x_title">
+                                <h3>Ya has realizado la autoevaluación</h3>
+                            </div>
+                        </div>
+                    {% endif %}
+                {% else %}
+                    <div class="x_panel">
+                        <div class="x_title">
+                            <h3>Prueba no disponible</h3>
+                        </div>
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block notification %}
+    <div id="createModal" class="modal fade" tabindex="-1" aria-hidden="true"></div>
+    <div id="updateModal" class="modal fade" tabindex="-1" aria-hidden="true"></div>
+    <div id="deleteModal" class="modal fade" tabindex="-1" aria-hidden="true"></div>
+{% endblock %}
+{% block r_sidebar %}
+    {% include 'partials/rightsidebar.html' %}
+{% endblock %}
+{% block footer %}
+    {% include 'partials/footer.html' %}
+{% endblock %}
+{% block javascript %}
+        <!-- JAVASCRIPT -->
+        <script src="{% static 'libs/jquery/jquery.min.js' %}"></script>
+        <script src="{% static 'libs/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+        <script src="{% static 'libs/metismenu/metisMenu.min.js' %}"></script>
+        <script src="{% static 'libs/simplebar/simplebar.min.js' %}"></script>
+        <script src="{% static 'libs/node-waves/waves.min.js' %}"></script>
+        <!-- Required datatable js -->
+        <script src="{% static 'libs/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+        <script src="{% static 'libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+        <!-- Buttons examples -->
+        <script src="{% static 'libs/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
+        <script src="{% static 'libs/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js' %}"></script>
+        <script src="{% static 'libs/jszip/jszip.min.js' %}"></script>
+        <script src="{% static 'libs/pdfmake/build/pdfmake.min.js' %}"></script>
+        <script src="{% static 'libs/pdfmake/build/vfs_fonts.js' %}"></script>
+        <script src="{% static 'libs/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
+        <script src="{% static 'libs/datatables.net-buttons/js/buttons.print.min.js' %}"></script>
+        <script src="{% static 'libs/datatables.net-buttons/js/buttons.colVis.min.js' %}"></script>
+        <!-- Datatable init js -->
+        <script src="{% static 'js/app.js' %}"></script>
+         <!-- sweetalert2 -->
+        <script src="{% static 'libs/sweetalert2/sweetalert2.all.min.js' %}"></script>
+        <script src="{% static 'libs/jquery-confirm/jquery-confirm.min.js' %}"></script>
+        <script src="{% static 'eva/js/eva.js' %}"></script>
+        <script src="{% static 'eva/js/select2Eva.js' %}"></script>
+        <script src="{% static 'js/pages/datatables.init.js' %}"></script>
+{% endblock %}

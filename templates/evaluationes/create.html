@@ -1,0 +1,22 @@
+{% extends 'parciales/create.html' %}
+{% block form-respuesta %}
+    <div class="head">
+        {{ form.cycle }}
+    </div>
+    <div class="table-responsive-md">
+        <table class="table">
+        <thead>
+            <tr>
+                <th>N°</th>
+                <th>Pregunta</th>
+                <th>Respuestas</th>
+            </tr>
+        </thead>
+        <tbody>
+        {{ form.options }}
+        {{ form.question }}
+        </tbody>
+         </table>
+    </div>
+
+{% endblock %}

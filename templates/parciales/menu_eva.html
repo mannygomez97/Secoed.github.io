@@ -1,0 +1,137 @@
+{% block menu_eva %}
+    <li>
+          <a href="javascript: void(0);" class="has-arrow waves-effect">
+            <i class="bx bx-wrench"></i>
+            <span key="t-mantenimientos">Mantenimientos</span>
+          </a>
+          <ul class="sub-menu" aria-expanded="true">
+          <!-- CREAR UNIVERSIDAD -->
+          <li>
+              <a href="{% url 'eva:list-university' %}" class="waves-effect">
+                <span key="t-universidad">Universidades</span>
+              </a>
+          </li>
+          <!-- CREAR FACULTAD -->
+          <li>
+              <a href="{% url 'eva:list-school-of' %}" class="waves-effect">
+                <span key="t-facultad">Facultad</span>
+              </a>
+          </li>
+          <!-- CREAR CARRERA -->
+          <li>
+              <a href="{% url 'eva:list-career' %}" class="waves-effect">
+                <span key="t-carrera">Carrera</span>
+              </a>
+          </li>
+          <!-- CREAR MATERIA -->
+          <li>
+              <a href="{% url 'eva:list-matter' %}" class="waves-effect">
+                <span key="t-materia">Materia</span>
+              </a>
+          </li>
+          <!-- CREARR CICLO -->
+          <li>
+              <a href="{% url 'eva:list-cycle' %}" class="waves-effect">
+                <span key="t-ciclo">Ciclo</span>
+              </a>
+          </li>
+          <!-- CREAR CATEGORIAS -->
+          <li>
+              <a href="{% url 'eva:list-category' %}" class="waves-effect">
+                <span key="t-categoria">Categoria</span>
+              </a>
+          </li>
+          <!-- CREAR TIPOS -->
+          <li>
+              <a href="{% url 'eva:list-type' %}" class="waves-effect">
+                <span key="t-tipo">Tipo</span>
+              </a>
+          </li>
+          <!-- CREAR USUARIOS -->
+          <li>
+              <a href="javascript: void(0);" class="has-arrow waves-effect">
+                <i class="bx bx-user-pin"></i>
+                <span key="t-calendar">Tipo de Usuarios</span>
+              </a>
+              <ul class="sub-menu" aria-expanded="false">
+                   <li>
+                      <a href="{% url 'eva:list-teachers' %}" class="waves-effect">
+                        <span key="t-usuario">Docentes</span>
+                      </a>
+                   </li>
+                  <li>
+                      <a href="{% url 'eva:list-teachers-co' %}" class="waves-effect">
+                        <span key="t-usuario">Coevaluadores</span>
+                      </a>
+                   </li>
+              </ul>
+          </li>
+          <!-- CREAR AREAS DE CONOCIMIENTO -->
+          <li>
+              <a href="{% url 'eva:list-area' %}" class="waves-effect">
+                <span key="t-tipo">Áreas de Conocimiento</span>
+              </a>
+          </li>
+          <!-- CREAR PARAMETROS -->
+          <li>
+                <a href="javascript: void(0);" class="has-arrow waves-effect">
+                    <i class="fas fa-cogs"></i>
+                    <span key="t-calendar">Parámetros</span>
+                </a>
+                <ul>
+                    <!--PARÁMETROS-->
+                    <li>
+                        <a href="{% url 'eva:list-parameter' %}" class="waves-effect">
+                            <span key="t-tipo">Definición</span>
+                        </a>
+                    </li>
+                    <!--PARÁMETROS GENERALES-->
+                    <li>
+                  <a href="{% url 'eva:list-parameter-grl' %}" class="waves-effect">
+                    <span key="t-tipo">Parámetros</span>
+                  </a>
+                </li>
+                </ul>
+            </li>
+         </ul>
+    </li>
+    <li>
+        <a href="javascript: void(0);" class="has-arrow waves-effect">
+            <i class="bx bx-list-ul"></i>
+            <span key="t-question">Preguntas</span>
+        </a>
+        <ul class="sub-menu" aria-expanded="false">
+            <li>
+                <a href="{% url 'eva:auto-questions' %}" class="waves-effect">Autoevaluación</a>
+            </li>
+{#            <li>#}
+{#                <a href="{% url 'eva:create-respuesta' %}" class="waves-effect">Respuestas</a>#}
+{#            </li>#}
+            <li>
+                <a href="{% url 'eva:coe-questions' %}" class="waves-effect">Coevaluación</a>
+            </li>
+        </ul>
+    </li>
+    <li class="menu-title" key="t-apps">SECOED</li>
+    <li>
+      <a href="javascript: void(0);" class="has-arrow waves-effect">
+        <i class="bx bx-cog"></i>
+        <span key="t-process">Proceso</span>
+        </a>
+      <ul>
+          <li><a href="{% url 'eva:auto-evaluation' %}" class="waves-effect">Autoevaluación</a></li>
+          <li><a href="{% url 'eva:co-evaluation' %}" class="waves-effect">Coevaluación</a></li>
+      </ul>
+    </li>
+    <li class="menu-title" key="t-apps">Reporteria</li>
+    <li>
+         <a href="javascript: void(0);" class="waves-effect">
+            <i class="bx bxs-bar-chart-alt-2"></i>
+            <span key="t-calendar">Reportes</span>
+         </a>
+        <ul>
+            <li><a href="{% url 'charts-echarts' %}" class="waves-effect">Resultado</a></li>
+            <li><a href="{% url 'charts-toastuicharts' %}" class="waves-effect">Manual</a></li>
+        </ul>
+     </li>
+{% endblock %}

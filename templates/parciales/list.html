@@ -1,0 +1,106 @@
+{% extends 'partials/base.html' %}
+
+{% load static %}
+
+{% block css%}
+{% include 'partials/css.html' %}
+{% endblock %}
+{% block extra_css %}
+    <link href="{% static 'libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" />
+    <!-- Responsive datatable examples -->
+    <link href="{% static 'libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'libs/sweetalert2/sweetalert2.min.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'css/app.css' %}" rel="stylesheet" type="text/css" />
+{% endblock %}
+{% block contents %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                {% block btn_creacion %}
+                    <div class="mb-2">
+                        <button class="rounded-circle btn btn-outline-info" new-register type="button" onclick="openModal('{%block url_app %}{% endblock %}', 'createModal')" title="Nuevo registro: {{ entity }}" >
+                            <i class="{% block icono %}{% endblock %}"></i>
+                        </button>
+                    </div>
+                {% endblock %}
+                <table id="datatable-buttons" class="table table-bordered dt-responsive nowrap w-100">
+                    <thead>
+                        <tr role="row">
+                           {% block cols %}
+
+                           {% endblock %}
+                        </tr>
+                    </thead>
+                    <tbody>
+                      {% block filas %}
+
+                      {% endblock %}
+                    </tbody>
+                </table>
+            </div>
+            <div class="card-footer">
+
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block notification %}
+    <input type="hidden" name="url_list" value="{{ url_list }}">
+
+    <div id="createModal" class="modal fade" tabindex="-1" aria-hidden="true"></div>
+
+    <div id="updateModal" class="modal fade" tabindex="-1" aria-hidden="true"></div>
+
+    <div id="deleteModal" class="modal fade" tabindex="-1" aria-hidden="true"></div>
+
+{% endblock %}
+{% block r_sidebar %}
+    {% include 'partials/rightsidebar.html' %}
+{% endblock %}
+{% block footer %}
+    {% include 'partials/footer.html' %}
+{% endblock %}
+{% block javascript %}
+        <!-- JAVASCRIPT -->
+        <script src="{% static 'libs/jquery/jquery.min.js' %}"></script>
+        <script src="{% static 'libs/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+        <script src="{% static 'libs/metismenu/metisMenu.min.js' %}"></script>
+        <script src="{% static 'libs/simplebar/simplebar.min.js' %}"></script>
+        <script src="{% static 'libs/node-waves/waves.min.js' %}"></script>
+        <!-- Required datatable js -->
+        <script src="{% static 'libs/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+        <script src="{% static 'libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+        <!-- Buttons examples -->
+        <script src="{% static 'libs/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
+        <script src="{% static 'libs/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js' %}"></script>
+        <script src="{% static 'libs/jszip/jszip.min.js' %}"></script>
+        <script src="{% static 'libs/pdfmake/build/pdfmake.min.js' %}"></script>
+        <script src="{% static 'libs/pdfmake/build/vfs_fonts.js' %}"></script>
+        <script src="{% static 'libs/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
+        <script src="{% static 'libs/datatables.net-buttons/js/buttons.print.min.js' %}"></script>
+        <script src="{% static 'libs/datatables.net-buttons/js/buttons.colVis.min.js' %}"></script>
+        <!-- Datatable init js -->        
+        <script src="{% static 'js/app.js' %}"></script>
+         <!-- sweetalert2 -->
+        <script src="{% static 'libs/sweetalert2/sweetalert2.all.min.js' %}"></script>
+        <script src="{% static 'libs/jquery-confirm/jquery-confirm.min.js' %}"></script>
+        <script src="{% static 'eva/js/eva.js' %}"></script>
+        <script src="{% static 'eva/js/select2Eva.js' %}"></script>
+        <script src="{% static 'js/pages/datatables.init.js' %}"></script>
+        <script>
+            {% if messages %}
+                let html = '<p>';
+                {% for message in messages %}
+                    html += '{{ message }}<br>';
+                {% endfor %}
+                Swal.fire({
+                    title:'Error!',
+                    html: html,
+                    icon:'error'
+                });
+            {% endif %}
+        </script>
+{% endblock %}
