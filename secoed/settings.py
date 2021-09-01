@@ -24,16 +24,29 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '2da188c804ec.ngrok.io']
 
-# Application definition
+# Base APP
 
-INSTALLED_APPS = [
+BASE_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    # Local App
+
+]
+
+# Third Party App
+
+THIRD_APPS = [
+    'crispy_forms',
+    'widget_tweaks',
+    'import_export',
+]
+
+# Local App
+
+LOCAL_APPS = [
     'layout',
     'authentication',
     'conf',
@@ -42,11 +55,11 @@ INSTALLED_APPS = [
     'asesor',
     'components',
     'easyaudit',
-    # Third Party App
-    'crispy_forms',
-    'widget_tweaks',
-    'import_export',
 ]
+
+# Application definition
+
+INSTALLED_APPS = BASE_APPS + LOCAL_APPS + THIRD_APPS
 
 AUTH_USER_MODEL = 'authentication.Usuario'
 
@@ -96,6 +109,12 @@ DATABASES = {
         'PASSWORD': 'secoed2021',
         'HOST': '95.216.216.98',
         'PORT': '5440',
+        #'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        #'NAME': 'int_secoed',
+        #'USER': 'secoed',
+        #'PASSWORD': 'secoed2021',
+        #'HOST': '200.124.240.62',
+        #'PORT': '5440',
     }
 }
 

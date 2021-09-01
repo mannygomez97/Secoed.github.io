@@ -68,3 +68,11 @@ my.cnf
 /layout/__pycache__
 /secoed/__pycache__
 /.idea
+/secoed/__pycache__
+/authentication/__pycache__
+/asesor/migrations/__pycache__
+/authentication/migrations/__pycache__
+/components/migrations/__pycache__
+/cursos/migrations/__pycache__
+/eva/migrations/__pycache__
+/layout/migrations/__pycache__
