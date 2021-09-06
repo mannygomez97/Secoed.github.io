@@ -4,7 +4,9 @@ services:
   web:
     build: .
     container_name: secoed_web
-    command: python manage.py runserver 0.0.0.0:8000
+    command:
+     - python manage.py runserver 0.0.0.0:8000
+     - python manage.py migrate
     volumes:
       - .:/code
     ports:

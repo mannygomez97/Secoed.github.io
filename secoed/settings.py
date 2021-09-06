@@ -108,13 +108,7 @@ DATABASES = {
         'USER': 'secoed',
         'PASSWORD': 'secoed2021',
         'HOST': '95.216.216.98',
-        'PORT': '5440',
-        #'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        #'NAME': 'int_secoed',
-        #'USER': 'secoed',
-        #'PASSWORD': 'secoed2021',
-        #'HOST': '200.124.240.62',
-        #'PORT': '5440',
+        'PORT': '5433',
     }
 }
 
