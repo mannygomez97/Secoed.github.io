@@ -107,7 +107,7 @@ DATABASES = {
         'NAME': 'db_secoed',
         'USER': 'secoed',
         'PASSWORD': 'secoed2021',
-        'HOST': '127.0.0.1',
+        'HOST': '95.216.216.98',
         'PORT': '5433',
     }
 }
