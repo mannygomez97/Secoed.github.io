@@ -17,7 +17,7 @@ Skote Installation in Django Python
  -python --version
  
 >>>To check pip version  
-  -py -m pip --version
+      -py -m pip --version
   -upgread pip 
   -py -m pip install --upgrade pip
 
