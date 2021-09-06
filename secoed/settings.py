@@ -57,6 +57,7 @@ LOCAL_APPS = [
     'easyaudit',
 ]
 
+
 INSTALLED_APPS = BASE_APPS + LOCAL_APPS + THIRD_APPS
 
 AUTH_USER_MODEL = 'authentication.Usuario'
@@ -101,13 +102,13 @@ WSGI_APPLICATION = 'secoed.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
-        'USER': 'postgres',
-        'HOST': 'db',
-        'PORT': 5432,
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'postgre',
+        'USER': 'postgre',
+        'PASSWORD': 'secoed',
+        'HOST': '95.216.216.98',
+        'PORT': '5433',
     }
-
 }
 
 # Password validation
