@@ -6,6 +6,10 @@ services:
     container_name: pg_secoed
     ports:
       - "5434:5432"
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
   web:
     build: .
     command: python3 manage.py runserver 0.0.0.0:8000
