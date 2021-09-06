@@ -18,12 +18,20 @@ import io,json
 from datetime import datetime
 from django.core.mail import send_mail
 from asesor.services import obtener_datos
-import requests
+
 from components.forms import CriterioForm
 from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
+
+
+
+
+# IMPORT
 import datetime
 from django.forms.models import fields_for_model, model_to_dict
+import requests
+from asesor.models import Asesor
+
 ###########################  Recursos para consumir la api###########################
 
 apiBase = "http://academyec.com/moodle/webservice/rest/server.php"
@@ -50,7 +58,7 @@ def obtenerPorcentaje(request):
 ##### filtrar asesor
 def asesor(request, *args, **kwargs):                                                                                   
     #asesor = AsesorAsesor.objects.filter(Q(nombres__icontains =  kwargs["asesor"])|Q(apellidos__icontains = kwargs["asesor"])).distinct().values('id_asesor',nombre = Concat('nombres', V(' '),'apellidos'))
-    ase = AsesorAsesor.objects.annotate(names = Concat('nombres', V(' ') ,'apellidos'))
+    ase = Asesor.objects.annotate(names = Concat('nombres', V(' ') ,'apellidos'))
     asesor = ase.filter(names__icontains = kwargs["asesor"] ).distinct().values('id_asesor',nombre = Concat('nombres', V(' '),'apellidos'))
          
     return JsonResponse({'data':list(asesor)})
@@ -60,7 +68,7 @@ def asesor(request, *args, **kwargs):
 def guardarAsesorCurso(request, *args, **kwargs): 
     if(request.method == "POST"): 
         a = json.loads(request.body)
-        ase = AsesorAsesor.objects.annotate(names = Concat('nombres', V(' ') ,'apellidos'))
+        ase = Asesor.objects.annotate(names = Concat('nombres', V(' ') ,'apellidos'))
 
         for i in ase:
             if (i.names == a['result'][2]):
@@ -176,8 +184,6 @@ class UpdateRequisito(View):
     requisito = lambda self, id : get_object_or_404(AprobacionCurso, pk = id) 
     
     def post(self, request, *args,  **kwargs):
-        request.POST._mutable = True
-        request.POST['criterio'] = request.POST['criterio'].capitalize()
         criterioForm = CriterioForm(request.POST, model_to_dict(self.requisito(kwargs["pk"])))
         if criterioForm.is_valid():
             criterio_data = criterioForm.cleaned_data
@@ -262,7 +268,8 @@ class FormEducaciona(View):
         greeting = {}
         greeting['heading'] = "Avance del curso"
         greeting['pageview'] = "Forms"
-        greeting['cursos'] = response.json()
+        if response:
+            greeting['cursos'] = response.json()
         
         return render (request,'components/proyecto/components-formeducation1.html',greeting)
 
@@ -275,12 +282,15 @@ class listadoAsesores(View):
         params.update(courseid = request.GET.get('id'))
         response = requests.get(apiBase,params)
 
-        datos = [rol for rol in response.json() if rol.get('roles') and rol['roles'][0]['roleid'] == 3]
-
         greeting = {"heading":"Listado de asesores curso", "pageview":"Forms","curso":request.GET.get('id')}
 
-        if datos: 
-            greeting.update(context = datos)
+        if response:
+            datos = [rol for rol in response.json() if rol.get('roles') and rol['roles'][0]['roleid'] == 5]
+            if datos: 
+                greeting.update(context = datos)
+
+            for fecha in greeting["context"]:
+                fecha.update(lastaccess = datetime.datetime.fromtimestamp(fecha['lastaccess']))   
 
         return render (request,'components/proyecto/components-listadoAsesores.html', greeting)
 
@@ -292,39 +302,41 @@ class actividades(View):
         params = wsfunction("gradereport_user_get_grade_items")
         params.update(courseid = request.GET.get('curso'))
         response = requests.get(apiBase,params)
+        
 
-        if response.json().get("usergrades"):
-            actividad = [actividades for actividades in response.json()["usergrades"] if actividades["userid"] == request.GET.get('id')]
-        else:
-            actividad = None
-
+        # if response.json().get("usergrades"):
+        #     actividad = [actividades for actividades in response.json()["usergrades"] if actividades["userid"] == int(request.GET.get('id'))]
+            
+        # else:
+        #     actividad = None
+ 
         greeting = {"heading":"Listado de Actividades", "pageview":"Forms"}
-        if actividad:
-            actividades = [dato for dato in actividad[0]["gradeitems"]]
-            greeting.update(context = actividades)
+        # if actividad:
+        #     actividades = [dato for dato in actividad[0]["gradeitems"]]
+        #     greeting.update(context = actividades)
 
-            cont = 0
-            suma = 0
-            if actividades:
-                for i in actividades:
-                    if i["graderaw"]:
-                        suma = i["graderaw"] + suma
-                        cont = cont + 1                
+        #     cont = 0
+        #     suma = 0
+        #     if actividades:
+        #         for i in actividades:
+        #             if i["graderaw"]:
+        #                 suma = i["graderaw"] + suma
+        #                 cont = cont + 1                
 
-                if suma == 0:
-                    semaforo = 0
-                else:
-                    semaforo = suma / cont
+        #         if suma == 0:
+        #             semaforo = 0
+        #         else:
+        #             semaforo = suma / cont
 
-                if semaforo < 30:
-                    criterio = AprobacionCurso.objects.filter(nivel = 1)
-                elif semaforo < 70:
-                    criterio = AprobacionCurso.objects.filter(nivel = 2)
-                elif semaforo < 90:
-                    criterio = AprobacionCurso.objects.filter(nivel = 3)
-                elif semaforo < 100:
-                    criterio = AprobacionCurso.objects.filter(nivel = 4)
-                greeting.update(semaforo = criterio)       
+        #         if semaforo < 30:
+        #             criterio = AprobacionCurso.objects.filter(nivel = 1)
+        #         elif semaforo < 70:
+        #             criterio = AprobacionCurso.objects.filter(nivel = 2)
+        #         elif semaforo < 90:
+        #             criterio = AprobacionCurso.objects.filter(nivel = 3)
+        #         elif semaforo < 100:
+        #             criterio = AprobacionCurso.objects.filter(nivel = 4)
+        #         greeting.update(semaforo = criterio)       
 
         return render (request,'components/proyecto/modalActividades.html', greeting)
 

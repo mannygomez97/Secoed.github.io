@@ -93,5 +93,5 @@ urlpatterns = [
     #19api
     path('cursos_api', views.api_curso, name='cursos_api'),
     path('listado_estudiante/<id>/<nombre>/', views.listado_estudiante, name='listado_estudiante'),
-    path('actividades_user/<id>/<nombre>/', views.actividades_user, name='actividades_user')
+    path('actividades_user/<id>/<nombre>/<idest>/', views.actividades_user, name='actividades_user')
 ]   

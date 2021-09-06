@@ -4,26 +4,22 @@ from conf.models import Menu, Modulo
 
 
 def load_menu(request):
-    modulos = []
-
-    if isinstance(request.user, AnonymousUser) == False:
-        if request.user.usuario_administrador == True:
-            modulos = Modulo.objects.order_by('orden')
-            setMenus(modulos)
+    context = {}
+    if isinstance(request.user, AnonymousUser):
+        return context
+    else:
+        isModulo = request.session['isModulo']
+        print(isModulo)
+        print(request.context['modulo'])
+        if not isModulo:
+            if request.user.usuario_administrador:
+                context['modulo'] = Modulo.objects.order_by('orden')
+            else:
+                context['modulo'] = Modulo.objects.order_by('orden')
+            request.session['isModulo']=True
+            return context
         else:
-            aux = 0
-            modList = Modulo.objects.order_by('orden')
-            for x in modList:
-                menuList1 = Menu.objects.filter(modulo_id=x)
-                for x1 in menuList1:
-                    if x1.href == '':
-                        print("")
-                    else:
-                        menuList2 = Menu.objects.filter(parent_id=x1)
-                        for x2 in menuList2:
-                            print(x2)
-    greeting = {'modulo': modulos}
-    return greeting
+            return context
 
 
 def setMenuItem(menu):

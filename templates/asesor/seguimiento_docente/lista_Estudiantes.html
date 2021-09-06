@@ -32,7 +32,7 @@
                                                         <tr>                                                                                          
                                                             <td>{{item.userid}}</td>           
                                                             <td>{{item.userfullname}}</td>
-                                                            <th><button onclick="abrir_Uni_edi('{% url 'actividades_user' item.courseid item.userfullname %}')" class="btn btn-danger btn-sm">Actividades</button></th>                                                                                                                                                                                     
+                                                            <th><button onclick="abrir_Uni_edi('{% url 'actividades_user' item.courseid item.userfullname item.userid %}')" class="btn btn-danger btn-sm">Actividades</button></th>                                                                                                                                                                                     
                                                         </tr>     
                                                     {% endfor %}
                                                 {% else %}                       

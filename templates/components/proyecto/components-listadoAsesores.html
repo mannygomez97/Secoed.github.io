@@ -23,8 +23,7 @@
                                     <tr>
                                         <th>ID</th>
                                         <th>Docente</th>
-                                        <!-- <th>Asesor</th> -->
-                                        <!-- <th>Gender</th> -->
+                                        <th>Ùltimo inicio de sessiòn</th>
                                         <th>Actividades</th>
                                     </tr>
                                 </thead>
@@ -36,6 +35,7 @@
                                         <tr> 
                                             <th><input type="hidden" name = "id" value= {{asesor.id}}>{{asesor.id}}</th>
                                             <th><input  type="hidden" name = "curso" value= {{curso}}>{{asesor.fullname}}</th>
+                                            <th>{asesor.lastaccess}}</th>
                                             <th><input type="submit" class="btn btn-danger" value="Actividades"></th>                                                                                
                                         </tr> 
                                     </form>

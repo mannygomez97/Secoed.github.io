@@ -27,7 +27,7 @@
                     <div class="row">
                         <div class="col-sm-8">
                             <div class="avatar-md profile-user-wid mb-4">
-                                <img src="{% static 'images/users/avatar-1.jpg' %}" alt=""
+                                <img src="{% static 'images/users/avatar-8.jpg' %}" alt=""
                                      class="img-thumbnail rounded-circle">
                             </div>
                             <h5 class="font-size-15 text-truncate">{{ user.apellidos }}</h5>
@@ -41,9 +41,15 @@
                                     </div>
                                 </div>
                                 <div class="mt-4">
-                                    <a href="" class="btn btn-primary waves-effect waves-light btn-sm">Editar perfil
-                                        <i class="mdi mdi-account-edit ms-1"></i>
-                                    </a>
+                                    {% if user.usuario_administrador == False %}
+                                        <button type="button"
+                                                onclick="openModal('{% url 'editUsuarioPerfil' user.id %}','#editModal')"
+                                                class="btn btn-primary waves-effect waves-light btn-sm"
+                                                data-bs-toggle="modal">
+                                            <i class="mdi mdi-plus-circle font-size-16 align-middle me-2"></i>
+                                            Editar perfil
+                                        </button>
+                                    {% endif %}
                                 </div>
                             </div>
                         </div>
@@ -53,7 +59,6 @@
             <!-- end card -->
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title mb-4">Información personal</h4>
                     <div class="table-responsive">
                         <table class="table table-nowrap mb-0">
                             <tbody>
@@ -91,12 +96,18 @@
         <div class="col-xl-7">
             <div class="card">
                 <div class="card-body">
-                    <h4 class="card-title mb-4">Inicio de sesión</h4>
-                    <div id="revenue-chart" class="apex-charts" dir="ltr"></div>
+                    <div id="activity-user" class="activity-user" dir="ltr">
+                    </div>
                 </div>
             </div>
         </div>
     </div>
+
+    <!-- editModal -->
+    <div class="modal fade" id="editModal" role="dialog">
+    </div>
+    <!-- endEditModal -->
+
 {% endblock %}
 
 {% block r_sidebar %}
@@ -108,5 +119,28 @@
 {% endblock %}
 
 {% block javascript %}
-    {% include 'partials/javascript.html' %}
+    <!-- JAVASCRIPT -->
+    <script src="{% static 'libs/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'libs/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'libs/metismenu/metisMenu.min.js' %}"></script>
+    <script src="{% static 'libs/simplebar/simplebar.min.js' %}"></script>
+    <script src="{% static 'libs/node-waves/waves.min.js' %}"></script>
+
+    <!-- apexcharts -->
+    <script src="{% static 'libs/apexcharts/apexcharts.min.js' %}"></script>
+
+    <!-- apexcharts init -->
+    <script src="{% static 'js/pages/activityUser.init.js' %}"></script>
+
+    <!-- Modal View -->
+    <script type="text/javascript">
+        var $ = jQuery.noConflict();
+
+        function openModal(url, idModal) {
+            $(idModal).load(url, function () {
+                $(this).modal('show')
+            });
+        }
+    </script>
+
 {% endblock %}

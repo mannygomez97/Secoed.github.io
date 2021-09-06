@@ -20,9 +20,7 @@
                                                     <option>Apellidos</option>                                      
                                                     <option>Titulo</option>
                                                     <option>Nivel_Académico</option>
-                                                    <option>Correo</option>
-                                                    <option>Universidad</option>
-                                                    <option>Facultad</option>
+                                                    <option>Correo</option>                                                    
                                                     <option>Carrera</option>     
                                                 </select>                                        
                                                 <div class="input-group-append">
@@ -40,9 +38,7 @@
                                                         <th>Apellidos</th>       
                                                         <th>Titulo</th>
                                                         <th>Nivel Académico</th>       
-                                                        <th>Correo</th>     
-                                                        <th>Universidad</th>       
-                                                        <th>Facultad</th>       
+                                                        <th>Correo</th>                                                               
                                                         <th>Carrera</th>                                                           
                                                         <th>Opciones</th>   
                                                     </tr>
@@ -56,9 +52,7 @@
                                                             <td>{{uni_nombres.Apellidos}}</td>
                                                             <td>{{uni_nombres.Titulo}}</td>    
                                                             <td>{{uni_nombres.Nivel_Académico}}</td>  
-                                                            <td>{{uni_nombres.Correo}}</td>    
-                                                            <td>{{uni_nombres.Universidad}}</td>                                    
-                                                            <td>{{uni_nombres.Facultad}}</td>    
+                                                            <td>{{uni_nombres.Correo}}</td>                                                                   
                                                             <td>{{uni_nombres.Carrera}}</td>                                         
                                                             <td><button onclick="abrir_Uni_edi('{% url 'modificar_producto_As' uni_nombres.id_asesor %}')" class="btn btn-info btn-sm">Modificar</button>&nbsp;                                            
                                                                 <button onclick="abrir_Uni_edi('{% url 'eliminar_producto_As' uni_nombres.id_asesor %}')" class="btn btn-danger btn-sm">Eliminar</button></td>                                        

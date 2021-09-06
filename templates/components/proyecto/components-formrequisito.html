@@ -27,41 +27,27 @@
                                 class="btn btn-success waves-effect waves-light btn-rounded"
                                 data-bs-toggle="modal">
                             <i class="mdi mdi-plus-circle font-size-16 align-middle me-2"></i>
-                            NUEVO MENÚ
+                            NUEVO CRITERIO
                         </button>
 
                     </div>
-<<<<<<< HEAD
                     <table class="table table-primary dt-responsive  align-middle"
                            style="text-align: center">   
                     <!-- id="datatable" si quieres ordenar por id la tabla -->
                            
                     
-=======
-                    <table id="datatable" class="table table-primary dt-responsive table-nowrap align-middle"
-                           style="text-align: center">
->>>>>>> main
                         <thead class="table-light">
                         <tr>
                             <th>ID</th>
                             <th>Nivel</th>
-<<<<<<< HEAD
                             <th style="width:300px"> Criterio</th>
-                            <!-- <th>MODULO</th> -->
                             <th>Semáforo</th>
                             <th>Acciones</th>
-=======
-                            <th>Criterio</th>
-                            <!-- <th>MODULO</th> -->
-                            <th>Semáforo</th>
-                            <th>ACCIONES</th>
->>>>>>> main
                         </tr>
                         </thead>
                         <tbody>
                         {% for men in menusview %}
                             <tr>
-<<<<<<< HEAD
                                 <td>{{men.id}}</td>
 
                                 <td>{% if men.nivel == 1 %}
@@ -104,17 +90,6 @@
                                             <i class="mdi mdi-trash-can"></i>
                                         </button>
                                     </div>
-=======
-                                <td>{{ men.id}}</td>
-                                <td>{{men.get_nivel_display}}</td>
-                                <td>{{men.criterio}}</td> 
-                                <td>
-                                    <i class="{{ men.icon }}"></i>
-                                    {{men.get_semaforo_display}}
-                                </td>
-                                <td>
-                                    Accion
->>>>>>> main
                                 </td>
                             </tr>
                         {% endfor %}
@@ -195,7 +170,6 @@
     {% endif %}
 
 
-<<<<<<< HEAD
     <!-- delete -->
     <script>
         function deleteRequisito(id) {
@@ -218,7 +192,5 @@
         }
     </script>
 
-=======
->>>>>>> main
 
 {% endblock %}

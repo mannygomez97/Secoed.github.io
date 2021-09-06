@@ -16,9 +16,7 @@
                                                 <input name="prd" class="form-control" type="text" placeholder="Buscar" aria-label="Search" aria-describedby="basic-addon2" />     
                                                 <select name="opcion">
                                                     <option>Id</option>                                
-                                                    <option>Nombramiento</option>                                                                    
-                                                    <option>Universidad</option> 
-                                                    <option>Facultad</option> 
+                                                    <option>Nombramiento</option>                                                                                                                        
                                                     <option>Carrera</option>     
                                                 </select>                                        
                                                 <div class="input-group-append">
@@ -32,9 +30,7 @@
                                                 <thead>
                                                     <tr>                                                       
                                                         <th>Id</th>
-                                                        <th>Nombramiento</th>                                    
-                                                        <th>Universidad</th>
-                                                        <th>Facultad</th>
+                                                        <th>Nombramiento</th>                                                                                            
                                                         <th>Carrera</th>
                                                         <th>Opciones</th> 
                                                     </tr>
@@ -44,9 +40,7 @@
                                                     {% for uni_nombres in uni_nombre %}                            
                                                         <tr>                                   
                                                             <td>{{uni_nombres.id_titulo}}</td>                                        
-                                                            <td>{{uni_nombres.Nombramiento}}</td>                                                                                
-                                                            <td>{{uni_nombres.Universidad}}</td>
-                                                            <td>{{uni_nombres.Facultad}}</td>
+                                                            <td>{{uni_nombres.Nombramiento}}</td>                                                                                                                                            
                                                             <td>{{uni_nombres.Carrera}}</td>
                                                             <td><button onclick="abrir_Uni_edi('{% url 'modificar_producto_Ti' uni_nombres.id_titulo %}')" class="btn btn-info btn-sm">Modificar</button>&nbsp;
                                                                 <button onclick="abrir_Uni_edi('{% url 'eliminar_producto_Ti' uni_nombres.id_titulo %}')" class="btn btn-danger btn-sm">Eliminar</button></td>                                        

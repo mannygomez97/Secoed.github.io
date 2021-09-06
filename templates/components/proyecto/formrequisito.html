@@ -6,17 +6,13 @@
                 {% if modulo.id %}
                     Menú: {{ menu.descripcion }}
                 {% else %}
-                    Crear Menú
+                    Registrar Criterio
                 {% endif %}
             </h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"/>
         </div>
         <form method="POST" id="menuForm" data-menu-url="{% url 'loadRequisito' %}"
-<<<<<<< HEAD
               action="{% if menu.id %} updateRequisito/{{ menu.id }}{% else %}newRequisito{% endif %}">
-=======
-              action="{% if menu.id %} editRequisito/{{ menu.id }}{% else %}newRequisito{% endif %}">
->>>>>>> main
             {% csrf_token %}
             <div class="modal-body">
                 {{ menuFormView|crispy }}

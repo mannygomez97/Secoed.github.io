@@ -39,6 +39,7 @@ class PagesLoginView(View):
                 user = auth.authenticate(username=username, password=password)
                 if user is not None:
                     request.session['username'] = username
+                    request.session['isModulo'] = False
                     auth.login(request, user)
                     return redirect('dashboard')
                 else:
@@ -124,7 +125,7 @@ class PagesTwoStepVerificationView(View):
 
 def logout(request):
     auth.logout(request)
-    return render(request, 'authentication/pages-login.html', {'form': UserLoginForm})
+    return redirect('pages-login')
 
 
 def verificar(nro):
@@ -264,7 +265,19 @@ class UsuarioPerfilView(View):
     template_name = 'authentication/usuarioPerfil.html'
 
     def get(self, request):
-        usuario = get_object_or_404(Usuario, pk=request.user.id)
-        usuarioPerfilForm = UsuarioPerfilForm(instance=usuario)
-        greeting = {'heading': "Perfil", 'pageview': "Perfil", "form": usuarioPerfilForm}
+        greeting = {'heading': "Perfil", 'pageview': "Perfil"}
         return render(request, self.template_name, greeting)
+
+    def editUsuarioPerfil(request, pk):
+        usuario = get_object_or_404(Usuario, pk=pk)
+        if request.method == 'POST':
+            usuarioPerfilForm = UsuarioPerfilForm(request.POST, instance=usuario)
+            if usuarioPerfilForm.is_valid():
+                usuarioPerfilForm.save()
+                messages.success(request, "Se edito correctamente", "success")
+                return redirect('perfil')
+        else:
+            usuarioPerfilForm = UsuarioPerfilForm(instance=usuario)
+            view = False
+            context = {'usuarioPerfilForm': usuarioPerfilForm, 'usuario': usuario, 'view': view}
+        return render(request, 'authentication/usuario-perfil.html', context)

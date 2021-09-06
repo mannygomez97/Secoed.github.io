@@ -175,9 +175,7 @@ def buscar_Cu(request):
         c='Estado'
         d='Fecha de Apertura'
         e='Fecha fin'
-        f='Universidad'
-        g='Facultad'
-        h='Carrera'
+        f='Carrera'
 
         u="Mantenimiento de Código"
         t="Tabla"
@@ -248,33 +246,10 @@ def buscar_Cu(request):
                     }   
 
                     return render(request, "asesor/base/t-cur.html", data)
-
-                
+            
                 elif b_ava==f:
 
-                    uni=Cursos.objects.filter(Universidad__Nombres__icontains=producto)     
-                    data = {   
-                        'uni_nombre':uni,
-                        'heading': u,
-                        'pageview': t 
-                    }   
-                                                                           
-                    return render(request, "asesor/base/t-cur.html", data)
-
-                elif b_ava==g:
-
-                    uni=Cursos.objects.filter(Facultad__Nombres__icontains=producto)
-                    data = {   
-                        'uni_nombre':uni,
-                        'heading': u,
-                        'pageview': t 
-                    }   
-
-                    return render(request, "asesor/base/t-cur.html", data)
-
-                elif b_ava==h:
-
-                    uni=Cursos.objects.filter(Carrera__Nombres__icontains=producto)
+                    uni=Cursos.objects.filter(Carrera__descripcion__icontains=producto)
                     data = {   
                         'uni_nombre':uni,
                         'heading': u,
@@ -374,9 +349,7 @@ def buscar_As(request):
         d='Titulo'
         e='Nivel_Académico'
         f='Correo'
-        g='Universidad'
-        h='Facultad'
-        i='Carrera'
+        g='Carrera'
 
         u="Mantenimiento de Código"
         t="Tabla"
@@ -453,28 +426,9 @@ def buscar_As(request):
                     }                                                                          
                     return render(request, "asesor/base/t-As.html", data)
 
-                elif b_ava==g:                                                
-                    uni=Asesor.objects.filter(Universidad__Nombres__icontains=producto)     
-                    data = {   
-                        'uni_nombre':uni,
-                        'heading': u,
-                        'pageview': t 
-                    }                                                                            
-                    return render(request, "asesor/base/t-As.html", data)
+                elif b_ava==g:
 
-                elif b_ava==h:
-
-                    uni=Asesor.objects.filter(Facultad__Nombres__icontains=producto)
-                    data = {   
-                        'uni_nombre':uni,
-                        'heading': u,
-                        'pageview': t 
-                    } 
-                    return render(request, "asesor/base/t-As.html", data)
-
-                elif b_ava==i:
-
-                    uni=Asesor.objects.filter(Carrera__Nombres__icontains=producto)
+                    uni=Asesor.objects.filter(Carrera__descripcion__icontains=producto)
                     data = {   
                         'uni_nombre':uni,
                         'heading': u,
@@ -577,10 +531,8 @@ def buscar_Do(request):
         d='Titulo'
         e='Nivel Académico'
         f='Correo'
-        g='Curso'
-        h='Universidad'
-        i='Facultad'
-        j='Carrera'
+        g='Curso'        
+        h='Carrera'
 
         u="Mantenimiento de Código"
         t="Tabla"
@@ -666,31 +618,11 @@ def buscar_Do(request):
                         'heading': u,
                         'pageview': t 
                     }                                                                       
-                    return render(request, "asesor/base/t-Doc.html", data)
+                    return render(request, "asesor/base/t-Doc.html", data)             
 
                 elif b_ava==h:
 
-                    uni=Docentes.objects.filter(Universidad__Nombres__icontains=producto) 
-                    data = {   
-                        'uni_nombre':uni,
-                        'heading': u,
-                        'pageview': t 
-                    }                                                                                 
-                    return render(request, "asesor/base/t-Doc.html", data)
-
-                elif b_ava==i:
-
-                    uni=Docentes.objects.filter(Facultad__Nombres__icontains=producto)
-                    data = {   
-                        'uni_nombre':uni,
-                        'heading': u,
-                        'pageview': t 
-                    }  
-                    return render(request, "asesor/base/t-Doc.html", data)
-
-                elif b_ava==j:
-
-                    uni=Docentes.objects.filter(Carrera__Nombres__icontains=producto)
+                    uni=Docentes.objects.filter(Carrera__descripcion__icontains=producto)
                     data = {   
                         'uni_nombre':uni,
                         'heading': u,
@@ -1218,9 +1150,7 @@ def buscar_Ti(request):
 
         a='Id'
         b='Nombramiento'                
-        d='Universidad'    
-        e='Facultad'
-        f='Carrera'      
+        c='Carrera'      
         
         u="Mantenimiento de Código"
         t="Tabla"
@@ -1256,31 +1186,11 @@ def buscar_Ti(request):
                         'pageview': t 
                     }  
                     return render(request, "asesor/base/t-Ti.html",data)
-                                                           
-                
-                elif b_ava==d:
+                                                                          
 
-                    uni=Titulos.objects.filter(Universidad__Nombres__icontains=producto)
-                    data = {   
-                        'uni_nombre':uni,
-                        'heading': u,
-                        'pageview': t 
-                    }  
-                    return render(request, "asesor/base/t-Ti.html", data)
-                
-                elif b_ava==e:
+                elif b_ava==c:
 
-                    uni=Titulos.objects.filter(Facultad__Nombres__icontains=producto)
-                    data = {   
-                        'uni_nombre':uni,
-                        'heading': u,
-                        'pageview': t 
-                    }  
-                    return render(request, "asesor/base/t-Ti.html", data)
-
-                elif b_ava==f:
-
-                    uni=Titulos.objects.filter(Carrera__Nombres__icontains=producto)
+                    uni=Titulos.objects.filter(Carrera__descripcion__icontains=producto)
                     data = {   
                         'uni_nombre':uni,
                         'heading': u,
@@ -1902,21 +1812,21 @@ def llamar_crono(request, id):
     cal = Calendar(d.year, d.month, h.Nombre)
     html_cal = cal.formatmonth(withyear=True)
     u="Calendario"
-    t="Apps"  
+    g="Apps"  
     data = {   
         'P':h,                   
         'calendar':mark_safe(html_cal),
         'ant':t,
         'seg':q,
         'heading': u,
-        'pageview': t 
+        'pageview': g 
     }    
 
     return render(request, 'asesor/cronograma/calendar.html', data)
 @login_required
 def nextM(request, id, p):   
     u="Calendario"
-    t="Apps" 
+    g="Apps" 
     h = get_object_or_404(Cabecera_Crono, Nombre=id)  
     d = get_date(p)          
     cal = Calendar(d.year, d.month, h.Nombre)
@@ -1930,7 +1840,7 @@ def nextM(request, id, p):
         'ant':t,
         'seg':q,
         'heading': u,
-        'pageview': t
+        'pageview': g
     }    
 
     return render(request, 'asesor/cronograma/calendar.html', data)
@@ -2068,10 +1978,8 @@ def estadistico(request):
     ase=Asesor.objects.all()
     cur=Cursos.objects.all()
     doc=Docentes.objects.all()    
-    
-    uni=Universidad.objects.all()
-    data = {   
-        'uni_nombre':uni,
+        
+    data = {           
         'heading': u,
         'pageview': t,        
         't1':ase.count,
@@ -2090,6 +1998,7 @@ def api_curso(request):
             "wsfunction":"core_course_get_courses",
             "moodlewsrestformat":"json",                                    
             }    
+    context={} 
     try:
         response=requests.post(apiBase, params)
         if response.status_code==400:
@@ -2136,13 +2045,14 @@ def listado_estudiante(request, id, nombre):
         print(e)
     return render(request,'asesor/seguimiento_docente/lista_Estudiantes.html',context)
 @login_required
-def actividades_user(request, id, nombre):   
+def actividades_user(request, id, nombre, idest):   
     nombre_Estudiante=nombre         
     apiBase="http://academyec.com/moodle/webservice/rest/server.php"
     params={"wstoken":"958c77e27c859fac94cfb40ceec68a06",
             "wsfunction":"gradereport_user_get_grade_items",
             "moodlewsrestformat":"json",
-            "courseid":id                                   
+            "courseid":id,
+            "userid":idest            
             }
     context={} 
     try:

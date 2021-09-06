@@ -4,21 +4,20 @@
         <div class="modal-header">
             <h5 class="modal-title">
                 {% if usuario.id %}
-                    Usuario: {{ usuario.username }}
+                    Usuario: {{ usuarioPerfilForm.correo }}
                 {% else %}
                     Crear Usuario
                 {% endif %}
             </h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"/>
         </div>
-        <form method="POST" id="form"
-              action="{% if usuario.id %} editUsuario/{{ usuario.id }}{% else %}newUsuario{% endif %}">
+        <form method="POST" id="form" action="editUsuarioPerfil/{{ usuario.id }}">
             {% csrf_token %}
             <div class="modal-body">
-                {{ usuarioFormView|crispy }}
+                {{ usuarioPerfilForm|crispy }}
             </div>
             <div class="modal-footer">
-                <button type="submit" class="btn btn-success" {% if view %}disabled{% endif %}>
+                <button type="submit" class="btn btn-success">
                     <i class="mdi mdi-content-save"></i>
                     Guardar
                 </button>

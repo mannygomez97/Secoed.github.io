@@ -4,6 +4,8 @@ from secoed import views
 from django.urls import include
 
 urlpatterns = [
+    path(r'jsnCountLogin', views.AjaxEvent.jsnCountLogin, name="jsnCountLogin"),
+
     path(r'admin/', admin.site.urls),
 
     # Dashboards View

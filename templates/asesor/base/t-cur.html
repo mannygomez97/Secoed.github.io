@@ -19,9 +19,7 @@
                                                     <option>Tipo</option>                                
                                                     <option>Estado</option>                                      
                                                     <option>Fecha de Apertura</option>
-                                                    <option>Fecha fin</option>
-                                                    <option>Universidad</option>
-                                                    <option>Facultad</option>
+                                                    <option>Fecha fin</option>                                                    
                                                     <option>Carrera</option>    
                                                 </select>                                        
                                                 <div class="input-group-append">
@@ -38,9 +36,7 @@
                                                         <th>Tipo</th>
                                                         <th>Estado</th>       
                                                         <th>Fecha de Apertura</th>
-                                                        <th>Fecha fin</th>       
-                                                        <th>Universidad</th>       
-                                                        <th>Facultad</th>       
+                                                        <th>Fecha fin</th>                                                                 
                                                         <th>Carrera</th>                    
                                                         <th>Opciones</th>
                                                     </tr>
@@ -53,9 +49,7 @@
                                                             <td>{{uni_nombres.Tipo}}</td>                                        
                                                             <td>{{uni_nombres.Estado}}</td>
                                                             <td>{{uni_nombres.Fecha_de_Apertura}}</td>    
-                                                            <td>{{uni_nombres.Fecha_fin}}</td>    
-                                                            <td>{{uni_nombres.Universidad}}</td>                                    
-                                                            <td>{{uni_nombres.Facultad}}</td>    
+                                                            <td>{{uni_nombres.Fecha_fin}}</td>                                                                 
                                                             <td>{{uni_nombres.Carrera}}</td>    
                                                             <td><button onclick="abrir_Uni_edi('{% url 'modificar_producto_Cu' uni_nombres.Id_curso %}')" class="btn btn-info btn-sm">Modificar</button>&nbsp;                                                                                          
                                                                 <button onclick="abrir_Uni_edi('{% url 'eliminar_producto_Cu' uni_nombres.Id_curso %}')" class="btn btn-danger btn-sm">Eliminar</button></td>
