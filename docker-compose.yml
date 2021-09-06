@@ -12,11 +12,11 @@ services:
       - POSTGRES_PASSWORD=postgres
   web:
     build: .
-    command: python3 manage.py runserver 0.0.0.0:8000
+    command: python3 manage.py runserver 0.0.0.0:8086
     container_name: secoed_web
     volumes:
       - .:/code
     ports:
-      - "8086:8000"
+      - "8086:8086"
     depends_on:
       - db
