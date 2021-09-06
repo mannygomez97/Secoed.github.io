@@ -106,7 +106,7 @@ DATABASES = {
         'NAME': 'db_secoed',
         'USER': 'postgres',
         'PASSWORD': 'postgres',
-        'HOST': 'db',
+        'HOST': '95.216.216.98',
         'PORT': 5434,
     }
 }
