@@ -1,5 +1,5 @@
 django-easy-audit
-asgiref==3.2.6
+asgiref==3.3.2
 certifi==2021.5.30
 chardet==4.0.0
 defusedxml==0.7.1
