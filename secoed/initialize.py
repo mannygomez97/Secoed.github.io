@@ -8,18 +8,9 @@ def load_menu(request):
     if isinstance(request.user, AnonymousUser):
         return context
     else:
-        isModulo = request.session['isModulo']
-        print(isModulo)
-        print(request.context['modulo'])
-        if not isModulo:
-            if request.user.usuario_administrador:
-                context['modulo'] = Modulo.objects.order_by('orden')
-            else:
-                context['modulo'] = Modulo.objects.order_by('orden')
-            request.session['isModulo']=True
-            return context
-        else:
-            return context
+        modulos  = Modulo.objects.order_by('orden')
+        context['modulo'] = modulos
+        return context
 
 
 def setMenuItem(menu):

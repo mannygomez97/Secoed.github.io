@@ -22,7 +22,7 @@ SECRET_KEY = 'd!m50t)w$$&ff(*pn7%oqw-1yxo+eub*xcxd^8pzo=*2)ynq=w'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['*']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '2da188c804ec.ngrok.io']
 
 # Base APP
 
@@ -56,6 +56,7 @@ LOCAL_APPS = [
     'components',
     'easyaudit',
 ]
+
 
 
 INSTALLED_APPS = BASE_APPS + LOCAL_APPS + THIRD_APPS
@@ -102,12 +103,12 @@ WSGI_APPLICATION = 'secoed.wsgi.application'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'db_secoed',
-        'USER': 'postgres',
-        'PASSWORD': 'postgres',
+        'USER': 'secoed',
+        'PASSWORD': 'secoed2021',
         'HOST': '95.216.216.98',
-        'PORT': 5434,
+        'PORT': '5433',
     }
 }
 
