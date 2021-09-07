@@ -102,11 +102,11 @@ WSGI_APPLICATION = 'secoed.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'db_secoed',
-        'USER': 'secoed',
-        'PASSWORD': 'secoed2021',
+        'NAME': 'postgres',
+        'USER': 'postgres',
+        'PASSWORD': 'postgres',
         'HOST': '95.216.216.98',
-        'PORT': '5433',
+        'PORT': '5434',
     }
 }
 
