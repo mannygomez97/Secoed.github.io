@@ -8,7 +8,7 @@ services:
         volumes:
             - .:/usr/src/app
         ports:
-            - "8000:8000"
+            - "8086:8000"
         depends_on:
             - pgdb
     pgdb:
@@ -18,3 +18,5 @@ services:
         - POSTGRES_DB=postgres
         - POSTGRES_USER=postgres
         - POSTGRES_PASSWORD=postgres
+        ports:
+            - "5434:5432"
