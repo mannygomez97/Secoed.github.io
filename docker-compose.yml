@@ -10,6 +10,10 @@ services:
       - POSTGRES_DB=db_secoed
       - POSTGRES_USER=secoed
       - POSTGRES_PASSWORD=secoed2021
+    ports:
+      - "5434:5435"
+    expose:
+      - "5434"
   web:
     build: .
     container_name: secoed_web
@@ -20,3 +24,5 @@ services:
       - "8086:8000"
     depends_on:
       - db
+    expose:
+      - "8086"
