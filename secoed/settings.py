@@ -103,8 +103,8 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql_psycopg2',
         'NAME': 'db_secoed',
-        'USER': 'postgres',
-        'PASSWORD': 'secoed',
+        'USER': 'secoed',
+        'PASSWORD': 'secoed2021',
         'HOST': '95.216.216.98',
         'PORT': '5433',
     }

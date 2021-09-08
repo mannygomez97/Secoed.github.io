@@ -7,9 +7,9 @@ services:
     volumes:
       - ./data/db:/var/lib/postgresql/data
     environment:
-      - POSTGRES_DB=postgres
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=db_secoed
+      - POSTGRES_USER=secoed
+      - POSTGRES_PASSWORD=secoed2021
   web:
     build: .
     container_name: secoed_web
