@@ -1,24 +1,20 @@
-version: "3.9"
+version: "3.8"
 
 services:
-  db:
-    image: postgres
-    container_name: secoed_pg
-    volumes:
-      - ./data/db:/var/lib/postgresql/data
-    environment:
-      - POSTGRES_DB=postgres
-      - POSTGRES_USER=postgres
-      - POSTGRES_PASSWORD=postgres
-    ports:
-      - "5434:5432"
-  web:
-    build: .
-    container_name: secoed_web
-    command: python manage.py runserver 0.0.0.0:8000
-    volumes:
-      - .:/code
-    ports:
-      - "8086:8000"
-    depends_on:
-      - db
+    django:
+        build: .
+        container_name: django
+        command: python manage.py runserver 0.0.0.0:8000
+        volumes:
+            - .:/usr/src/app
+        ports:
+            - "8000:8000"
+        depends_on:
+            - pgdb
+    pgdb:
+        image: postgres
+        container_name: pgdb
+        environment:
+        - POSTGRES_DB=postgres
+        - POSTGRES_USER=postgres
+        - POSTGRES_PASSWORD=postgres
