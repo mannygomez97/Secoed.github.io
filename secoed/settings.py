@@ -103,10 +103,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'db_secoed',
-        'USER': 'secoed',
-        'PASSWORD': 'secoed2021',
-        'HOST': '95.216.216.98',
-        'PORT': 5433,
+        'USER': 'postgres',
+        'PASSWORD': 'postgres',
+        'HOST': 'pgdb',
+        'PORT': 5432,
     }
 }
 

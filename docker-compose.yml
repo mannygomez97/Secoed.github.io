@@ -15,7 +15,7 @@ services:
         image: postgres
         container_name: pgdb
         environment:
-        - POSTGRES_DB=postgres
+        - POSTGRES_DB=db_secoed
         - POSTGRES_USER=postgres
         - POSTGRES_PASSWORD=postgres
         ports:
