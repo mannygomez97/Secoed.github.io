@@ -165,7 +165,7 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'secoed.web@gmail.com'
-EMAIL_HOST_PASSWORD = 'secoed_2021'
+EMAIL_HOST_PASSWORD = 'lV0G1b7xRLII&D$x1*xK'
 DEFAULT_FROM_EMAIL = 'secoed.web@gmail.com'
 
 LOGIN_REDIRECT_URL = '/authentication/pages-login'
