@@ -73,7 +73,7 @@ class PagesRecoverpwView(View):
                             c = {
                                 "username": user.username,
                                 "email": user.email,
-                                'domain': '127.0.0.1:8000',
+                                'domain': '95.216.216.98:8086',
                                 'site_name': 'Website',
                                 "uid": urlsafe_base64_encode(force_bytes(user.pk)),
                                 "user": user,
