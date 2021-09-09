@@ -1,0 +1,163 @@
+{% extends 'partials/base.html' %}
+{% load static %}
+
+{% block css%}
+    {% include 'partials/css.html' %}
+{% endblock %}
+
+{% block extra_css %}
+        <link href="{% static 'libs/bootstrap-touchspin/jquery.bootstrap-touchspin.min.css' %}" rel="stylesheet" type="text/css" />
+        <link href="{% static 'libs/admin-resources/rwd-table/rwd-table.min.css' %}" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+{% block contents %}
+
+<div class="row">
+{% if auto.Total_Proceso_Auto > 0 %}
+    <div class="col-6">
+        <div id="auto"></div>
+    </div>
+
+    <div class="col-6">
+        <div id="semaforo">
+            <div class="card">
+                <div class="card-header bg-transparent border-bottom" style="text-align: center">
+                    <h4>Usted se encuentra en semáforo</h4>
+                </div>
+                <div class="card-body" style="margin: 2em auto">
+                    {% if auto.Total_Proceso_Auto >= 86 %}
+                        <img src="{% static 'images/eva/semaforo_verde.png' %}" alt="">
+                    {% elif auto.Total_Proceso_Auto >= 61 and auto.Total_Proceso_Auto <= 85 %}
+                        <img src="{% static 'images/eva/semaforo_amarillo.png' %}" alt="">
+                    {% else %}
+                        <img src="{% static 'images/eva/semaforo_rojo.png' %}" alt="">
+                    {% endif %}
+                </div>
+                <div class="card-footer bg-transparent border-top text-muted">
+
+                </div>
+            </div>
+        </div>
+    </div>
+{% else %}
+
+    <div class="col-6" style=" display: none">
+        <div id="auto"></div>
+    </div>
+
+    <div class="col-6">
+        <div id="semaforo">
+            <div class="card">
+                <div class="card-header bg-transparent border-bottom" style="text-align: center">
+                    <h4>Usted no ha realizado su autoevaluación</h4>
+                </div>
+                <div class="card-body" style="margin: 2em auto">
+                    <p>
+                        Cuando realice su autoevaluación podrá obtener un informe de este proceso
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}
+</div>
+
+<div class="row">
+{% if auto.Total_Proceso_Coe > 0 %}
+    <div class="col-6" style=" visibility: hidden">
+        <div id="coe"></div>
+    </div>
+{% else %}
+    <div class="col-6">
+        <div id="semaforo">
+            <div class="card">
+                <div class="card-header bg-transparent border-bottom" style="text-align: center">
+                    <h4>Usted no ha sido Co-Evaluación</h4>
+                </div>
+                <div class="card-body" style="margin: 2em auto">
+                    <p>
+                        Cuando sea evaluado podrá obtener un informe de este proceso
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endif %}
+</div>
+{% endblock %}
+
+{% block javascript %}
+    <script src="{% static 'libs/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'libs/sweetalert2/sweetalert2.all.min.js' %}"></script>
+    <script src="{% static 'evaluations/evaluacion.js' %}"></script>
+    <script src="{% static 'evaluations/libs/highcharts-8.1.2/highcharts.js' %}"></script>
+    <script src="{% static 'evaluations/libs/highcharts-8.1.2/highcharts-3d.js' %}"></script>
+    <script src="{% static 'evaluations/libs/highcharts-8.1.2/modules/exporting.js' %}"></script>
+    <script src="{% static 'evaluations/libs/highcharts-8.1.2/modules/export-data.js' %}"></script>
+    <script src="{% static 'evaluations/libs/highcharts-8.1.2/modules/accessibility.js' %}"></script>
+    <script src="{% static 'evaluations/notifications.js' %}"></script>
+    <script type="text/javascript">
+
+    $(function (){
+        graph_auto_evaluation_by_category({{ total_auto }}, {{ graph_evaluation|safe }});
+        graph_co_evaluation_by_category({{ total_coe }}, {{ graph_co_evaluation|safe }});
+    });
+
+    function graph_auto_evaluation_by_category(subtitle, series) {
+        Highcharts.chart('auto', {
+            chart: {
+                type: 'pie',
+                options3d: {
+                    enabled: true,
+                    alpha: 45
+                }
+            },
+            title: {
+                text: 'La nota global de autoevaluación es de:'
+            },
+            subtitle: {
+                text: subtitle + '/100'
+            },
+            plotOptions: {
+                pie: {
+                    innerSize: 100,
+                    depth: 45
+                }
+            },
+            series: [{
+                name: 'Rendimiento por área',
+                data: series
+            }]
+        });
+    }
+
+    function graph_co_evaluation_by_category(subtitle, series) {
+        Highcharts.chart('coe', {
+            chart: {
+                type: 'pie',
+                options3d: {
+                    enabled: true,
+                    alpha: 45
+                }
+            },
+            title: {
+                text: 'La nota global de co evaluación es de:'
+            },
+            subtitle: {
+                text: subtitle + '/100'
+            },
+            plotOptions: {
+                pie: {
+                    innerSize: 100,
+                    depth: 45
+                }
+            },
+            series: [{
+                name: 'Rendimiento por área',
+                data: series
+            }]
+        });
+    }
+
+    </script>
+{% endblock %}

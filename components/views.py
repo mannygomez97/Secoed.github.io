@@ -1,4 +1,6 @@
 from django.http.response import HttpResponse
+from .models import Evaluation as EvaluationModel
+from components.Evaluation import Evaluation
 from components.utils import render_to_pdf
 from conf.forms import MenuForm
 from conf.models import Menu
@@ -45,15 +47,15 @@ def wsfunction(function):
 
 ######################################################################################
 
-#JSON
-# @csrf_exempt
-def Autocomplete(request):
-    curso = AsesorCursos.objects.all()
-    return JsonResponse({"curso":curso},safe=False) 
+# #JSON
+# # @csrf_exempt
+# def Autocomplete(request):
+#     curso = AsesorCursos.objects.all()
+#     return JsonResponse({"curso":curso},safe=False) 
 
-# @csrf_exempt
-def obtenerPorcentaje(request):
-    return JsonResponse({"porcentajeCompleto":30,"porcentajeNoCompleto":70},safe=False) 
+# # @csrf_exempt
+# def obtenerPorcentaje(request):
+#     return JsonResponse({"porcentajeCompleto":30,"porcentajeNoCompleto":70},safe=False) 
 
 ##### filtrar asesor
 def asesor(request, *args, **kwargs):                                                                                   
@@ -91,20 +93,11 @@ def buildEmail(course):
     # Array de destinatarios
     send_mail(subject, template_email, EMAIL_HOST_USER, [email_text], fail_silently=False)
 
-def getChoices(choices = [], answers = []):
-    result = choices
-    for i in range(len(answers)): 
-        result[int(answers[i])] = result[int(answers[i])] + " Correct Answer"
-    return result
-
 @csrf_exempt
 def getPDF(request):
-    context = {
-        'course':str(request.POST['course']),
-        'questions':request.POST.getlist('question[]'),
-        'choices': getChoices(request.POST.getlist('choice[]'), request.POST.getlist('is_correct[]')),
-    }
-    return render_to_pdf(request, 'components/templates_pdf/evaluation_final.html',context_dict=context)
+    eva = Evaluation(request)
+    eva.saveEvaluation()
+    return render_to_pdf(eva.getLastEvaluationBD(), 'components/templates_pdf/evaluation_final.html')
 
 def sendEmail(request):
     coursesList: Any = obtener_datos({
@@ -113,8 +106,8 @@ def sendEmail(request):
     finishCourses = []
     # courseSelected = [course for course in coursesList['courses'] if  course['id'] == courseId ]
     for course in coursesList:
-        justNow = datetime.strptime(str(datetime.now().date()), '%Y-%m-%d')
-        endDate = datetime.fromtimestamp(course['enddate'])
+        justNow = datetime.datetime.strptime(str(datetime.datetime.now().date()), '%Y-%m-%d')
+        endDate = datetime.datetime.fromtimestamp(course['enddate'])
         if(justNow == endDate):
             # Send email
             buildEmail(course)
@@ -122,7 +115,6 @@ def sendEmail(request):
     return JsonResponse({
         "finished_courses": finishCourses,
     })
-    
 
 def cursoA(request, *args, **kwargs):
     params = wsfunction("core_course_get_courses")
@@ -345,7 +337,9 @@ class FormRequisito(View):
         greeting = {}
         greeting['heading'] = "Requisito del curso"
         greeting['pageview'] = "Forms"
-       
+        coursesList: Any = obtener_datos({
+            "wsfunction": "core_course_get_courses",
+        })
         return render (request,'components/proyecto/components-formrequisito.html',greeting)
 
 
@@ -354,11 +348,29 @@ class FormEvaluation(View):
     def get(self, request):
         greeting = {}
         greeting['heading'] = "Evaluation Docente"
-        greeting['pageview'] = "Forms"
-
+        greeting['pageview'] = "Evaluación"
+        coursesList: Any = obtener_datos({
+            "wsfunction": "core_course_get_courses",
+        })
         #greeting['curso'] = AsesorCursoAsesor.objects.filter(~Q(curso = AsesorCursos.objects.all() )).values('curso__id_curso','curso__tipo')
     
-        return render (request,'components/proyecto/components-formevaluation.html',greeting)
+        return render (request,'components/proyecto/components-formevaluation.html',{
+            "greeting": greeting,
+            "courses": [course['shortname'] for course in coursesList]
+            })
+
+def historialEvaluations(request):
+    evaluations = EvaluationModel.objects.all()
+        
+    return render(request, 'components/proyecto/components-historial_eva.html', {
+        "heading": "HIstorial de Evaluaciones",
+        'pageview': "Evaluación",
+        'evaluations': evaluations,
+    })
+def historialEvaluation(request, id):
+    evaluation = EvaluationModel.objects.get(pk=id)
+    return render_to_pdf({"course": evaluation.course, "questions": evaluation.question}, 'components/templates_pdf/evaluation_final.html')
+
 
 
 

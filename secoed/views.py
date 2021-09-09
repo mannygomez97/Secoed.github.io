@@ -15,8 +15,13 @@ class DashboardView(View):
 
 class AjaxEvent(View):
     def jsnCountLogin(request):
-        data={
-            'coqueta':'5-0',
-            'la':'el puticornio'
+        data = {
+            'coqueta': '5-0',
+            'la': [{"lunes":10,
+                    "martes":20,
+                    "miercoles":30,
+                    "jueves":40,
+                    "viernes":50
+                    }]
         }
         return JsonResponse(data)

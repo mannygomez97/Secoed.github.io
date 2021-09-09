@@ -13,7 +13,7 @@
         <link href="{% static 'libs/admin-resources/rwd-table/rwd-table.min.css' %}" rel="stylesheet" type="text/css" />
 {% endblock %}
 {% block contents %}
-{% if preguntas.count > 0 %}
+{% if questions.count > 0 %}
 <div class="row">
     <div class="col-12">
         <div class="card">
@@ -25,9 +25,11 @@
                             <thead>
                             <tr>
                                 <th>
-                                    <h5>
-                                        <center>{{ titulo|upper }}</center>
-                                    </h5>
+                                    <div class="title" style="text-align: center">
+                                        <h5>
+                                            {{ title|upper }}
+                                        </h5>
+                                    </div>
                                 </th>
                             </tr>
                             </thead>
@@ -71,11 +73,4 @@
         <script src="{% static 'libs/bootstrap-touchspin/jquery.bootstrap-touchspin.min.js' %}"></script>
         <script src="{% static 'libs/bootstrap-maxlength/bootstrap-maxlength.min.js' %}"></script>
         <script src="{% static 'libs/@chenfengyuan/datepicker/datepicker.min.js' %}"></script>
-        <!-- form advanced init -->
-        <script src="{% static 'js/pages/form-advanced.init.js' %}"></script>
-        <script src="{% static 'js/app.js' %}"></script>
-
-        {% block javascritp_extra %}
-
-        {% endblock %}
 {% endblock %}

@@ -265,7 +265,9 @@ class UsuarioPerfilView(View):
     template_name = 'authentication/usuarioPerfil.html'
 
     def get(self, request):
-        greeting = {'heading': "Perfil", 'pageview': "Perfil"}
+        usuario = get_object_or_404(Usuario, pk=request.user.id)
+        usuarioPerfilForm = UsuarioPerfilForm(instance=usuario)
+        greeting = {'heading': "Perfil", 'pageview': "Perfil","form": usuarioPerfilForm}
         return render(request, self.template_name, greeting)
 
     def editUsuarioPerfil(request, pk):

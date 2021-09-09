@@ -18,9 +18,15 @@ class AprobacionCurso(models.Model):
     criterio = models.CharField(max_length=200)
     semaforo = models.IntegerField(choices=semaforo_CHOICES)
     estado = models.BooleanField(default=True)
+    test = models.CharField(default="xd", max_length=2)
 
-
+class Evaluation(models.Model):
+    course = models.CharField(max_length=100)
+    question = models.JSONField(null=True)
+    create_at = models.DateTimeField(auto_now_add=True)
+    
 class CursoAsesores(models.Model):
     id_curso = models.IntegerField()
     id_asesor = models.IntegerField()
     estado = models.BooleanField(default = True)
+

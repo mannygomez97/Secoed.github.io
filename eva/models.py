@@ -1,35 +1,27 @@
-from django.contrib.auth.models import PermissionsMixin
-from authentication.models import Usuario
-from django.contrib.auth.models import AbstractBaseUser
 from django.db import models
 from django.forms import model_to_dict
-from secoed.settings import MEDIA_URL, STATIC_URL
+
+from authentication.models import Usuario
+from conf.models import Carrera
+from eva.choices import contract, dedication, position
 
 
 class Docente(models.Model):
     user = models.ForeignKey(Usuario, null=False, blank=False, on_delete=models.CASCADE, db_column='id_usuario')
-    name = models.CharField(max_length=100, unique=True, null=True, blank=True, db_column='nombre_usuario')
-    identify = models.CharField(max_length=13, unique=True, null=True, blank=True, db_column='identificacion')
-    address = models.CharField(max_length=255, null=True, blank=True, db_column='direccion')
-    image = models.FileField(upload_to='perfil/%Y/%m/%d', max_length=255, blank=True, null=True, db_column='imagen')
+    title = models.CharField(max_length=100, null=True, blank=True, db_column='titulo')
+    type_contract = models.CharField(max_length=100, choices=contract, null=True, blank=True, db_column='tipo_contrato')
+    dedication = models.CharField(max_length=100, choices=dedication, null=True, blank=True, db_column='dedicacion')
+    position = models.CharField(max_length=100, choices=position, null=True, blank=True, db_column='cargo')
     is_evaluator = models.BooleanField(default=False, db_column='es_evaluador')
-
-    def get_image(self):
-        if self.image:
-            return '{}{}'.format(MEDIA_URL, self.image)
-        return '{}{}'.format(STATIC_URL, 'img/empty.png')
-
-    def __str__(self):
-        txt = '{0} con identificación: {1}'
-        return txt.format(self.name, self.identify)
 
     class Meta:
         db_table = 'pt_usuario'
 
 
-class Universidad(models.Model):
-    name = models.CharField(max_length=100, unique=True, db_column='nombre',
-                            help_text='Registra el nombre de la universidad')
+class AreasConocimiento(models.Model):
+    name = models.CharField(max_length=255, db_column='nombre', unique=True)
+    career = models.ForeignKey(Carrera, null=False, blank=False, on_delete=models.CASCADE, db_column='carrera')
+    docente = models.ForeignKey(Docente, null=False, blank=False, on_delete=models.CASCADE, db_column='docente')
     date_created = models.DateTimeField(auto_now_add=True, db_column='fecha_creacion',
                                         help_text='Registra la fecha de creación de un valor')
     date_update = models.DateTimeField(auto_now=True, db_column='fecha_edicion',
@@ -40,55 +32,14 @@ class Universidad(models.Model):
         return txt.format(self.name)
 
     class Meta:
-        db_table = "pt_universidad"
+        db_table = "pt_area_conocimiento"
         ordering = ['name']
-        verbose_name = 'Universidad'
-        verbose_name_plural = 'Universidades'
-
-
-class Facultad(models.Model):
-    university = models.ForeignKey(Universidad, db_column='universidad', null=False, blank=False,
-                                   on_delete=models.CASCADE)
-    name = models.CharField(max_length=100, db_column='nombre', help_text='Registra el nombre de la facultad')
-    date_created = models.DateTimeField(auto_now_add=True, db_column='fecha_creacion',
-                                        help_text='Registra la fecha de creación de un valor')
-    date_update = models.DateTimeField(auto_now=True, db_column='fecha_edicion',
-                                       help_text='Fecha de edición del registro')
-
-    def __str__(self):
-        txt = "{0} "
-        return txt.format(self.name)
-
-    class Meta:
-        db_table = "pt_facultad"
-        ordering = ['name']
-        verbose_name = 'Facultad'
-        verbose_name_plural = 'Facultades'
-
-
-class Carrera(models.Model):
-    schoolOf = models.ForeignKey(Facultad, null=False, blank=False, on_delete=models.CASCADE, db_column='facultad')
-    name = models.CharField(max_length=100, db_column='nombre')
-    date_created = models.DateTimeField(auto_now_add=True, db_column='fecha_creacion',
-                                        help_text='Registra la fecha de creación de un valor')
-    date_update = models.DateTimeField(auto_now=True, db_column='fecha_edicion',
-                                       help_text='Fecha de edición del registro')
-
-    def __str__(self):
-        txt = "{0} "
-        return txt.format(self.name)
-
-    class Meta:
-        db_table = "pt_carrera"
-        ordering = ['name']
-        verbose_name = 'Carrera'
-        verbose_name_plural = 'Carreras'
 
 
 class Materia(models.Model):
+    area = models.ForeignKey(AreasConocimiento, db_column='area', null=False, blank=False, on_delete=models.CASCADE)
+    teacher = models.ForeignKey(Docente, db_column='id_docente', null=False, blank=False, on_delete=models.CASCADE)
     name = models.CharField(max_length=255, db_column='nombre', unique=True)
-    career = models.ForeignKey(Carrera, db_column='carrera', null=False, blank=False, on_delete=models.CASCADE)
-    docente = models.ManyToManyField(Docente, db_column='materia_usuario')
     date_created = models.DateTimeField(auto_now_add=True, db_column='fecha_creacion',
                                         help_text='Registra la fecha de creación de un valor')
     date_update = models.DateTimeField(auto_now=True, db_column='fecha_edicion',
@@ -100,8 +51,22 @@ class Materia(models.Model):
 
     class Meta:
         db_table = "pt_materia"
-        verbose_name = 'Materia'
-        verbose_name_plural = 'Materias'
+
+
+class MateriaDocente(models.Model):
+    matter = models.ForeignKey(Materia, null=False, blank=False, on_delete=models.CASCADE, db_column='materia')
+    docente = models.ForeignKey(Docente, null=False, blank=False, on_delete=models.CASCADE, db_column='tutor')
+    date_created = models.DateTimeField(auto_now_add=True, db_column='fecha_creacion',
+                                        help_text='Registra la fecha de creación de un valor')
+    date_update = models.DateTimeField(auto_now=True, db_column='fecha_edicion',
+                                       help_text='Fecha de edición del registro')
+
+    def __str__(self):
+        txt = "{0} asignada al docente {1}"
+        return txt.format(self.matter.name, self.docente.user.nombres)
+
+    class Meta:
+        db_table = 'pt_materia_docente'
 
 
 class Ciclo(models.Model):
@@ -118,8 +83,6 @@ class Ciclo(models.Model):
 
     class Meta:
         db_table = "pt_ciclo"
-        verbose_name = 'Ciclo'
-        verbose_name_plural = 'Ciclos'
 
 
 class Categoria(models.Model):
@@ -139,9 +102,6 @@ class Categoria(models.Model):
 
     class Meta:
         db_table = "pt_categoria"
-        ordering = ['name']
-        verbose_name = 'categoria'
-        verbose_name_plural = 'Categorias'
 
 
 class Tipo(models.Model):
@@ -156,34 +116,10 @@ class Tipo(models.Model):
 
     class Meta:
         db_table = "pt_tipo"
-        ordering = ['name']
-        verbose_name = 'Tipo'
-        verbose_name_plural = 'Tipos'
-
-
-class AreasConocimiento(models.Model):
-    name = models.CharField(max_length=255, db_column='nombre', unique=True)
-    career = models.ForeignKey(Carrera, null=False, blank=False, on_delete=models.CASCADE, db_column='carrera')
-    docente = models.ManyToManyField(Docente, db_column='area_docente')
-    materia = models.ManyToManyField(Materia, db_column='area_materia')
-    date_created = models.DateTimeField(auto_now_add=True, db_column='fecha_creacion',
-                                        help_text='Registra la fecha de creación de un valor')
-    date_update = models.DateTimeField(auto_now=True, db_column='fecha_edicion',
-                                       help_text='Fecha de edición del registro')
-
-    def __str__(self):
-        txt = "{0} "
-        return txt.format(self.name)
-
-    class Meta:
-        db_table = "pt_area_conocimiento"
-        ordering = ['name']
-        verbose_name = 'Areas_Conocimiento'
-        verbose_name_plural = 'Areas_Conocimientos'
 
 
 class Comprobacion(models.Model):
-    co_evaluated = models.IntegerField(db_column='evaluador', null=False, blank=False)
+    co_evaluated = models.IntegerField(db_column='evaluador', null=True, blank=True)
     identify = models.CharField(max_length=13, db_column='evaluado', null=True, blank=True)
     state = models.BooleanField(default=False, db_column='estado', null=False)
     date_created = models.DateTimeField(auto_now_add=True, db_column='fecha_creacion',
@@ -191,8 +127,6 @@ class Comprobacion(models.Model):
 
     class Meta:
         db_table = "pt_comprobacion"
-        verbose_name = 'Comprobacion'
-        verbose_name_plural = 'Comprobaciones'
 
     def to_json(self):
         item = model_to_dict(self, exclude=['date_created', 'date_update'])
@@ -200,7 +134,7 @@ class Comprobacion(models.Model):
 
 
 class HistAutoevaluation(models.Model):
-    User = models.ForeignKey(Docente, null=False, blank=False, on_delete=models.CASCADE, db_column='docente')
+    docente = models.ForeignKey(Docente, null=False, blank=False, on_delete=models.CASCADE, db_column='docente')
     nombre_docente = models.CharField(max_length=60)
     apellido_docente = models.CharField(max_length=60)
     estado = models.CharField(max_length=20)
@@ -213,8 +147,6 @@ class HistAutoevaluation(models.Model):
     class Meta:
         db_table = "pt_historia_evaluacion"
         ordering = ['ciclo']
-        verbose_name = 'Historia Evaluación'
-        verbose_name_plural = 'Historias Evaluaciones'
 
 
 class HistCoevaluation(models.Model):
@@ -237,8 +169,6 @@ class HistCoevaluation(models.Model):
     class Meta:
         db_table = "pt_historia_coevaluacion"
         ordering = ['ciclo']
-        verbose_name = 'Historia Co-Evaluación'
-        verbose_name_plural = 'Historias Co-Evaluaciones'
 
 
 class AuditoriaAuto(models.Model):
@@ -251,8 +181,6 @@ class AuditoriaAuto(models.Model):
     class Meta:
         db_table = "pt_pistas_auditaria_auto"
         ordering = ['ciclo']
-        verbose_name = 'Auditoria Evaluación'
-        verbose_name_plural = 'Auditorias Evaluaciones'
 
 
 class AuditoriaCoe(models.Model):
@@ -267,32 +195,6 @@ class AuditoriaCoe(models.Model):
 
     class Meta:
         db_table = "pt_pistas_auditaria_coe"
-        verbose_name = 'Auditoria Co-Evaluación'
-        verbose_name_plural = 'Auditorias Co-Evaluaciones'
-
-
-class ResultadoProceso(models.Model):
-    cycle_id = models.ForeignKey(Ciclo, null=False, blank=False, on_delete=models.CASCADE, db_column='ciclo')
-    user_id = models.ForeignKey(Docente, null=False, blank=False, on_delete=models.CASCADE, db_column='docente')
-    coe_id = models.CharField(max_length=10, null=True, blank=True, db_column='coevaluador')
-    auto_result_Tic = models.DecimalField(max_digits=4, decimal_places=2, default=0)
-    auto_result_Did = models.DecimalField(max_digits=4, decimal_places=2, default=0)
-    auto_result_Ped = models.DecimalField(max_digits=4, decimal_places=2, default=0)
-    Total_Proceso_Auto = models.DecimalField(max_digits=4, decimal_places=2, default=0)
-    coe_result_Tic = models.DecimalField(max_digits=4, decimal_places=2, default=0)
-    coe_result_Did = models.DecimalField(max_digits=4, decimal_places=2, default=0)
-    coe_result_Ped = models.DecimalField(max_digits=4, decimal_places=2, default=0)
-    Total_Proceso_Coe = models.DecimalField(max_digits=4, decimal_places=2, default=0)
-    Total_Proceso = models.DecimalField(max_digits=4, decimal_places=2, default=0)
-    date_created = models.DateTimeField(db_column='fecha_creacion', auto_now_add=True,
-                                        help_text='Registra la fecha de creación de un valor')
-    updated_at = models.DateTimeField(db_column='fecha_edicion', auto_now=True,
-                                      help_text='Registra la fecha de creación de un valor')
-
-    class Meta:
-        db_table = "pt_resultado_proceso"
-        verbose_name = 'Resultado Proceso'
-        verbose_name_plural = 'Resultados Procesos'
 
 
 class Parametro(models.Model):
@@ -310,8 +212,6 @@ class Parametro(models.Model):
     class Meta:
         db_table = "pt_parametro"
         ordering = ['name']
-        verbose_name = 'Parametro'
-        verbose_name_plural = 'Parametros'
 
 
 class ParametrosGeneral(models.Model):
@@ -330,12 +230,10 @@ class ParametrosGeneral(models.Model):
 
     class Meta:
         db_table = "pt_parametro_general"
-        verbose_name = 'Parametro_General'
-        verbose_name_plural = 'Parametros_Generales'
 
 
 class Pregunta(models.Model):
-    title = models.CharField(max_length=255, db_column='titulo', help_text='registra el titulo de la pregunta')
+    title = models.CharField(max_length=1000, db_column='titulo', help_text='registra el titulo de la pregunta')
     description = models.CharField(db_column='description', max_length=255,
                                    help_text='registra la descripción de la pregunta')
     category = models.ForeignKey(Categoria, db_column='categoria', null=False, blank=False, on_delete=models.CASCADE)
@@ -356,26 +254,22 @@ class Pregunta(models.Model):
     class Meta:
         db_table = "pt_pregunta"
         ordering = ['title']
-        verbose_name = 'Pregunta'
-        verbose_name_plural = 'Preguntas'
 
 
 class Respuesta(models.Model):
-    teacher = models.ForeignKey(Docente, db_column='docente', null=False, blank=False, on_delete=models.CASCADE)
+    teacher = models.IntegerField(db_column='docente', null=False, blank=False)
     cycle = models.IntegerField(db_column='ciclo', null=False, blank=False)
-    auto_evaluated = models.BooleanField(db_column='auto_evaluacion', default=False)
-    co_evaluator = models.CharField(max_length=10, db_column='co_evaluador', null=True, blank=True, )
+    type_evaluation = models.IntegerField(db_column='typo_evaluacion')
     date_created = models.DateTimeField(auto_now_add=True, db_column='fecha_creacion',
                                         help_text='Registra la fecha de creación de un valor')
 
     class Meta:
         db_table = "pt_respuesta"
-        verbose_name = 'Respuesta'
-        verbose_name_plural = 'Respuestas'
 
 
 class DetalleRespuesta(models.Model):
     answer = models.ForeignKey(Respuesta, db_column='respuesta', null=False, blank=False, on_delete=models.CASCADE)
+    category = models.IntegerField(db_column='categoria', null=False, blank=False)
     question = models.IntegerField(db_column='pregunta', null=False, blank=False)
     parameter = models.IntegerField(db_column='indicador', null=False, blank=False)
     date_created = models.DateTimeField(auto_now_add=True, db_column='fecha_creacion',
@@ -383,4 +277,26 @@ class DetalleRespuesta(models.Model):
 
     class Meta:
         db_table = "pt_detalle_respuesta"
-        verbose_name = 'Respuesta Detalle'
+
+
+class ResultadoProceso(models.Model):
+    answer = models.ForeignKey(Respuesta, db_column='respuesta', null=False, blank=False, on_delete=models.CASCADE)
+    cycle = models.IntegerField(null=False, blank=False, db_column='ciclo')
+    user = models.IntegerField(null=False, blank=False, db_column='docente')
+    coevaluator = models.CharField(max_length=10, null=True, blank=True, db_column='coevaluador')
+    auto_result_Tic = models.DecimalField(max_digits=4, decimal_places=2, default=0)
+    auto_result_Did = models.DecimalField(max_digits=4, decimal_places=2, default=0)
+    auto_result_Ped = models.DecimalField(max_digits=4, decimal_places=2, default=0)
+    Total_Proceso_Auto = models.DecimalField(max_digits=4, decimal_places=2, default=0)
+    coe_result_Tic = models.DecimalField(max_digits=4, decimal_places=2, default=0)
+    coe_result_Did = models.DecimalField(max_digits=4, decimal_places=2, default=0)
+    coe_result_Ped = models.DecimalField(max_digits=4, decimal_places=2, default=0)
+    Total_Proceso_Coe = models.DecimalField(max_digits=4, decimal_places=2, default=0)
+    Total_Proceso = models.DecimalField(max_digits=4, decimal_places=2, default=0)
+    date_created = models.DateTimeField(db_column='fecha_creacion', auto_now_add=True,
+                                        help_text='Registra la fecha de creación de un valor')
+    updated_at = models.DateTimeField(db_column='fecha_edicion', auto_now=True,
+                                      help_text='Registra la fecha de creación de un valor')
+
+    class Meta:
+        db_table = "pt_resultado_proceso"

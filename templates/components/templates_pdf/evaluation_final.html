@@ -9,10 +9,10 @@
     <h2>Subject: {{course}} <h2>
     {%for question in questions %}
         <section>
-            <h4>Question: {{question}}</h4>
+            <h4>Question: {{question.question}}</h4>
             <ol>
-                {%for choice in choices%}            
-                <li><p>{{choice}}</p></li>
+                {%for choice in question.choices%}            
+                <li><p>{{choice.description}}</p></li>
                 {%endfor%}
             </ol>
         </section>

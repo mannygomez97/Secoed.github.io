@@ -5,19 +5,23 @@
 {% block cols %}
     <th>N°</th>
     <th>Nombre</th>
+    <th>Docente</th>
     <th>Acción</th>
 {% endblock %}
 <!--Filas de la tabla-->
 {% block filas %}
-    {% for item in object_list %}
+    {% for area in object_list %}
         <tr>
-            <td>{{ item.id }}</td>
-            <td>{{ item.name }}</td>
+            <td>{{ area.id }}</td>
+            <td>{{ area.name }}</td>
             <td>
-                <button onclick="openModal('{% url 'eva:update-area' item.pk %}', 'updateModal')" class="rounded-circle btn btn-outline-secondary btn-sm edit" title="Editar">
+                {{ area.docente}}
+            </td>
+            <td>
+                <button onclick="openModal('{% url 'eva:update-area' area.pk %}', 'updateModal')" class="rounded-circle btn btn-outline-secondary btn-sm edit" title="Editar">
                     <i class="fas fa-pencil-alt"></i>
                 </button>
-                <button onclick="confirmDelete('{% url 'eva:delete-area' item.pk %}')" class="rounded-circle btn btn-outline-danger btn-sm trash" title="Borrar">
+                <button onclick="confirmDelete('{% url 'eva:delete-area' area.pk %}')" class="rounded-circle btn btn-outline-danger btn-sm trash" title="Borrar">
                     <i class="fas fa-trash"></i>
                 </button>
                 {% csrf_token %}

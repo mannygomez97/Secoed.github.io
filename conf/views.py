@@ -45,6 +45,15 @@ class MenuContentView(View):
     def editMenu(request, pk):
         menu = get_object_or_404(Menu, pk=pk)
         if request.method == 'POST':
+            ##editarField
+            request.POST._mutable = True
+            request.POST['descripcion'] = request.POST['descripcion'].capitalize()
+            print(request.POST['descripcion'])
+            request.POST['key'] = request.POST['descripcion'].replace(" ", "_").lower() + "_" + request.POST['orden']
+            if request.POST['modulo_id'] and request.POST['parent_id']:
+                request.POST['modulo_id'] = ''
+            request.POST._mutable = False
+            # endEditarField
             form = MenuForm(request.POST, instance=menu)
             if form.is_valid():
                 form.save()

@@ -1,0 +1,18 @@
+{% extends 'parciales/list_process.html' %}
+{% block cols %}
+    <th>N°</th>
+    <th>Nombre</th>
+    <th>Titulo</th>
+{% endblock %}
+<!--Filas de la tabla-->
+{% block rows %}
+    {% for docente in object_list %}
+        <tr>
+            <td>{{ docente.id }}</td>
+            <td>
+                 <a href="{% url 'eva:create-coevaluation' %}?docente={{ docente.pk }}" >{{ docente.user }}</a>
+            </td>
+            <td>{{ docente.title }}</td>
+        </tr>
+    {% endfor %}
+ {% endblock %}

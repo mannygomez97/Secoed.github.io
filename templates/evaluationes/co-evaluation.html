@@ -1,7 +1,0 @@
-{% extends 'parciales/evaluacion.html' %}
-{% block id_error %}error_co_evaluate{% endblock %}
-{% block form_name %}form_co_evaluation {% endblock %}
-{% block action %}{% url 'eva:co-evaluation' %}{% endblock %}
-{% block btn_evaluation %}
-    <input id="btn_co_evaluate" type="button" onclick="ajaxRequest('form_co_evaluation', 'error_co_evaluate', 'btn_co_evaluate')" class="btn btn-success mt-3 mt-lg-0 input-aling-right" value="Guardar">
-{% endblock %}

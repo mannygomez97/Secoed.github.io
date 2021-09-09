@@ -1,3 +1,4 @@
-from django.contrib import admin
-
-# Register your models here.
+# from conf.models import Menu, Modulo
+# @admin.register(Menu)
+# class Menu(ImportExportModelAdmin):
+#     exclude=('parent_id','href')

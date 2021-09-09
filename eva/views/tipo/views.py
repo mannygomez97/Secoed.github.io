@@ -6,50 +6,65 @@ from eva.forms import TipoForm
 from django.http import JsonResponse
 
 
-class TipoListView(ListView):
+class TypeListView(ListView):
     model = Tipo
     template_name = 'tipo/list.html'
     success_url = reverse_lazy('eva:list-type')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['heading'] = 'Tipos'
+        context['entity'] = 'Tipos'
         context['create_url'] = reverse_lazy('eva:create-type')
+        context['url_list'] = reverse_lazy('eva:list-type')
         return context
 
 
-class TipoCreateView(CreateView):
+class TypeCreateView(CreateView):
     model = Tipo
     form_class = TipoForm
     template_name = "tipo/create.html"
     success_url = reverse_lazy('eva:list-type')
-
+    
     def post(self, request, *args, **kwargs):
-        if request.is_ajax():
-            form = self.form_class(request.POST)
-            if form.is_valid():
-                form.save()
-                message = f'{self.model.__name__} registrado correctamente'
-                error = 'No han ocurrido errores'
-                response = JsonResponse({'message': message, 'error': error})
-                response.status_code = 201
-                return response
-            else:
-                message = f'{self.model.__name__} no se pudo registrar!'
-                error = form.errors
-                response = JsonResponse({'message': message, 'error': error})
-                response.status_code = 400
-                return response
+        data = {}
+        try:
+            if request.is_ajax():
+                form = self.form_class(request.POST)
+                if form.is_valid():
+                    form.save()
+                    message = f'{self.model.__name__} registrada correctamente'
+                    error = 'No han ocurrido errores'
+                    response = JsonResponse({'message': message, 'error': error})
+                    response.status_code = 201
+                    return response
+                else:
+                    message = f'{self.model.__name__} no se pudo registrar!'
+                    error = form.errors
+                    response = JsonResponse({'message': message, 'error': error})
+                    response.status_code = 400
+                    return response
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data)
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Creación de Tipo'
+        context['action'] = 'add'
+        context['list_url'] = reverse_lazy('eva:list-type')
+        return context
+    
 
-class TipoUpdateView(UpdateView):
+class TypeUpdateView(UpdateView):
     model = Tipo
     form_class = TipoForm
     template_name = "tipo/update.html"
     success_url = reverse_lazy('eva:list-type')
 
     def post(self, request, *args, **kwargs):
-        if request.is_ajax():
+        data = {}
+        try:
+           if request.is_ajax():
             form = self.form_class(request.POST, instance=self.get_object())
             if form.is_valid():
                 form.save()
@@ -64,9 +79,19 @@ class TipoUpdateView(UpdateView):
                 response = JsonResponse({'message': message, 'error': error})
                 response.status_code = 400
                 return response
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Actualizar Tipo'
+        context['action'] = 'edit'
+        context['list_url'] = reverse_lazy('eva:list-type')
+        return context
 
 
-class TipoDeleteView(DeleteView):
+class TypeDeleteView(DeleteView):
     model = Tipo
     success_url = reverse_lazy('eva:list-type')
 
@@ -74,7 +99,7 @@ class TipoDeleteView(DeleteView):
         if request.is_ajax():
             type = self.get_object()
             type.delete()
-            message = f'{self.model.__name__} eliminado correctamente!'
+            message = f'{self.model.__name__} eliminada correctamente!'
             errors = 'No se encontraron errores'
             response = JsonResponse({'message': message, 'error': errors})
             response.status_code = 201

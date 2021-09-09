@@ -6,50 +6,65 @@ from eva.forms import ParametrosGeneralForm
 from django.http import JsonResponse
 
 
-class ParametrosGeneralListView(ListView):
+class ParameterGrlListView(ListView):
     model = ParametrosGeneral
     template_name = 'parametro/values/list.html'
     success_url = reverse_lazy('eva:list-parameter-grl')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['heading'] = 'Parámetros Generales'
+        context['entity'] = 'Parámetros Generales'
         context['create_url'] = reverse_lazy('eva:create-parameter-grl')
+        context['url_list'] = reverse_lazy('eva:list-parameter-grl')
         return context
 
 
-class ParametrosGeneralCreateView(CreateView):
+class ParameterGrlCreateView(CreateView):
     model = ParametrosGeneral
     form_class = ParametrosGeneralForm
     template_name = "parametro/values/create.html"
     success_url = reverse_lazy('eva:list-parameter-grl')
-
+    
     def post(self, request, *args, **kwargs):
-        if request.is_ajax():
-            form = self.form_class(request.POST)
-            if form.is_valid():
-                form.save()
-                message = f'{self.model.__name__} registrado correctamente'
-                error = 'No han ocurrido errores'
-                response = JsonResponse({'message': message, 'error': error})
-                response.status_code = 201
-                return response
-            else:
-                message = f'{self.model.__name__} no se pudo registrar!'
-                error = form.errors
-                response = JsonResponse({'message': message, 'error': error})
-                response.status_code = 400
-                return response
+        data = {}
+        try:
+            if request.is_ajax():
+                form = self.form_class(request.POST)
+                if form.is_valid():
+                    form.save()
+                    message = f'{self.model.__name__} registrado correctamente'
+                    error = 'No han ocurrido errores'
+                    response = JsonResponse({'message': message, 'error': error})
+                    response.status_code = 201
+                    return response
+                else:
+                    message = f'{self.model.__name__} no se pudo registrar!'
+                    error = form.errors
+                    response = JsonResponse({'message': message, 'error': error})
+                    response.status_code = 400
+                    return response
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data)
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Creación de Tipo'
+        context['action'] = 'add'
+        context['list_url'] = reverse_lazy('eva:list-parameter-grl')
+        return context
+    
 
-class ParametrosGeneralUpdateView(UpdateView):
+class ParameterGrlUpdateView(UpdateView):
     model = ParametrosGeneral
     form_class = ParametrosGeneralForm
     template_name = "parametro/values/update.html"
     success_url = reverse_lazy('eva:list-parameter-grl')
 
     def post(self, request, *args, **kwargs):
-        if request.is_ajax():
+        data = {}
+        try:
+           if request.is_ajax():
             form = self.form_class(request.POST, instance=self.get_object())
             if form.is_valid():
                 form.save()
@@ -64,9 +79,19 @@ class ParametrosGeneralUpdateView(UpdateView):
                 response = JsonResponse({'message': message, 'error': error})
                 response.status_code = 400
                 return response
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Actualizar Tipo'
+        context['action'] = 'edit'
+        context['list_url'] = reverse_lazy('eva:list-parameter-grl')
+        return context
 
 
-class ParametrosGeneralDeleteView(DeleteView):
+class ParameterGrlDeleteView(DeleteView):
     model = ParametrosGeneral
     success_url = reverse_lazy('eva:list-parameter-grl')
 

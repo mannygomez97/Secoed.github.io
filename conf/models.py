@@ -17,7 +17,7 @@ class Modulo(models.Model):
 
 
 class Menu(models.Model):
-    id = models.AutoField(primary_key=True)
+    id = models.AutoField(primary_key=True,default=57)
     descripcion = models.TextField(max_length=1000)
     orden = models.IntegerField(default=0)
     icon = models.TextField(max_length=1000, null=True)

@@ -58,6 +58,6 @@ urlpatterns = [
     path('listado-Asesor', views.listadoAsesores.as_view(), name = 'listadoAsesores'),
 
     path('actividades', views.actividades.as_view(), name = 'actividades'),
-
-
+    path('historial/evaluation', views.historialEvaluations, name = 'historialEvaluations'),
+    path('historial/evaluation/<int:id>', views.historialEvaluation, name = 'historialEvaluation'),
 ]

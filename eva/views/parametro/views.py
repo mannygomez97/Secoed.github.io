@@ -6,50 +6,65 @@ from eva.forms import ParametroForm
 from django.http import JsonResponse
 
 
-class ParametroListView(ListView):
+class ParameterListView(ListView):
     model = Parametro
     template_name = 'parametro/list.html'
     success_url = reverse_lazy('eva:list-parameter')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['heading'] = 'Parámetro'
+        context['entity'] = 'Parámetro'
         context['create_url'] = reverse_lazy('eva:create-parameter')
+        context['url_list'] = reverse_lazy('eva:list-parameter')
         return context
 
 
-class ParametroCreateView(CreateView):
+class ParameterCreateView(CreateView):
     model = Parametro
     form_class = ParametroForm
     template_name = "parametro/create.html"
     success_url = reverse_lazy('eva:list-parameter')
-
+    
     def post(self, request, *args, **kwargs):
-        if request.is_ajax():
-            form = self.form_class(request.POST)
-            if form.is_valid():
-                form.save()
-                message = f'{self.model.__name__} registrado correctamente'
-                error = 'No han ocurrido errores'
-                response = JsonResponse({'message': message, 'error': error})
-                response.status_code = 201
-                return response
-            else:
-                message = f'{self.model.__name__} no se pudo registrar!'
-                error = form.errors
-                response = JsonResponse({'message': message, 'error': error})
-                response.status_code = 400
-                return response
+        data = {}
+        try:
+            if request.is_ajax():
+                form = self.form_class(request.POST)
+                if form.is_valid():
+                    form.save()
+                    message = f'{self.model.__name__} registrado correctamente'
+                    error = 'No han ocurrido errores'
+                    response = JsonResponse({'message': message, 'error': error})
+                    response.status_code = 201
+                    return response
+                else:
+                    message = f'{self.model.__name__} no se pudo registrar!'
+                    error = form.errors
+                    response = JsonResponse({'message': message, 'error': error})
+                    response.status_code = 400
+                    return response
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data)
 
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Creación de Parámetro'
+        context['action'] = 'add'
+        context['list_url'] = reverse_lazy('eva:list-parameter')
+        return context
+    
 
-class ParametroUpdateView(UpdateView):
+class ParameterUpdateView(UpdateView):
     model = Parametro
     form_class = ParametroForm
     template_name = "parametro/update.html"
     success_url = reverse_lazy('eva:list-parameter')
 
     def post(self, request, *args, **kwargs):
-        if request.is_ajax():
+        data = {}
+        try:
+           if request.is_ajax():
             form = self.form_class(request.POST, instance=self.get_object())
             if form.is_valid():
                 form.save()
@@ -64,9 +79,19 @@ class ParametroUpdateView(UpdateView):
                 response = JsonResponse({'message': message, 'error': error})
                 response.status_code = 400
                 return response
+        except Exception as e:
+            data['error'] = str(e)
+        return JsonResponse(data)
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['title'] = 'Actualizar Parámetro'
+        context['action'] = 'edit'
+        context['list_url'] = reverse_lazy('eva:list-parameter')
+        return context
 
 
-class ParametroDeleteView(DeleteView):
+class ParameterDeleteView(DeleteView):
     model = Parametro
     success_url = reverse_lazy('eva:list-parameter')
 

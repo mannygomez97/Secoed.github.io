@@ -2,7 +2,7 @@
 
 {% block btn_creacion %}
 <div class="mb-2">
-    <button class="rounded-circle btn btn-outline-info" new-register type="button" onclick="openModal('{% url 'eva:create-preguntas' %}', 'createModal')" title="Nuevo registro: {{ entity }}" >
+    <button class="rounded-circle btn btn-outline-info" new-register type="button" onclick="openModal('{% url 'eva:create-questions' %}', 'createModal')" title="Nuevo registro: {{ entity }}" >
         <i class="fas fa-user-plus"></i>
     </button>
 </div>
@@ -10,7 +10,7 @@
 
 {% block cols %}
     <th>N°</th>
-    <th>Nombre</th>
+    <th>Título</th>
     <th>Acción</th>
 {% endblock %}
 
@@ -20,10 +20,10 @@
             <td>{{ item.id }}</td>
             <td>{{ item.title }}</td>
             <td>
-                <button onclick="openModal('{% url 'eva:update-preguntas' item.pk %}', 'updateModal')" class="rounded-circle btn btn-outline-secondary btn-sm edit" title="Editar">
+                <button onclick="openModal('{% url 'eva:update-questions' item.pk %}', 'updateModal')" class="rounded-circle btn btn-outline-secondary btn-sm edit" title="Editar">
                     <i class="fas fa-pencil-alt"></i>
                 </button>
-                <button onclick="confirmDelete('{% url 'eva:delete-preguntas' item.pk %}')" class="rounded-circle btn btn-outline-danger btn-sm trash" title="Borrar">
+                <button onclick="confirmDelete('{% url 'eva:delete-questions' item.pk %}')" class="rounded-circle btn btn-outline-danger btn-sm trash" title="Borrar">
                     <i class="fas fa-trash"></i>
                 </button>
                 {% csrf_token %}

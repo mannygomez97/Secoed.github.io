@@ -5,6 +5,7 @@
 {% block cols %}
     <th>N°</th>
     <th>Nombre</th>
+    <th>Docente</th>
     <th>Acción</th>
 {% endblock %}
 <!--Filas de la tabla-->
@@ -13,6 +14,7 @@
         <tr>
             <td>{{ item.id }}</td>
             <td>{{ item.name }}</td>
+            <td>{{ item.teacher }}</td>
             <td>
                 <button onclick="openModal('{% url 'eva:update-matter' item.pk %}', 'updateModal')" class="rounded-circle btn btn-outline-secondary btn-sm edit" title="Editar">
                     <i class="fas fa-pencil-alt"></i>

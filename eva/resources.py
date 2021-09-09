@@ -6,4 +6,4 @@ class PreguntasResources(resources.ModelResource):
     class Meta:
         model = Pregunta
         exclude = ('id',)
-        fields = ('title', 'description', 'categoria', 'type')
+        fields = ('title', 'description', 'category', 'type')

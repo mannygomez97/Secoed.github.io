@@ -7,30 +7,29 @@
 {% block extra_css %}
         <link href="{% static 'libs/bootstrap-touchspin/jquery.bootstrap-touchspin.min.css' %}" rel="stylesheet" type="text/css" />
         <link href="{% static 'libs/admin-resources/rwd-table/rwd-table.min.css' %}" rel="stylesheet" type="text/css" />
-        <link href="{% static 'css/eva.css' %}" rel="stylesheet" type="text/css" />
 {% endblock %}
 {% block contents %}
 
-{% if ciclo.is_active %}
-    {% if comprobacion %}
-        <div class="">
+{% if cycle.is_active %}
+    {% if verification %}
+        <div class="card">
             <header class="title">
-                <div class="col-title" style="alignment: center">
-                    <h1>{{ tipo_evaluacion }}</h1>
-                    <h4>Ciclo: {{ ciclo }}</h4>
+                <div class="col-title" style="text-align: center">
+                    <h1>{{ type_evaluation }}</h1>
+                    <h4>Ciclo: {{ cycle }}</h4>
                 </div>
             </header>
-            <body>
+            <div class="card-body">
                 <input type="hidden" name="action" value="add" />
                 <div id="{% block id_error %}{% endblock %}"></div>
-                <form id="form_auto_evaluacion" action="{% url 'eva:auto-evaluation' %}"  method="POST">
+                <form id="form_evaluacion" action="{%block action %}{% endblock %}"  method="POST">
                     {% csrf_token %}
                     <section class="intro first">
                         <p>Buenos días,</p>
                         <p>Por favor, dedique unos minutos de su tiempo para rellenar el siguiente cuestionario.</p>
                     </section>
                     <section class="intro first">
-                        <H2 style="alignment: center">Tabla de Valoración</H2>
+                        <H2 style="text-align: center">Tabla de Valoración</H2>
                     </section>
                     <table class="table table-striped jambo_table bulk_action">
                         <thead>
@@ -57,25 +56,28 @@
                                 <th>3</th>
                                 <th>4</th>
                             </tr>
-                            {% block preguntas %}
+                            {% block questions %}
 
                             {% endblock %}
                         </tbody>
                     </table>
-                    <input type="hidden" name="user_id" id="user" value="{{ user.id }}" />
-                    <input type="hidden" name="cycle_id" id="cycle" value="{{ ciclo.id }}" />
-                    <input type="hidden" name="list" id="cycle_id" value="{{ list_url }}" />
+                    <input type="hidden" name="type" value="{{ type }}">
+                    <input type="hidden" name="user" value="{{ user.id }}" />
+                    <input type="hidden" name="cycle"  value="{{ cycle.id }}" />
+                    <input type="hidden" name="dashboard"  value="{% url 'dashboard' %}" />
                     <table class="table table-bordered rwd_auto">
                         <tr>
                             <td colspan="8">
-                                {% block btn_evaluation %}
+                                <div class="boton-eva" style="text-align: right">
+                                    {% block btn_evaluation %}
 
-                                {% endblock %}
+                                    {% endblock %}
+                                </div>
                             </td>
                         </tr>
                     </table>
                 </form>
-            </body>
+            </div>
         </div>
     {% else %}
         <div class="x_panel">

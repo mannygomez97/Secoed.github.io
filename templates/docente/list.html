@@ -1,10 +1,11 @@
 {% extends 'parciales/list.html' %}
-{%block url_app %}{% url 'eva:create-teachers' %}{% endblock %}
+{%block url_app %}{% url 'eva:create-teacher' %}{% endblock %}
 {%block icono %} fas fa-plus {% endblock %}
 {% block cols %}
     <th>N°</th>
     <th>Nombre</th>
     <th>Identificación</th>
+    <th>Titulo</th>
     <th>Acción</th>
 {% endblock %}
 
@@ -12,13 +13,14 @@
     {% for item in object_list %}
         <tr>
             <td>{{ item.id }}</td>
-            <td>{{ item.first_name }} {{ item.last_name }}</td>
-            <td>{{ item.identify }}</td>
+            <td>{{ item.user.nombres }} {{ item.user.apellidos }}</td>
+            <td>{{ item.user.identificacion }}</td>
+            <td>{{ item.title }}</td>
             <td>
-                <button onclick="openModal('{% url 'eva:update-teachers' item.pk %}', 'updateModal')" class="rounded-circle btn btn-outline-secondary btn-sm edit" title="Editar">
+                <button onclick="openModal('{% url 'eva:update-teacher' item.pk %}', 'updateModal')" class="rounded-circle btn btn-outline-secondary btn-sm edit" title="Editar">
                     <i class="fas fa-pencil-alt"></i>
                 </button>
-                <button onclick="confirmDelete('{% url 'eva:delete-teachers' item.pk %}')" class="rounded-circle btn btn-outline-danger btn-sm trash" title="Borrar">
+                <button onclick="confirmDelete('{% url 'eva:delete-teacher' item.pk %}')" class="rounded-circle btn btn-outline-danger btn-sm trash" title="Borrar">
                     <i class="fas fa-trash"></i>
                 </button>
                 {% csrf_token %}

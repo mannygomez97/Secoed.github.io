@@ -1,7 +1,5 @@
-from django.contrib.auth import password_validation
-from django.contrib.auth.forms import UserCreationForm, UserChangeForm, PasswordChangeForm
-from django.contrib.auth.models import UserManager, AbstractUser
 from django.forms import *
+
 from eva.models import *
 
 
@@ -13,167 +11,43 @@ class DocenteForm(ModelForm):
 
     class Meta:
         model = Docente
-        fields = '__all__'
+        fields = ['user', 'title', 'type_contract', 'dedication', 'position', 'is_evaluator']
 
         labels = {
             'user': 'Usuario',
-            'name': 'Nombres',
-            'identify': 'Cédula de Identidad',
-            'address': 'Dirección',
-            'image': 'Foto Perfil',
-            'is_evaluator': 'Es Evaluador',
+            'title': 'Titulo',
+            'type_contract': 'Tipo de Contrato',
+            'dedication': 'Dedicación',
+            'position': 'Cargo',
+            'is_evaluator': 'Es Evaluador'
         }
 
         widgets = {
             'user': Select(attrs={'class': 'form-control'}),
-            'name': TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre del docente'}),
-            'identify': TextInput(attrs={'class': 'form-control', 'placeholder': 'Cédula de ciudadanía'}),
-            'address': TextInput(attrs={'class': 'form-control', 'placeholder': 'Dirección domiciliaría'}),
-            'image': TextInput(attrs={'class': 'form-control', 'placeholder': 'Foto de perfil'}),
-            'is_evaluator': CheckboxInput(attrs={'class': 'form-check-input'}),
+            'title': TextInput(attrs={'class': 'form-control', 'placeholder': 'Titulo Profesional'}),
+            'type_contract': Select(attrs={'class': 'form-control', 'placeholder': 'Tipo de Contrato'}),
+            'dedication': Select(attrs={'class': 'form-control', 'placeholder': 'Tiempo de dedicación'}),
+            'position': Select(attrs={'class': 'form-control', 'placeholder': 'Cargo del docente'}),
+            'is_evaluator': CheckboxInput(attrs={'class': 'form-check-radio'})
         }
-
-    def save(self, commit=True):
-        data = {}
-        form = super()
-        try:
-            if form.is_valid():
-                form.save()
-            else:
-                data['error'] = form.errors
-        except Exception as e:
-            data['error'] = str(e)
-        return data
-
-
-class UniversidadForm(ModelForm):
-
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['name'].widget.attrs['autofocus'] = True
-
-    class Meta:
-        model = Universidad
-        fields = ['name']
-
-        widgets = {
-            'name': TextInput(
-                attrs={
-                    'class': 'form-control',
-                    'placeholder': 'Nombre institución académica'
-                }
-            )
-        }
-
-    def save(self, commit=True):
-        data = {}
-        form = super()
-        try:
-            if form.is_valid():
-                form.save()
-            else:
-                data['error'] = form.errors
-        except Exception as e:
-            data['error'] = str(e)
-        return data
-
-
-class FacultadForm(ModelForm):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['university'].empty_label = 'Seleccione un institución académica'
-        self.fields['university'].widget.attrs['autofocus'] = True
-
-    class Meta:
-        model = Facultad
-        fields = ['university', 'name']
-
-        widgets = {
-            'university': Select(
-                attrs={
-                    'class': 'form-select'
-                }
-            ),
-            'name': TextInput(
-                attrs={
-                    'class': 'form-control',
-                    'placeholder': 'Nombre de la facultad'
-                }
-            )
-        }
-
-    def save(self, commit=True):
-        data = {}
-        form = super()
-        try:
-            if form.is_valid():
-                form.save()
-            else:
-                data['error'] = form.errors
-        except Exception as e:
-            data['error'] = str(e)
-        return data
-
-
-class CarreraForm(ModelForm):
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['schoolOf'].empty_label = 'Seleccione una facultad'
-        self.fields['schoolOf'].widget.attrs['autofocus'] = True
-
-    class Meta:
-        model = Carrera
-        fields = '__all__'
-
-        widgets = {
-            'schoolOf': Select(
-                attrs={
-                    'class': 'form-select'
-                }
-            ),
-            'name': TextInput(
-                attrs={
-                    'class': 'form-control',
-                    'placeholder': 'Nombre de la carrera'
-                }
-            )
-        }
-
-    def save(self, commit=True):
-        data = {}
-        form = super()
-        try:
-            if form.is_valid():
-                form.save()
-            else:
-                data['error'] = form.errors
-        except Exception as e:
-            data['error'] = str(e)
-        return data
 
 
 class MateriaForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['career'].empty_label = 'Seleccione una Carrera'
-        self.fields['career'].widget.attrs['autofocus'] = True
+        self.fields['teacher'].empty_label = 'Seleccione un docente'
+        self.fields['teacher'].queryset = Docente.objects.filter(is_evaluator=False)
+        self.fields['area'].empty_label = 'Seleccione una Carrera'
+        self.fields['area'].widget.attrs['autofocus'] = True
 
     class Meta:
         model = Materia
-        fields = ['career', 'name']
+        fields = ['area', 'teacher', 'name']
 
         widgets = {
-            'career': Select(
-                attrs={
-                    'class': 'form-select'
-                }
-            ),
-            'name': TextInput(
-                attrs={
-                    'class': 'form-control',
-                    'placeholder': 'Nombre de la materia'
-                }
-            )
+            'area': Select(attrs={'class': 'form-select select2-templating'}),
+            'teacher': Select(attrs={'class': 'form-select select2-templating'}),
+            'name': TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre de la materia'})
         }
 
     def save(self, commit=True):
@@ -199,17 +73,8 @@ class CicloForm(ModelForm):
         fields = '__all__'
 
         widgets = {
-            'name': TextInput(
-                attrs={
-                    'class': 'form-control',
-                    'placeholder': 'Nombre del ciclo ejemplo: C1-2021'
-                }
-            ),
-            'ciclo_activo': CheckboxInput(
-                attrs={
-                    'class': 'form-check-input'
-                }
-            )
+            'name': TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre del ciclo ejemplo: C1-2021'}),
+            'ciclo_activo': CheckboxInput(attrs={'class': 'form-check-input'})
         }
 
     def save(self, commit=True):
@@ -235,12 +100,7 @@ class CategoriaForm(ModelForm):
         fields = '__all__'
 
         widgets = {
-            'name': TextInput(
-                attrs={
-                    'class': 'form-control',
-                    'placeholder': 'Nombre de la categoria'
-                }
-            )
+            'name': TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre de la categoria'})
         }
 
     def save(self, commit=True):
@@ -266,12 +126,7 @@ class TipoForm(ModelForm):
         fields = '__all__'
 
         widgets = {
-            'name': TextInput(
-                attrs={
-                    'class': 'form-control',
-                    'placeholder': 'Defina aquí el tipo'
-                }
-            )
+            'name': TextInput(attrs={'class': 'form-control', 'placeholder': 'Defina aquí el tipo'})
         }
 
     def save(self, commit=True):
@@ -296,35 +151,25 @@ class PreguntaForm(ModelForm):
         model = Pregunta
         fields = '__all__'
 
+        labels = {
+            'category': 'Categoria',
+            'title': 'Título',
+            'description': 'Descripción',
+            'type': 'Tipo'
+        }
+
         widgets = {
-            'category': Select(
-                attrs={
-                    'class': 'form-select'
-                }
-            ),
-            'title': TextInput(
-                attrs={
-                    'class': 'form-control',
-                    'placeholder': 'Aquí un título para la pregunta'
-                }
-            ),
-            'description': TextInput(
-                attrs={
-                    'class': 'form-control',
-                    'placeholder': 'Descripción de la pregunta'
-                }
-            ),
-            'type': Select(
-                attrs={
-                    'class': 'form-control select2',
-                }
-            )
+            'category': Select(attrs={'class': 'form-select'}),
+            'title': TextInput(attrs={'class': 'form-control', 'placeholder': 'Aquí un título para la pregunta'}),
+            'description': TextInput(attrs={'class': 'form-control', 'placeholder': 'Descripción de la pregunta'}),
+            'type': Select(attrs={'class': 'form-control select2'})
         }
 
 
-class AreaConocimientoForm(ModelForm):
+class AreasConocimientoForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
+        self.fields['docente'].queryset = Docente.objects.filter(is_evaluator=True)
         self.fields['career'].empty_label = 'Seleccione una carrera'
         self.fields['name'].widget.attrs['autofocus'] = True
 
@@ -332,48 +177,25 @@ class AreaConocimientoForm(ModelForm):
         model = AreasConocimiento
         fields = '__all__'
 
-        labels = {
-            'name': 'Nombre',
-            'career': 'Carrera',
-            'docente': 'Docente',
-            'materia': 'Materia'
-        }
+        labels = {'name': 'Nombre', 'career': 'Carrera', 'docente': 'Docente', 'materia': 'Materia'}
 
         widgets = {
-            'name': TextInput(
-                attrs={
-                    'class': 'form-control',
-                    'placeholder': 'Aquí nombre del área de conocimiento'
-                }
-            ),
-            'career': Select(
-                attrs={
-                    'class': 'form-select select2'
-                }
-            ),
-            'materia': SelectMultiple(
-                attrs={
-                    'class': 'form-select select2-templating'
-                }
-            ),
-            'docente': SelectMultiple(
-                attrs={
-                    'class': 'form-control select2-templating'
-                }
-            ),
+            'name': TextInput(attrs={'class': 'form-control', 'placeholder': 'Aquí nombre del área de conocimiento'}),
+            'career': Select(attrs={'class': 'form-select select2'}),
+            'docente': Select(attrs={'class': 'form-select select2'}),
         }
 
-    def save(self, commit=True):
-        data = {}
-        form = super()
-        try:
-            if form.is_valid():
-                form.save()
-            else:
-                data['error'] = form.errors
-        except Exception as e:
-            data['error'] = str(e)
-        return data
+    # def save(self, commit=True):
+    #     data = {}
+    #     form = super()
+    #     try:
+    #         if form.is_valid():
+    #             form.save()
+    #         else:
+    #             data['error'] = form.errors
+    #     except Exception as e:
+    #         data['error'] = str(e)
+    #     return data
 
 
 class ParametroForm(ModelForm):
@@ -386,17 +208,8 @@ class ParametroForm(ModelForm):
         fields = '__all__'
 
         widgets = {
-            'name': TextInput(
-                attrs={
-                    'class': 'form-control'
-                }
-            ),
-            'description': TextInput(
-                attrs={
-                    'class': 'form-control',
-                    'placeholder': 'Descripción del parámetro'
-                }
-            )
+            'name': TextInput(attrs={'class': 'form-control'}),
+            'description': TextInput(attrs={'class': 'form-control', 'placeholder': 'Descripción del parámetro'})
         }
 
     def save(self, commit=True):
@@ -428,23 +241,9 @@ class ParametrosGeneralForm(ModelForm):
         }
 
         widgets = {
-            'parameter': Select(
-                attrs={
-                    'class': 'form-select',
-                }
-            ),
-            'code': TextInput(
-                attrs={
-                    'class': 'form-control',
-                    'placeholder': 'Descripción del parámetro'
-                }
-            ),
-            'value': TextInput(
-                attrs={
-                    'class': 'form-control',
-                    'placeholder': '0.00'
-                }
-            )
+            'parameter': Select(attrs={'class': 'form-select'}),
+            'code': TextInput(attrs={'class': 'form-control', 'placeholder': 'Descripción del parámetro'}),
+            'value': TextInput(attrs={'class': 'form-control', 'placeholder': '0.00'})
         }
 
     def save(self, commit=True):
@@ -464,3 +263,21 @@ class RespuestaForm(ModelForm):
     class Meta:
         model = Respuesta
         fields = '__all__'
+
+
+class CoevaluacionForm(ModelForm):
+    class Meta:
+        model = Pregunta
+        fields = ['id']
+
+
+class AutoEvaluacionForm(ModelForm):
+    class Meta:
+        model = Pregunta
+        fields = ['id']
+
+
+class ResultadoProcesoForm(ModelForm):
+    class Meta:
+        model = ResultadoProceso
+        fields = ['coevaluator', 'coe_result_Tic', 'coe_result_Did', 'coe_result_Ped', 'Total_Proceso_Coe', 'Total_Proceso']

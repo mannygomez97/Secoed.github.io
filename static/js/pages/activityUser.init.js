@@ -7,7 +7,7 @@ function solicitar(){
         type:'POST',
         headers:{"X-CSRFToken": csrftoken },
         success:function (data){
-            alert("todo bien "+data['la']);
+
         },error:function(xhr, status, error) {
             var err = + xhr.responseText ;
             alert("error"+err);
