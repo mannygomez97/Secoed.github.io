@@ -8,7 +8,8 @@ def load_menu(request):
     if isinstance(request.user, AnonymousUser):
         return context
     else:
-        modulos  = Modulo.objects.order_by('orden')
+        modulos = Modulo.objects.order_by('orden')
+        setMenus(modulos)
         context['modulo'] = modulos
         return context
 
