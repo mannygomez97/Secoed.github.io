@@ -104,8 +104,8 @@ DATABASES = {
         #DATABASE PRODUCTION
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'db_secoed',
-        'USER': 'postgres',
-        'PASSWORD': 'postgres',
+        'USER': 'secoed',
+        'PASSWORD': 'secoed2021',
         'HOST': 'pgdb',
         'PORT': 5432,
 
