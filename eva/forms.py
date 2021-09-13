@@ -44,6 +44,12 @@ class MateriaForm(ModelForm):
         model = Materia
         fields = ['area', 'teacher', 'name']
 
+        labels = {
+            'area': 'Área',
+            'teacher': 'Docente',
+            'name': 'Nombre Materia',
+        }
+
         widgets = {
             'area': Select(attrs={'class': 'form-select select2-templating'}),
             'teacher': Select(attrs={'class': 'form-select select2-templating'}),
@@ -171,6 +177,7 @@ class AreasConocimientoForm(ModelForm):
         super().__init__(*args, **kwargs)
         self.fields['docente'].queryset = Docente.objects.filter(is_evaluator=True)
         self.fields['career'].empty_label = 'Seleccione una carrera'
+        self.fields['docente'].empty_label = 'Seleccione una docente'
         self.fields['name'].widget.attrs['autofocus'] = True
 
     class Meta:
@@ -207,6 +214,11 @@ class ParametroForm(ModelForm):
         model = Parametro
         fields = '__all__'
 
+        labels = {
+            'name': 'Nombre',
+            'description': 'Descripción'
+        }
+
         widgets = {
             'name': TextInput(attrs={'class': 'form-control'}),
             'description': TextInput(attrs={'class': 'form-control', 'placeholder': 'Descripción del parámetro'})
@@ -237,13 +249,14 @@ class ParametrosGeneralForm(ModelForm):
 
         labels = {
             'parameter': 'Parámetro',
-            'code': 'Código'
+            'code': 'Código',
+            'value': 'Valor',
         }
 
         widgets = {
             'parameter': Select(attrs={'class': 'form-select'}),
             'code': TextInput(attrs={'class': 'form-control', 'placeholder': 'Descripción del parámetro'}),
-            'value': TextInput(attrs={'class': 'form-control', 'placeholder': '0.00'})
+            'value': NumberInput(attrs={'class': 'form-control', 'placeholder': '0.00'})
         }
 
     def save(self, commit=True):

@@ -1,6 +1,8 @@
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.db import models
 
+from conf.models import Rol, RolMoodle
+
 
 class UsuarioManger(BaseUserManager):
     def create_user(self, email, username, nombres, apellidos, identificacion, telefono, password=None):
@@ -44,10 +46,12 @@ class Usuario(AbstractBaseUser):
     telefono = models.CharField('Teléfono', max_length=50)
     usuario_activo = models.BooleanField(default=True)
     usuario_administrador = models.BooleanField(default=False)
-    imagen = models.ImageField('Imagen de perfil', upload_to='perfil/', max_length=200, blank=True, null=True,
+    imagen = models.ImageField('Imagen de perfil', upload_to='user/', max_length=200, blank=False, null=True,
                                height_field=None)
+    roles = models.ManyToManyField(Rol, blank=False, through='RolUser')
+    rol_moodle = models.ForeignKey(RolMoodle, on_delete=models.SET_NULL, null=True)
     objects = UsuarioManger()
-
+    moodle_user = models.IntegerField('Id del usuario de moodle',null=True)
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['email', 'nombres', 'apellidos', 'identificacion', 'telefono']
 
@@ -66,3 +70,15 @@ class Usuario(AbstractBaseUser):
 
     class Meta:
         db_table = 'conf_user'
+
+
+class RolUser(models.Model):
+    user = models.ForeignKey(Usuario, on_delete=models.SET_NULL, null=True)
+    rol = models.ForeignKey(Rol, on_delete=models.SET_NULL, null=True)
+    descripcion = models.TextField(max_length=1000, null=True)
+
+    def __str__(self):
+        return f'{self.descripcion}'
+
+    class Meta:
+        db_table = 'conf_rol_user'

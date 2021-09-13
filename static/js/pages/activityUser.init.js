@@ -1,20 +1,24 @@
-function solicitar(){
+function solicitar() {
     const csrftoken = getCookie('csrftoken');
-    var url=window.location.href.replace('authentication/perfil','jsnCountLogin');
+    var url = window.location.href.replace('authentication/user', 'jsnCountLogin');
+    var array = [];
     $.ajax({
         url: url,
-        dataType:"json",
-        type:'POST',
-        headers:{"X-CSRFToken": csrftoken },
-        success:function (data){
-
-        },error:function(xhr, status, error) {
-            var err = + xhr.responseText ;
-            alert("error"+err);
+        dataType: "json",
+        type: 'POST',
+        headers: {"X-CSRFToken": csrftoken},
+        async: false,
+        success: function (data) {
+            array = [data]
+            array = array[0].key;
+        }, error: function (xhr, status, error) {
+            var err = +xhr.responseText;
+            alert("error" + err);
         }
     })
-    return data=[10, 30, 20, 40, 50,70,80]
+    return array
 }
+
 var options = {
     series: [{
         name: "Login",
@@ -34,7 +38,7 @@ var options = {
         curve: 'straight'
     },
     title: {
-        text: 'Inicio de sesión por mes',
+        text: '',
         align: 'left'
     },
     grid: {

@@ -1,0 +1,874 @@
+[33mcommit bd0b089205dfee5737be590265fb6e35dc3faeb5[m[33m ([m[1;36mHEAD -> [m[1;32mmain[m[33m, [m[1;31morigin/main[m[33m, [m[1;31morigin/HEAD[m[33m)[m
+Merge: 57f59064 f26ba39f
+Author: Alex Cuenca M <maxpowerxd8y9@gmail.com>
+Date:   Wed Sep 8 21:25:17 2021 -0500
+
+    Merge branch 'main' of https://github.com/CrissIntriago/secoed
+
+[33mcommit 57f59064a26a09b2626ad6b6480cd5905044a458[m
+Author: Alex Cuenca M <maxpowerxd8y9@gmail.com>
+Date:   Wed Sep 8 21:04:51 2021 -0500
+
+    Pull main
+
+[33mcommit f26ba39feb529efc367b6a1fdc787dd81d9ac958[m
+Merge: c113794f 806a65fc
+Author: JorgePena <jorge.penaz@ug.edu.ec>
+Date:   Wed Sep 8 20:48:06 2021 -0500
+
+    Merge branch 'main' of https://github.com/CrissIntriago/secoed into main
+
+[33mcommit c113794fdb9fe09f1c3cd7622f0edab5a724f459[m
+Author: JorgePena <jorge.penaz@ug.edu.ec>
+Date:   Wed Sep 8 20:36:34 2021 -0500
+
+    Update formrequisito.html
+
+[33mcommit 806a65fc4be6f048837837660762b83051e9bae7[m
+Merge: 8732e6a1 5ea0852a
+Author: Criss Intriago <jintriagos_96@outlook.com>
+Date:   Wed Sep 8 20:31:22 2021 -0500
+
+    Merge branch 'main' of https://github.com/CrissIntriago/secoed
+
+[33mcommit 8732e6a1b0ec72b366bebfbe0fb0acfd868d0895[m
+Author: Criss Intriago <jintriagos_96@outlook.com>
+Date:   Wed Sep 8 20:31:14 2021 -0500
+
+    Cambios
+
+[33mcommit 1fbe51d7858e6e229fb43e432dd700380f264616[m
+Author: JorgePena <jorge.penaz@ug.edu.ec>
+Date:   Wed Sep 8 20:27:41 2021 -0500
+
+    Revert "dev2"
+    
+    This reverts commit 2d36a3d5276ab028c282a340cf92b80fc7c5aa4d.
+
+[33mcommit 2d36a3d5276ab028c282a340cf92b80fc7c5aa4d[m
+Author: JorgePena <jorge.penaz@ug.edu.ec>
+Date:   Wed Sep 8 18:11:51 2021 -0500
+
+    dev2
+
+[33mcommit 5ea0852a80f28246a013682110ffcca7d4ae1011[m
+Author: Carlos Aparicio <apariciovivero@gmail.com>
+Date:   Wed Sep 8 18:10:29 2021 -0500
+
+    Actualización modulo EVA vistas
+
+[33mcommit be5c8348a6315673a361810aa662746227f80bc5[m[33m ([m[1;31morigin/dev_1[m[33m, [m[1;32mdev_1[m[33m)[m
+Author: Alex Cuenca M <maxpowerxd8y9@gmail.com>
+Date:   Wed Sep 8 16:59:47 2021 -0500
+
+    Sweet alert for response on email send
+
+[33mcommit 5de377a105e8c5fed5576b6e796bcd70f298dd08[m
+Merge: 51eb67eb bbad7232
+Author: Carlos Aparicio <apariciovivero@gmail.com>
+Date:   Wed Sep 8 14:01:21 2021 -0500
+
+    Merge remote-tracking branch 'origin/capariciov'
+
+[33mcommit 51eb67eba2d633287b836905b999ba0d1078d774[m
+Author: Carlos Aparicio <apariciovivero@gmail.com>
+Date:   Wed Sep 8 14:00:06 2021 -0500
+
+    Actualización modulo EVA
+
+[33mcommit ae91a2cb5a203376320bb8ca0deee5e13ed42ab3[m
+Author: Alex Cuenca M <maxpowerxd8y9@gmail.com>
+Date:   Wed Sep 8 13:52:45 2021 -0500
+
+    Preparing for sweet alert
+
+[33mcommit bbad72322a7668adf7f015b8d9432be04f079858[m[33m ([m[1;31morigin/capariciov[m[33m)[m
+Merge: 2758c717 95f732f1
+Author: DevApa <35040740+DevApa@users.noreply.github.com>
+Date:   Wed Sep 8 13:32:02 2021 -0500
+
+    Merge pull request #3 from CrissIntriago/main
+    
+    actualizacion de rama personal
+
+[33mcommit 95f732f14217e6be544195b704a0e93e013a8238[m
+Merge: 7c17cfdc 16b3ba5e
+Author: Alex Cuenca M <maxpowerxd8y9@gmail.com>
+Date:   Wed Sep 8 12:45:11 2021 -0500
+
+    Merge branch 'main' of https://github.com/CrissIntriago/secoed into dev_1
+
+[33mcommit 16b3ba5ea4b0717e50cbab94262b5f99b0cbdeae[m
+Author: Criss Intriago <jintriagos_96@outlook.com>
+Date:   Wed Sep 8 12:13:59 2021 -0500
+
+    Cambios
+
+[33mcommit 7c17cfdc26b55fb7b0a13140777907007a8b45dc[m
+Author: Alex Cuenca M <maxpowerxd8y9@gmail.com>
+Date:   Tue Sep 7 22:50:40 2021 -0500
+
+    Now with select component
+
+[33mcommit f5ac4f9bb35b52e08c253510a589baa93d01b142[m
+Author: Alex Cuenca M <maxpowerxd8y9@gmail.com>
+Date:   Tue Sep 7 21:44:46 2021 -0500
+
+    Tested
+
+[33mcommit 34f0d8dd36517c2ca49dec1209f8f79dd90b27c5[m
+Merge: 28332bf8 2dadd881
+Author: Alex Cuenca M <maxpowerxd8y9@gmail.com>
+Date:   Tue Sep 7 19:54:06 2021 -0500
+
+    Merge branch 'dev_1' of https://github.com/CrissIntriago/secoed into dev_1
+
+[33mcommit 28332bf8261f5fe215f4c797b6e1faaa7e5ea867[m
+Author: Alex Cuenca M <maxpowerxd8y9@gmail.com>
+Date:   Tue Sep 7 19:29:53 2021 -0500
+
+    Requirement questions designer complete :D
+
+[33mcommit 7e896f7212d2a770983c4706412cfa012aab2fc5[m
+Author: Alex Cuenca M <maxpowerxd8y9@gmail.com>
+Date:   Tue Sep 7 19:21:51 2021 -0500
+
+    Work it add button
+
+[33mcommit 2758c71717de424af06a164959a405422c98f91c[m
+Merge: 030520e8 f04c87a6
+Author: DevApa <35040740+DevApa@users.noreply.github.com>
+Date:   Tue Sep 7 17:50:03 2021 -0500
+
+    Merge pull request #2 from CrissIntriago/main
+    
+    Últimos cambios sistema completo
+
+[33mcommit cebaacc38ca4128e0640f2b8cb2282bed8177884[m
+Author: Alex Cuenca M <maxpowerxd8y9@gmail.com>
+Date:   Tue Sep 7 17:03:50 2021 -0500
+
+    Requirements ok
+
+[33mcommit f04c87a60ae36b8de927aba5e21c83494b0a33f9[m
+Author: Criss Intriago <jintriagos_96@outlook.com>
+Date:   Mon Sep 6 09:17:30 2021 -0500
+
+    Nueva conexion a la base
+
+[33mcommit 01785b01ceb05c1966e89f12e6adcc5bf52873cc[m
+Author: Criss Intriago <jintriagos_96@outlook.com>
+Date:   Mon Sep 6 04:04:28 2021 -0500
+
+    Cambios-006
+
+[33mcommit bbe9ac6739a0ccfea9e6c95e46c15d8792cb5761[m
+Merge: 87f19659 40886795
+Author: Criss Intriago <jintriagos_96@outlook.com>
+Date:   Mon Sep 6 01:28:45 2021 -0500
+
+    Merge branch 'main' of https://github.com/CrissIntriago/secoed
+
+[33mcommit 87f196597fb3d01de5a1afbb43e01ba5bc822f26[m
+Author: Criss Intriago <jintriagos_96@outlook.com>
+Date:   Mon Sep 6 01:28:36 2021 -0500
+
+    Cambios
+
+[33mcommit 40886795055214cf8a2175f0da7dac962639a483[m
+Author: JorgePena <jorge.penaz@ug.edu.ec>
+Date:   Sun Sep 5 12:09:29 2021 -0500
+
+    ya
+
+[33mcommit 3b5efa764d37a9429d4e3786de6981356ce34a9c[m
+Merge: d4b28d5f 6d740d99
+Author: Alex Cuenca M <maxpowerxd8y9@gmail.com>
+Date:   Sun Sep 5 11:17:08 2021 -0500
+
+    Merge branch 'main' of https://github.com/CrissIntriago/secoed into dev_1
+
+[33mcommit d4b28d5f081514fce12089252eb74d12bb83fddc[m
+Author: Alex Cuenca M <maxpowerxd8y9@gmail.com>
+Date:   Sun Sep 5 11:14:53 2021 -0500
+
+    Typing a method
+
+[33mcommit 6d740d991a39f2efaa670627be0f9caee51d6859[m
+Author: MarcosDavidChong <marcos.chongc@ug.edu.ec>
+Date:   Sat Sep 4 20:53:56 2021 -0500
+
+    cambios finales
+
+[33mcommit 4a1cd4cc421fc3f9b1970a675347dfa1ba5c0c55[m
+Author: MarcosDavidChong <marcos.chongc@ug.edu.ec>
+Date:   Sat Sep 4 20:49:55 2021 -0500
+
+    Update views.py
+
+[33mcommit 2feb0e5ec5c9cdc9031f9caf772d603f9684479b[m
+Author: MarcosDavidChong <marcos.chongc@ug.edu.ec>
+Date:   Thu Sep 2 22:29:59 2021 -0500
+
+    Update views.py
+
+[33mcommit 9232e195dc48d6d3d1f2db039cf36937799f5b06[m[33m ([m[1;31morigin/dev_test[m[33m)[m
+Author: Alex Cuenca M <maxpowerxd8y9@gmail.com>
+Date:   Thu Sep 2 15:51:45 2021 -0500
+
+    PDF requirement  success
+
+[33mcommit 030520e8ecefed1abba14f459056daab265f8cdf[m
+Merge: 67c70694 3377b98e
+Author: DevApa <35040740+DevApa@users.noreply.github.com>
+Date:   Thu Sep 2 09:35:29 2021 -0500
+
+    Merge pull request #1 from CrissIntriago/main
+    
+    Actualización de modulo de usuario
+
+[33mcommit 41dfaf7c8aeafac059f3bc7d9c53410af6f39127[m
+Author: Alex Cuenca M <maxpowerxd8y9@gmail.com>
+Date:   Wed Sep 1 20:51:41 2021 -0500
+
+    Fixing a little
+
+[33mcommit 3381373865dcfb91874eb033d4319536fbd76758[m
+Author: Alex Cuenca M <maxpowerxd8y9@gmail.com>
+Date:   Wed Sep 1 19:31:50 2021 -0500
+
+    Evaluation now save on bd
+
+[33mcommit 3377b98e6b14f794ba99bdde13107f7ae7ace85b[m
+Author: MarcosDavidChong <marcos.chongc@ug.edu.ec>
+Date:   Wed Sep 1 19:06:20 2021 -0500
+
+    Update t-estadistico.html
+
+[33mcommit 225c38aac94f4e2c9031ef9cc808a64fd462ab99[m
+Author: MarcosDavidChong <marcos.chongc@ug.edu.ec>
+Date:   Wed Sep 1 18:57:16 2021 -0500
+
+    Update views.py
+
+[33mcommit 2c125bacba81b1dbca547d8b11258c002e53ca3d[m
+Author: MarcosDavidChong <marcos.chongc@ug.edu.ec>
+Date:   Wed Sep 1 17:59:25 2021 -0500
+
+    cambios en la busqueda
+
+[33mcommit b410783faf583343778b35b9bb812a1ed5294fe9[m
+Merge: 76e515de bd4b785b
+Author: MarcosDavidChong <marcos.chongc@ug.edu.ec>
+Date:   Wed Sep 1 16:28:32 2021 -0500
+
+    Merge branch 'main' of https://github.com/CrissIntriago/secoed into main
+
+[33mcommit 76e515de4e4b0c507e82b752c6c2020639aba993[m
+Author: MarcosDavidChong <marcos.chongc@ug.edu.ec>
+Date:   Wed Sep 1 16:28:27 2021 -0500
+
+    cambios en vistas
+
+[33mcommit bd4b785b602b19fbaa83ee6687e0bb5480e23ecb[m
+Merge: 0c784e89 114414e2
+Author: Criss Intriago <jintriagos_96@outlook.com>
+Date:   Wed Sep 1 15:50:18 2021 -0500
+
+    Merge branch 'main' of https://github.com/CrissIntriago/secoed
+
+[33mcommit 0c784e89f697cb6625b6a532e1fe1d2ad7ca5027[m
+Author: Criss Intriago <jintriagos_96@outlook.com>
+Date:   Wed Sep 1 15:50:09 2021 -0500
+
+    Cambios
+
+[33mcommit 114414e2e39a853aac70e337b4af0d8b170a5da9[m
+Author: JorgePena <jorge.penaz@ug.edu.ec>
+Date:   Wed Sep 1 15:17:37 2021 -0500
+
+    correcciones
+
+[33mcommit e945aee0ed19077c344edd27da6db8204ab8adc9[m
+Merge: 5c57fa40 c7dba042
+Author: JorgePena <jorge.penaz@ug.edu.ec>
+Date:   Wed Sep 1 13:28:50 2021 -0500
+
+    Merge branch 'main' of https://github.com/CrissIntriago/secoed into main
+
+[33mcommit 5c57fa40fd5b1bdae1cace5921b1884b3338eaec[m
+Author: JorgePena <jorge.penaz@ug.edu.ec>
+Date:   Wed Sep 1 13:28:43 2021 -0500
+
+    para CUenca
+
+[33mcommit c7dba04298dec1280e340f3c6f246a052e938de2[m
+Author: MarcosDavidChong <marcos.chongc@ug.edu.ec>
+Date:   Wed Sep 1 11:27:53 2021 -0500
+
+    Update views.py
+
+[33mcommit 2d5fd53ac14cc35a220b47d24111da3082294dfc[m
+Author: JorgePena <jorge.penaz@ug.edu.ec>
+Date:   Wed Sep 1 04:55:52 2021 -0500
+
+    lastdate
+
+[33mcommit 4919dd89aae808e51588950355c2c391ead58c0d[m
+Merge: 8e6a7b23 b6e226ac
+Author: JorgePena <jorge.penaz@ug.edu.ec>
+Date:   Wed Sep 1 01:22:57 2021 -0500
+
+    Merge branch 'main' of https://github.com/CrissIntriago/secoed into main
+
+[33mcommit b6e226ac7cfcd892d54cc65a0433d9aee8f223a8[m
+Author: Criss Intriago <jintriagos_96@outlook.com>
+Date:   Wed Sep 1 02:10:28 2021 -0500
+
+    CAMBIOS
+
+[33mcommit 8e6a7b23c800f3eb505ca810d26e26c3cc2279e4[m
+Author: JorgePena <jorge.penaz@ug.edu.ec>
+Date:   Wed Sep 1 01:21:11 2021 -0500
+
+    actualizar
+
+[33mcommit 6a7b9a58a44405be6897e9cb4ced16912d18b65f[m
+Author: Criss Intriago <jintriagos_96@outlook.com>
+Date:   Wed Sep 1 01:07:53 2021 -0500
+
+    gitignore-pycache
+
+[33mcommit 1c67d0bc2d2282b7a0d8fe69ee6d3b04c15f70fe[m
+Merge: edbba157 5ca4acbc
+Author: David Borbor <david271998@gmail.com>
+Date:   Tue Aug 31 23:08:55 2021 -0500
+
+    Merge branch 'main' of https://github.com/CrissIntriago/secoed
+
+[33mcommit edbba15772643edbb389ef96feb0df58e4c1ad8c[m
+Author: David Borbor <david271998@gmail.com>
+Date:   Tue Aug 31 23:08:49 2021 -0500
+
+    cambios David
+
+[33mcommit 5ca4acbc25df6eb3c751cdeb5c74f6167e92a125[m
+Author: JorgePena <jorge.penaz@ug.edu.ec>
+Date:   Tue Aug 31 19:24:20 2021 -0500
+
+    settings
+
+[33mcommit 56f753a692f04ab915cb6964bd4a4a89364103f9[m
+Merge: f15c98b2 3c5e082d
+Author: JorgePena <jorge.penaz@ug.edu.ec>
+Date:   Tue Aug 31 18:54:59 2021 -0500
+
+    corrigiendo errores components
+
+[33mcommit f15c98b2bb2136574e377a707dd931e57446b04f[m
+Author: JorgePena <jorge.penaz@ug.edu.ec>
+Date:   Tue Aug 31 18:40:45 2021 -0500
+
+    Cambios
+
+[33mcommit 3c5e082da687e5a81af587572384e2c79d496028[m
+Author: Criss Intriago <jintriagos_96@outlook.com>
+Date:   Tue Aug 31 18:34:07 2021 -0500
+
+    LEVANTANDO SECOED
+
+[33mcommit d2d9f99c976807f87b7c5bd563e43ad7f6b7a186[m
+Merge: 38bc22ea a7490033
+Author: Criss Intriago <jintriagos_96@outlook.com>
+Date:   Tue Aug 31 17:56:00 2021 -0500
+
+    Commit POSTGRES-SERVER
+
+[33mcommit 38bc22ea5de2ea4d58305016c94f358c996bd229[m
+Author: Criss Intriago <jintriagos_96@outlook.com>
+Date:   Tue Aug 31 17:53:49 2021 -0500
+
+    Cambios
+
+[33mcommit a749003392895c8b623198f1b28f98c759db431b[m
+Merge: 9f01eb3f d5fa38b3
+Author: MarcosDavidChong <86175944+MarcosDavidChong@users.noreply.github.com>
+Date:   Tue Aug 31 14:46:25 2021 -0500
+
+    Merge branch 'main' of https://github.com/CrissIntriago/secoed into main
+
+[33mcommit 9f01eb3f792371160f1453c708d79fb239c4bb42[m
+Author: MarcosDavidChong <86175944+MarcosDavidChong@users.noreply.github.com>
+Date:   Tue Aug 31 14:46:21 2021 -0500
+
+    Eliminación de tablas repetidas y nuevos apuntes
+
+[33mcommit 2dadd8814e55a8e8b1de6fa76adb3443ff8a867f[m
+Author: JorgePena <jorge.penaz@ug.edu.ec>
+Date:   Tue Aug 31 14:20:15 2021 -0500
+
+    arreglo
+
+[33mcommit d5fa38b3000e5961826b2b21c075931f5d9057f6[m[33m ([m[1;31morigin/dev_2[m[33m, [m[1;32mdev_2[m[33m)[m
+Merge: 6333e009 98e436d5
+Author: JorgePena <jorge.penaz@ug.edu.ec>
+Date:   Tue Aug 31 12:06:34 2021 -0500
+
+    f
+
+[33mcommit 6333e009ab5196f1e30403b6ced64b144d410c4d[m
+Author: JorgePena <jorge.penaz@ug.edu.ec>
+Date:   Tue Aug 31 11:58:32 2021 -0500
+
+    Prueba de url
+
+[33mcommit 6b0e904607b2ffaca1b7e592949ffed51ef0a4e2[m
+Merge: 97ae59c5 2c245af4
+Author: MarcosDavidChong <86175944+MarcosDavidChong@users.noreply.github.com>
+Date:   Tue Aug 31 09:26:59 2021 -0500
+
+    Merge branch 'main' of https://github.com/CrissIntriago/secoed into main
+
+[33mcommit 97ae59c561bfe39500bfcd2bb549acaaf8632151[m
+Author: MarcosDavidChong <86175944+MarcosDavidChong@users.noreply.github.com>
+Date:   Tue Aug 31 09:26:52 2021 -0500
+
+    Create calos.css
+
+[33mcommit 2c245af446922b0237034cba4af431a140e10b66[m
+Merge: 63417ee6 a7037725
+Author: Criss Intriago <jintriagos_96@outlook.com>
+Date:   Tue Aug 31 02:08:17 2021 -0500
+
+    Merge branch 'main' of https://github.com/CrissIntriago/secoed
+
+[33mcommit 63417ee626b865e99477ac9d9e60a2e4ad0ac01f[m
+Author: Criss Intriago <jintriagos_96@outlook.com>
+Date:   Tue Aug 31 02:08:08 2021 -0500
+
+    Cambios
+
+[33mcommit 98e436d5d65eece333fbf68c44a03d44563da948[m
+Author: JorgePena <jorge.penaz@ug.edu.ec>
+Date:   Tue Aug 31 01:08:41 2021 -0500
+
+    integrar
+
+[33mcommit 2788f7e041f37553a66cca5589231867aed22a16[m
+Author: JorgePena <jorge.penaz@ug.edu.ec>
+Date:   Tue Aug 31 01:04:27 2021 -0500
+
+    integrador
+
+[33mcommit f9e71a1df73bd6448e395ef544528f0a211054e1[m
+Merge: abae2102 6b0e9046
+Author: JorgePena <jorge.penaz@ug.edu.ec>
+Date:   Tue Aug 31 01:04:03 2021 -0500
+
+    Merge branch 'main' of https://github.com/CrissIntriago/secoed into main
+
+[33mcommit abae2102bfda34205779fe7ac0438635a0d4318f[m
+Author: JorgePena <jorge.penaz@ug.edu.ec>
+Date:   Tue Aug 31 01:03:54 2021 -0500
+
+    integrador
+
+[33mcommit a7037725ce72910e9c316dae24f262a2f9adc6a4[m
+Author: JorgePena <jorge.penaz@ug.edu.ec>
+Date:   Tue Aug 31 00:10:06 2021 -0500
+
+    m
+
+[33mcommit 802b6b546812574847c2176b1f2acabfe85a71cd[m
+Author: MarcosDavidChong <86175944+MarcosDavidChong@users.noreply.github.com>
+Date:   Mon Aug 30 11:02:28 2021 -0500
+
+    cambio de tamaño
+
+[33mcommit 14d0164c54283daa644a3431be9f2bfb1de82979[m
+Author: Criss Intriago <jintriagos_96@outlook.com>
+Date:   Sun Aug 29 22:18:29 2021 -0500
+
+    commit
+
+[33mcommit 2bc0f9fe4f9beeec286936f69695e71fd69ae586[m
+Merge: 877e105b 7f8a1ff3
+Author: Criss Intriago <jintriagos_96@outlook.com>
+Date:   Sun Aug 29 22:18:07 2021 -0500
+
+    Merge branch 'main' of https://github.com/CrissIntriago/secoed
+
+[33mcommit 877e105b6a689e75a6fe80581996c7c7a81299a8[m
+Author: Criss Intriago <jintriagos_96@outlook.com>
+Date:   Sun Aug 29 22:17:54 2021 -0500
+
+    usuario-rol
+
+[33mcommit 99040e5c6aee1f0005ece3f92c489a96e7c5eb10[m
+Author: JorgePena <jorge.penaz@ug.edu.ec>
+Date:   Sun Aug 29 22:09:05 2021 -0500
+
+    quitar comentarios
+
+[33mcommit d2441f0b21dafde80c7333d4614697f37ba9ae75[m
+Author: JorgePena <jorge.penaz@ug.edu.ec>
+Date:   Sun Aug 29 21:53:31 2021 -0500
+
+    quitar
+
+[33mcommit 79a022e12fbe204d865192ef91cd6be8005f33b5[m
+Author: JorgePena <jorge.penaz@ug.edu.ec>
+Date:   Sun Aug 29 20:46:38 2021 -0500
+
+    dependencias
+
+[33mcommit 16edffecd28b85471aadd96b6aede799f34b8f44[m
+Merge: f8a64eed f3c17dc3
+Author: JorgePena <jorge.penaz@ug.edu.ec>
+Date:   Sun Aug 29 20:40:50 2021 -0500
+
+    Merge branch 'dev_2' of https://github.com/CrissIntriago/secoed into dev_2
+
+[33mcommit f8a64eed59a05ccfef946fdf27a2c52554bc589e[m
+Author: JorgePena <jorge.penaz@ug.edu.ec>
+Date:   Sun Aug 29 20:40:22 2021 -0500
+
+    actividad
+
+[33mcommit f3c17dc395495d9920c816bc9d8ab844cc8ee9db[m
+Merge: e775a00b ee596196
+Author: Kasl1997 <85455785+Kasl1997@users.noreply.github.com>
+Date:   Sun Aug 29 20:38:06 2021 -0500
+
+    Merge branch 'dev_1' into dev_2
+
+[33mcommit 696af78be0944eceb67d4c0d2d8a9a836b1e618c[m
+Author: JorgePena <jorge.penaz@ug.edu.ec>
+Date:   Sun Aug 29 20:37:13 2021 -0500
+
+    listado
+
+[33mcommit e775a00b77f01327bf20cfc2be145c9a55b4ea20[m
+Author: JorgePena <jorge.penaz@ug.edu.ec>
+Date:   Sun Aug 29 20:30:58 2021 -0500
+
+    semaforo
+
+[33mcommit 88590f2f2ef4555f088a8bcc57374a24769935f5[m
+Author: JorgePena <jorge.penaz@ug.edu.ec>
+Date:   Sun Aug 29 20:26:23 2021 -0500
+
+    arreeglado
+
+[33mcommit f7f45077de6abd29de77b48093375a622e003e6d[m
+Author: JorgePena <jorge.penaz@ug.edu.ec>
+Date:   Sun Aug 29 20:11:34 2021 -0500
+
+    actividades
+
+[33mcommit 44aa88ce21cd06bdf5b6c7c1658d0d0902d19098[m
+Author: JorgePena <jorge.penaz@ug.edu.ec>
+Date:   Sun Aug 29 20:09:06 2021 -0500
+
+    actividad
+
+[33mcommit ae03019bc7aab54f229fe03a7678347803ab3b2b[m
+Author: JorgePena <jorge.penaz@ug.edu.ec>
+Date:   Sun Aug 29 19:50:15 2021 -0500
+
+    semaforo
+
+[33mcommit ee5961967a0161f58312833b75623864df95fefc[m
+Merge: 864f28a5 88348141
+Author: Alex Cuenca M <maxpowerxd8y9@gmail.com>
+Date:   Sun Aug 29 19:40:33 2021 -0500
+
+    Merge into dev_2 branch
+
+[33mcommit 88348141ad9b51c77c1e58fb76548ea6de732694[m
+Author: JorgePena <jorge.penaz@ug.edu.ec>
+Date:   Sun Aug 29 19:31:15 2021 -0500
+
+    semaforizacion
+
+[33mcommit 864f28a589c0d01b5bb8d0bcad8cc2e7fa972e8e[m
+Author: Alex Cuenca M <maxpowerxd8y9@gmail.com>
+Date:   Sun Aug 29 18:05:18 2021 -0500
+
+    PDF, falta
+
+[33mcommit 7f8a1ff3ab01bff165fbbf24e097cd867bc4ecd1[m
+Author: MarcosDavidChong <86175944+MarcosDavidChong@users.noreply.github.com>
+Date:   Sun Aug 29 09:29:28 2021 -0500
+
+    Cambios minimos
+
+[33mcommit 7a1e5289a5ef21485aab975fbfe8419bcd45f029[m
+Author: Alex Cuenca M <maxpowerxd8y9@gmail.com>
+Date:   Sat Aug 28 18:23:53 2021 -0500
+
+    email success
+
+[33mcommit f07fd8660a176666ff476f4a3f88c3c8786f8b78[m
+Author: MarcosDavidChong <86175944+MarcosDavidChong@users.noreply.github.com>
+Date:   Tue Aug 24 16:42:04 2021 -0500
+
+    Cambios enfocados a librerias
+
+[33mcommit 843f62183f3e74bcda1ab1d39106fd666e0e8451[m
+Author: Criss Intriago <jintriagos_96@outlook.com>
+Date:   Tue Aug 24 12:18:44 2021 -0500
+
+    Login
+
+[33mcommit d93e6e3e97d8142df1319ab2f5d5faa12890d5d6[m
+Author: Criss Intriago <jintriagos_96@outlook.com>
+Date:   Tue Aug 24 12:18:29 2021 -0500
+
+    Login
+
+[33mcommit 6da9b6b2811c02a84ac5adf93d950a6a66c2774e[m
+Merge: f4ea7638 89a45cd2
+Author: Criss Intriago <jintriagos_96@outlook.com>
+Date:   Tue Aug 24 10:34:36 2021 -0500
+
+    Merge branch 'main' of https://github.com/CrissIntriago/secoed
+
+[33mcommit f4ea763807758788545e87b7f64cc42ea5c28885[m
+Author: Criss Intriago <jintriagos_96@outlook.com>
+Date:   Tue Aug 24 10:34:22 2021 -0500
+
+    LOGIN
+
+[33mcommit 89a45cd2da345a3776a57df72241a781e0278cb1[m
+Author: MarcosDavidChong <86175944+MarcosDavidChong@users.noreply.github.com>
+Date:   Mon Aug 23 14:21:57 2021 -0500
+
+    Cambios Menores
+    
+    Settings, views y lista_cursos.html
+
+[33mcommit d66dadf23a3825293a14c2abbc450d253a621726[m
+Merge: 9d10cf5d b9637728
+Author: Criss Intriago <jintriagos_96@outlook.com>
+Date:   Sun Aug 22 19:00:13 2021 -0500
+
+    Merge branch 'main' of https://github.com/CrissIntriago/secoed
+
+[33mcommit 9d10cf5d080fc5fb5670e87dde4d6c371e5c23c6[m
+Author: Criss Intriago <jintriagos_96@outlook.com>
+Date:   Sun Aug 22 18:59:28 2021 -0500
+
+    Version -2.0.1
+
+[33mcommit de236d35283334ab82d0bb7a8eb29a145edc635a[m
+Author: Jorge Peña <jorge.penaz@ug.edu.ec>
+Date:   Sun Aug 22 18:58:29 2021 -0500
+
+    Aprobacion
+
+[33mcommit b9637728b0f543d237e2ea5514e3fbad33480e2c[m
+Author: Jorge Peña <jorge.penaz@ug.edu.ec>
+Date:   Sun Aug 22 18:55:56 2021 -0500
+
+    aprobacion criterio de curso guardar, visualizar
+
+[33mcommit 84e3a52d0d2c0b9c34397a805c33505a507311a7[m
+Author: Alex Cuenca M <maxpowerxd8y9@gmail.com>
+Date:   Sun Aug 22 18:08:57 2021 -0500
+
+    Lasta changes :D
+
+[33mcommit 12159f182fa9e62cf7fa36c27b092f4898079327[m
+Author: Criss Intriago <jintriagos_96@outlook.com>
+Date:   Sun Aug 22 16:08:23 2021 -0500
+
+    Version-2.0.1
+
+[33mcommit 90043287951075e814c795cd916291f14916535d[m
+Author: Alex Cuenca M <maxpowerxd8y9@gmail.com>
+Date:   Sat Aug 21 17:52:03 2021 -0500
+
+    Adding myvenv folder to gitignore
+
+[33mcommit d51121fe4c1f7557da7d6bc580f4b9867c5259d1[m
+Merge: f58694f2 c2546ffc
+Author: Criss <kriizz963@gmail.com>
+Date:   Tue Aug 17 09:57:15 2021 -0500
+
+    Merge branch 'main' of https://github.com/CrissIntriago/secoed
+
+[33mcommit f58694f2ad6307a3a00de14d91851646e11756a1[m
+Author: Criss <kriizz963@gmail.com>
+Date:   Tue Aug 17 09:57:01 2021 -0500
+
+    UNIVERSIDAD-FACULTAD-CARRERA
+
+[33mcommit c2546ffc6d8524006dc701093b696d45444c6acc[m
+Author: Carlos Aparicio <apariciovivero@gmail.com>
+Date:   Mon Aug 16 10:29:18 2021 -0500
+
+    Actualización eva mantenimientos
+
+[33mcommit ab2aefb1c6b099dda5833f8da1b9fefc796e822d[m
+Merge: da903e25 4884fa7b
+Author: Carlos Aparicio <apariciovivero@gmail.com>
+Date:   Mon Aug 16 10:28:32 2021 -0500
+
+    Merge remote-tracking branch 'origin/main'
+
+[33mcommit da903e253b050592da2747cd1a984f4cd16e5b61[m
+Author: Carlos Aparicio <apariciovivero@gmail.com>
+Date:   Mon Aug 16 10:28:08 2021 -0500
+
+    Actualización eva mantenimientos
+
+[33mcommit 4884fa7b07b30251cebef8d42ce6515803876bbf[m
+Author: Criss <kriizz963@gmail.com>
+Date:   Sat Aug 14 21:01:36 2021 -0500
+
+    commit ejemplo
+
+[33mcommit 9c7c92749c042eac5562626870983731754a9b86[m
+Merge: d9b13835 59165b65
+Author: Criss <kriizz963@gmail.com>
+Date:   Sat Aug 14 20:40:36 2021 -0500
+
+    Merge branch 'main' of https://github.com/CrissIntriago/secoed
+
+[33mcommit d9b13835dce9641e487664e88ef5cc4d44ae64bc[m
+Author: Criss <kriizz963@gmail.com>
+Date:   Sat Aug 14 20:39:34 2021 -0500
+
+    DASHBOARD
+
+[33mcommit 59165b65d1ba8c9453d341fba61e82b02c902bed[m
+Author: Jorge Peña <jorge.penaz@ug.edu.ec>
+Date:   Sat Aug 14 15:34:17 2021 -0500
+
+    Modificar con BD asesor-curso
+    
+    Se modifico los campos de la tabla con la BD que se creo
+
+[33mcommit ba747441b833d5434eec059cb560f9e77d5019f3[m
+Author: MarcosDavidChong <86175944+MarcosDavidChong@users.noreply.github.com>
+Date:   Sat Aug 14 11:53:25 2021 -0500
+
+    login_required actualizado
+
+[33mcommit 67c706942135895b14323af9c25f947b69858052[m
+Author: Criss <kriizz963@gmail.com>
+Date:   Sat Aug 14 00:58:03 2021 -0500
+
+    asesor_view
+
+[33mcommit fb92f868f20d03bb77607dbaac467444ee5ad6cd[m
+Merge: 5c9e180d 8185eca3
+Author: Criss <kriizz963@gmail.com>
+Date:   Sat Aug 14 00:09:02 2021 -0500
+
+    Merge branch 'main' of https://github.com/CrissIntriago/secoed
+
+[33mcommit 5c9e180da1a82d0cb0aa39dab6778c2fe6571fed[m
+Author: Criss <kriizz963@gmail.com>
+Date:   Sat Aug 14 00:08:50 2021 -0500
+
+    MODULO-GESTOR
+
+[33mcommit 8185eca32779041d0f9c5af8398891a62b5b5e6a[m
+Author: MarcosDavidChong <86175944+MarcosDavidChong@users.noreply.github.com>
+Date:   Fri Aug 13 23:17:59 2021 -0500
+
+    Cambios view y a template t_estadistico
+
+[33mcommit bfbe00e7f687d5f16c6f5075b90c719b1d618ec2[m
+Author: MarcosDavidChong <86175944+MarcosDavidChong@users.noreply.github.com>
+Date:   Fri Aug 13 23:04:22 2021 -0500
+
+    Agregado funcion ´login_required´
+
+[33mcommit 028828a90c29f9b9cc5e665f7bdbdf98d27e4a57[m
+Author: Criss <kriizz963@gmail.com>
+Date:   Fri Aug 13 21:27:29 2021 -0500
+
+    MODULO-ASESOR
+
+[33mcommit 7629edb214773056b638298ef1ab0a0ab5342c01[m
+Author: Criss <kriizz963@gmail.com>
+Date:   Fri Aug 13 09:28:49 2021 -0500
+
+    MENU-EDIT-VIEW
+
+[33mcommit 8a3bd627d353ab52012829aefdb450d7d2059a3f[m
+Author: Criss <kriizz963@gmail.com>
+Date:   Thu Aug 12 23:11:42 2021 -0500
+
+    EVA-0.0.1
+
+[33mcommit 19c2c7de9e0031f9a3da786859575d0661a7b847[m
+Author: Criss <kriizz963@gmail.com>
+Date:   Tue Aug 10 22:08:26 2021 -0500
+
+    CRUD MEJORADO MODULO
+
+[33mcommit 8cae627d8e1e312d33038b84fc7d5ecf85044cfe[m
+Merge: 6dd6639b 5bd68207
+Author: Criss <kriizz963@gmail.com>
+Date:   Tue Aug 10 09:03:19 2021 -0500
+
+    Conflicts
+
+[33mcommit 6dd6639b66979b7c6280fb884a32e99363debcd0[m
+Author: Criss <kriizz963@gmail.com>
+Date:   Tue Aug 10 09:01:19 2021 -0500
+
+    CREATE-DELTE-MENU
+
+[33mcommit 5bd68207b16ede1e9de0fbe048b734566bccf93a[m
+Merge: 131948e4 2adc16d0
+Author: David Borbor <david271998@gmail.com>
+Date:   Mon Aug 9 22:26:51 2021 -0500
+
+    jsoon david
+
+[33mcommit 131948e46f272b9306315ff1f14807ca01e88e18[m
+Author: David Borbor <david271998@gmail.com>
+Date:   Mon Aug 9 17:27:03 2021 -0500
+
+    ok
+
+[33mcommit 2adc16d0863b39e9fa4e9baceb8103fca2ce398c[m
+Author: Criss <kriizz963@gmail.com>
+Date:   Mon Aug 9 17:04:17 2021 -0500
+
+    MENU-CRUD
+
+[33mcommit 1712f16b5ddde146b2ed7eb984f0da8e6cc8d2ee[m
+Author: Criss <kriizz963@gmail.com>
+Date:   Mon Aug 9 17:03:09 2021 -0500
+
+    MENU-CRUD
+
+[33mcommit 9d3c783f78f513ec45d341dae155be91676bd9cc[m
+Author: Criss <kriizz963@gmail.com>
+Date:   Tue Aug 3 22:43:20 2021 -0500
+
+    CRUD-MODULO
+
+[33mcommit 449733434131a89dcfc76500dd30ecc3f2edf4d4[m
+Author: Criss <kriizz963@gmail.com>
+Date:   Sat Jul 10 17:48:41 2021 -0500
+
+    secoed (v.1.1.0)
+
+[33mcommit 1836c4efbd5033576e97bf82517a4eeb8715ef4c[m
+Author: Criss <kriizz963@gmail.com>
+Date:   Wed Jul 7 06:05:59 2021 -0500
+
+    secoed
+
+[33mcommit a16a1a9992c6d6657c3ad878cc3d9e3c52fea31a[m
+Author: CrissIntriago <56812790+CrissIntriago@users.noreply.github.com>
+Date:   Wed Jul 7 06:02:45 2021 -0500
+
+    Initial commit

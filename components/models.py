@@ -4,7 +4,9 @@ from django.db import models
 class AprobacionCurso(models.Model):
     Nivel_CHOICES = (
         ('1', 'Nivel 1'),
-        ('2', 'Nivel 2')
+        ('2', 'Nivel 2'),
+        ('3', 'Nivel 3'),
+        ('4', 'Nivel 4'),
     )
 
     semaforo_CHOICES = (
@@ -14,11 +16,10 @@ class AprobacionCurso(models.Model):
         ('4', 'Azul')
     )
 
-    nivel = models.IntegerField(choices=Nivel_CHOICES)
-    criterio = models.CharField(max_length=200)
-    semaforo = models.IntegerField(choices=semaforo_CHOICES)
-    estado = models.BooleanField(default=True)
-    test = models.CharField(default="xd", max_length=2)
+    nivel = models.IntegerField(choices = Nivel_CHOICES)
+    criterio = models.CharField(max_length = 200)
+    semaforo = models.IntegerField(choices = semaforo_CHOICES)
+    estado = models.BooleanField(default = True)
 
 class Evaluation(models.Model):
     course = models.CharField(max_length=100)

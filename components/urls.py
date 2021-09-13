@@ -25,6 +25,9 @@ urlpatterns = [
 
 
 
+
+
+
                                 # Asesor
     # Listar asesor curso
     path('formasesor',views.FormAsesor.as_view(), name="forms-asesor"),
@@ -41,9 +44,16 @@ urlpatterns = [
     #Guarda asesor Curso
     path('guardarAsesorCurso', views.guardarAsesorCurso, name = 'guardarAsesor'),
 
+    # eliminar Asignacion
+    path(r'deleteAsignacion/<int:pk>',views.deleteAsignacion, name='deleteAsignacion'),
+
+
+    #Cursos 
+    path('cursos/', views.cursosTodos, name = 'cursos'),
 
 
     # Vista de asesores cursos asignados
+
     path('formeducativo1',views.FormEducaciona.as_view(), name='forms-educativo1'),
 
                             # Evaluacion

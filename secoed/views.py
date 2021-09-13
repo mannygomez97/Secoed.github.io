@@ -1,7 +1,10 @@
+import psycopg2
 from django.http import request, JsonResponse
 from django.shortcuts import render, redirect
 from django.views import View
-from conf.models import *
+from django.views.generic import TemplateView
+
+from secoed import settings
 
 
 class DashboardView(View):
@@ -15,13 +18,39 @@ class DashboardView(View):
 
 class AjaxEvent(View):
     def jsnCountLogin(request):
-        data = {
-            'coqueta': '5-0',
-            'la': [{"lunes":10,
-                    "martes":20,
-                    "miercoles":30,
-                    "jueves":40,
-                    "viernes":50
-                    }]
+        sql = "SELECT string_agg(CAST(valor AS text),',') FROM(SELECT EXTRACT(dow FROM datetime), COUNT(id) as valor " \
+              "FROM easyaudit_loginevent WHERE username = '" \
+              + str(request.session['username']) + "' AND login_type=0  GROUP BY 1 ORDER BY 1 ASC ) aux"
+        conexion = psycopg2.connect(database=settings.CONEXION_NAME, user=settings.CONEXION_USER,
+                                    password=settings.CONEXION_PASSWORD, host=settings.CONEXION_HOST,
+                                    port=settings.CONEXION_PORT)
+        query = conexion.cursor()
+        query.execute(sql)
+        array = []
+        for fila in query:
+            items = fila[0].split(',')
+            for item in items:
+                array.append(int(item))
+        json_object = {
+            'key': array
         }
-        return JsonResponse(data)
+        return JsonResponse(json_object)
+
+
+class Error404View(TemplateView):
+    template_name = "utility/utility-404error.html"
+
+
+class Error500View(TemplateView):
+    template_name = "utility/utility-500error.html"
+
+    @classmethod
+    def as_error_view(cls):
+        v = cls.as_view()
+
+        def view(request):
+            r = v(request)
+            r.render()
+            return request
+
+        return view

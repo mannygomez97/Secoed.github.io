@@ -1,5 +1,7 @@
 from django import forms
 from django.contrib.auth.models import User
+from django.forms import HiddenInput
+
 from authentication.models import Usuario
 from django.contrib.auth.forms import PasswordResetForm, UserCreationForm, PasswordChangeForm, SetPasswordForm
 
@@ -121,15 +123,31 @@ class UserRegisterForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(self.__class__, self).__init__(*args, **kwargs)
         self.fields['username'].required = False
+        self.fields['roles'].required = False
+        self.fields['moodle_user'].required = False
+        self.fields['moodle_user'].widget = HiddenInput()
         if 'identificacion' in self.data:
-            _mutable = self.data._mutable
-            self.data._mutable = True
-            self.data['username'] = self.data['identificacion']
-            self.data._mutable = _mutable
+            if not self.data['username']:
+                _mutable = self.data._mutable
+                self.data._mutable = True
+                self.data['username'] = self.data['identificacion']
+                self.data._mutable = _mutable
 
     def save(self, commit=True):
         user = super().save(commit=False)
-        user.set_password(self.cleaned_data['identificacion'])
+        # Inicial nombre
+        nombres = self.cleaned_data.get('nombres')
+        splitNombres = nombres.split(' ')
+        # Inicial apellido
+        apellidos = self.cleaned_data.get('apellidos')
+        splitApellidos = apellidos.split(' ')
+        identificacion = self.cleaned_data.get('identificacion')
+        # Crear password
+        pswd = splitNombres[0][0].upper() + splitApellidos[0][0].lower() + "-" + identificacion
+        if self.instance.pk:
+            print("Not edit password user")
+        else:
+            user.set_password(pswd)
         if commit:
             user.save()
         return user
@@ -138,7 +156,7 @@ class UserRegisterForm(forms.ModelForm):
 class UsuarioPerfilForm(forms.ModelForm):
     class Meta:
         model = Usuario
-        fields = ['email','nombres','apellidos','identificacion','direccion','telefono']
+        fields = ['email', 'nombres', 'apellidos', 'identificacion', 'direccion', 'telefono', 'imagen']
         exclude = ['usuario_activo', 'usuario_administrador']
         widgets = {
             'email': forms.EmailInput(
@@ -172,6 +190,12 @@ class UsuarioPerfilForm(forms.ModelForm):
                 attrs={
                     'class': 'form-control',
                     'maxlength': '10'
+                }
+            ),
+            'imagen': forms.TextInput(
+                attrs={
+                    'class': 'form-control',
+                    'type': 'file'
                 }
             ),
         }

@@ -57,8 +57,6 @@ LOCAL_APPS = [
     'easyaudit',
 ]
 
-
-
 INSTALLED_APPS = BASE_APPS + LOCAL_APPS + THIRD_APPS
 
 AUTH_USER_MODEL = 'authentication.Usuario'
@@ -100,24 +98,20 @@ WSGI_APPLICATION = 'secoed.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
+CONEXION_NAME = 'secoed_pg_2'
+CONEXION_USER = 'secoed'
+CONEXION_PASSWORD = 'secoed2021'
+CONEXION_HOST = '95.216.216.98'
+CONEXION_PORT = '5433'
 
 DATABASES = {
     'default': {
-        #DATABASE PRODUCTION
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'db_secoed',
-        'USER': 'postgres',
-        'PASSWORD': 'postgres',
-        'HOST': 'pgdb',
-        'PORT': 5432,
-
-        #DATABASE DEVELOPER
-        #'ENGINE': 'django.db.backends.postgresql',
-        #'NAME': 'db_secoed',
-        #'USER': 'secoed',
-        #'PASSWORD': 'secoed2021',
-        #'HOST': '95.216.216.98',
-        #'PORT': '5433',
+        'NAME': CONEXION_NAME,
+        'USER': CONEXION_USER,
+        'PASSWORD': CONEXION_PASSWORD,
+        'HOST': CONEXION_HOST,
+        'PORT': CONEXION_PORT,
     }
 }
 
@@ -171,9 +165,8 @@ DEFAULT_FROM_EMAIL = 'secoed.web@gmail.com'
 LOGIN_REDIRECT_URL = '/authentication/pages-login'
 LOGOUT_REDIRECT_URL = '/authentication/pages-login'
 
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
-
 MEDIA_URL = '/media/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
@@ -184,3 +177,7 @@ DJANGO_EASY_AUDIT_WATCH_REQUEST_EVENTS = True
 DJANGO_EASY_AUDIT_ADMIN_SHOW_MODEL_EVENTS = False
 DJANGO_EASY_AUDIT_ADMIN_SHOW_AUTH_EVENTS = False
 DJANGO_EASY_AUDIT_ADMIN_SHOW_REQUEST_EVENTS = False
+
+TOKEN_MOODLE = '958c77e27c859fac94cfb40ceec68a06'
+API_BASE = 'http://academyec.com/moodle/webservice/rest/server.php'
+CONTEXT_ID = 116

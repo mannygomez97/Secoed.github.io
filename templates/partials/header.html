@@ -57,11 +57,15 @@
                 </div>
 
                 <div class="dropdown d-inline-block">
-                    <a href="{% url 'sendEmail' %}" class="btn btn-outlined waves-effect">Sincronizar Eventos</a>
+
+                    <button id="sync-button" class="btn btn-outlined waves-effect">Sincronizar Eventos</button>
                     <button type="button" class="btn header-item waves-effect" id="page-header-user-dropdown"
                             data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <img class="rounded-circle header-profile-user" src="{% static 'images/users/avatar-1.jpg' %}"
-                             alt="Header Avatar">
+                        {% if user.imagen %}
+                            <img class="rounded-circle header-profile-user"
+                                 src="{% get_media_prefix %}{{ user.imagen }}"
+                                 alt="Avatar">
+                        {% endif %}
                         <span class="d-none d-xl-inline-block ms-1"
                               key="t-henry">{{ user.username }}</span>
                         <i class="mdi mdi-chevron-down d-none d-xl-inline-block"></i>
@@ -69,7 +73,7 @@
                     <div class="dropdown-menu dropdown-menu-end">
                         <!-- item-->
                         {% if user.is_authenticated %}
-                            <a class="dropdown-item" href="{% url 'perfil' %}"><i
+                            <a class="dropdown-item" href="{% url 'user' %}"><i
                                     class="bx bx-user-circle font-size-16 align-middle me-1"></i>Perfil</a>
                         {% endif %}
                         <div class="dropdown-divider"></div>
@@ -88,4 +92,5 @@
             </div>
         </div>
     </header>
+    <script src="{% static 'libs/sweetalert2/sweetalert2.all.min.js' %}"></script>
 {% endblock %}

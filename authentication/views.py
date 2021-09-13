@@ -1,3 +1,4 @@
+import requests
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic.base import View
 from authentication.forms import UserLoginForm, UsuarioPerfilForm
@@ -12,6 +13,7 @@ from django.utils.encoding import force_bytes
 from django.db.models.query_utils import Q
 from authentication.models import Usuario
 from authentication.forms import UserRegisterForm
+from secoed.settings import TOKEN_MOODLE, API_BASE
 
 username = '';
 
@@ -145,11 +147,11 @@ def verificar(nro):
             elif tercer_dig == 9:  # si es ruc
                 return __validar_ced_ruc(nro, 2) and nro[10:13] == '001'  # sociedades privadas
             else:
-                raise Exception('Tercer digito invalido')
+                return False
         else:
-            raise Exception('Codigo de provincia incorrecto')
+            return False
     else:
-        raise Exception('Longitud incorrecta del numero ingresado')
+        return False
 
 
 def __validar_ced_ruc(nro, tipo):
@@ -192,6 +194,60 @@ class UsuarioView(View):
             identificacion = request.POST['identificacion']
             if verificar(identificacion) == False:
                 messages.warning(request, "El numero de identificación es invalida", "warning")
+                return redirect('usuario')
+            # Registrar user moodle
+            split = request.POST['nombres'].split(' ')
+            split1 = request.POST['apellidos'].split(' ')
+            pswd = split[0][0].upper() + split1[0][0].lower() + "-" + request.POST['identificacion']
+            # Registar usuario en moodle
+            params = {
+                "wstoken": TOKEN_MOODLE,
+                "wsfunction": "core_user_create_users",
+                "moodlewsrestformat": "json",
+                "users[0][username]": request.POST['username'],
+                "users[0][firstname]": request.POST['nombres'],
+                "users[0][lastname]": request.POST['apellidos'],
+                "users[0][email]": request.POST['email'],
+                "users[0][password]": pswd,
+            }
+            try:
+                respuesta = requests.post(API_BASE, params)
+                if respuesta:
+                    r = respuesta.json()
+                    print(r)
+                    if respuesta.status_code == 400:
+                        messages.success(request, "Error 400", "error")
+                        return redirect('usuario')
+                    else:
+                        mutable = request.POST._mutable
+                        request.POST._mutable = True
+                        for id in r:
+                            request.POST['moodle_user'] = id['id']
+                        request.POST._mutable = mutable
+            except Exception as e:
+                print(e)
+                messages.success(request, "Error al registrar el usuario en el moodle", "error")
+                return redirect('usuario')
+            # crear rol-usuario en moodle
+            parameters = {
+                "wstoken": TOKEN_MOODLE,
+                "wsfunction": "core_role_assign_roles",
+                "moodlewsrestformat": "json",
+                "assignments[0][userid]": request.POST['moodle_user'],
+                "assignments[0][roleid]": request.POST['rol_moodle'],
+                "assignments[0][contextid]": CONTEXT_ID,
+            }
+            try:
+                result = requests.post(API_BASE, parameters)
+                if result:
+                    r = result.json()
+                    print(r)
+                    if result.status_code == 400:
+                        messages.success(request, "Error 400", "error")
+                        return redirect('usuario')
+            except Exception as e:
+                print(e)
+                messages.success(request, "Error al registrar el rol-usuario en el moodle", "error")
                 return redirect('usuario')
             if userForm.is_valid():
                 subject = "USUARIO DE INGRESO PARA EL SECOED"
@@ -238,8 +294,8 @@ class UsuarioView(View):
         usuario = get_object_or_404(Usuario, pk=pk)
         if request.method == 'POST':
             identificacion = request.POST['identificacion']
-            if verificar(identificacion) == False:
-                messages.warning(request, "El numero de identificación es invalida", "warning")
+            if not verificar(identificacion):
+                messages.warning(request, "El número de identificación es invalida", "warning")
                 return redirect('usuario')
             form = UserRegisterForm(request.POST, instance=usuario)
             if form.is_valid():
@@ -267,17 +323,17 @@ class UsuarioPerfilView(View):
     def get(self, request):
         usuario = get_object_or_404(Usuario, pk=request.user.id)
         usuarioPerfilForm = UsuarioPerfilForm(instance=usuario)
-        greeting = {'heading': "Perfil", 'pageview': "Perfil","form": usuarioPerfilForm}
+        greeting = {'heading': "Perfil", 'pageview': "Perfil", "form": usuarioPerfilForm}
         return render(request, self.template_name, greeting)
 
     def editUsuarioPerfil(request, pk):
         usuario = get_object_or_404(Usuario, pk=pk)
         if request.method == 'POST':
-            usuarioPerfilForm = UsuarioPerfilForm(request.POST, instance=usuario)
+            usuarioPerfilForm = UsuarioPerfilForm(request.POST, instance=usuario, files=request.FILES)
             if usuarioPerfilForm.is_valid():
                 usuarioPerfilForm.save()
                 messages.success(request, "Se edito correctamente", "success")
-                return redirect('perfil')
+                return redirect('user')
         else:
             usuarioPerfilForm = UsuarioPerfilForm(instance=usuario)
             view = False

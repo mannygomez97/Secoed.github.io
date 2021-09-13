@@ -16,6 +16,7 @@
           rel="stylesheet" type="text/css"/>
 {% endblock %}
 
+
 {% block contents %}
     <div class="row">
         <div class="col-12">
@@ -23,59 +24,42 @@
                 <div class="card-body">
                     <div class="button-items" style="margin-bottom: 10px">
                         <button type="button"
-                                onclick="openModal('{% url 'newRequisito' %}','#newModal')"
+                                onclick="openModal('{% url 'newRol' %}','#newModal')"
                                 class="btn btn-success waves-effect waves-light btn-rounded"
                                 data-bs-toggle="modal">
                             <i class="mdi mdi-plus-circle font-size-16 align-middle me-2"></i>
-                            NUEVO CRITERIO
+                            NUEVO ROL
                         </button>
-
                     </div>
-                    <table class="table table-primary dt-responsive  align-middle"
-                           style="text-align: center">   
-                    <!-- id="datatable" si quieres ordenar por id la tabla -->
-                           
-                    
+
+                    <table id="datatable" class="table table-primary table-nowrap align-middle table-responsive"
+                           style="text-align: center">
                         <thead class="table-light">
                         <tr>
                             <th>ID</th>
-                            <th>Nivel</th>
-                            <th style="width:300px"> Criterio</th>
-                            <th>Semáforo</th>
-                            <th>Acciones</th>
+                            <th>DESCRIPCIÓN</th>
+                            <th>ACCIONES</th>
                         </tr>
                         </thead>
                         <tbody>
-                        {% for men in menusview %}
+                        {% for rol in rolview %}
                             <tr>
-                                <td>{{men.id}}</td>
-
-                                <td>{% if men.nivel == 1 %}
-                                        Nivel 1
-                                    {% elif men.nivel == 2 %}
-                                        Nivel 2
-                                    {% elif men.nivel == 3 %}
-                                        Nivel 3
-                                    {% elif men.nivel == 4 %}
-                                        Nivel 4
-                                    {% endif %}
-                                    
-                                </td>
-                                <td style=" width: 100px;
-                                word-wrap: break-word;">{{men.criterio}}</td> 
-                                <td>
-                                    {% if men.semaforo %}
-                                        <img src="{% get_static_prefix %}images/components/semaforo{{men.semaforo}}.jpg" alt="" width="200" height="120">
-                                    {% endif %}
-                                </td> 
+                                <td>{{ rol.id }}</td>
+                                <td>{{ rol.descripcion }}</td>
                                 <td>
                                     <div class="btn-group mt-4 mt-md-0" role="group" aria-label="Basic example">
                                         <button type="button"
-                                                onclick="openModal('{% url 'updateRequisito' men.id %}','#editModal')"
+                                                onclick="openModal('{% url 'viewRol' rol.id %}','#viewModal')"
+                                                class="btn btn-primary waves-effect waves-light"
+                                                data-bs-toggle="modal">
+                                            <i class="mdi mdi-eye"></i>
+                                        </button>
+                                        <button type="button"
+                                                onclick="openModal('{% url 'editRol' rol.id %}','#editModal')"
                                                 class="btn btn-success waves-effect waves-light">
                                             <i class="mdi mdi-pencil"></i>
                                         </button>
-                                        <button type="submit" onclick="deleteRequisito({{ men.id }})"
+                                        <button type="submit" onclick="deleteRol({{ mod.id }})"
                                                 class="btn btn-danger waves-effect waves-light">
                                             <i class="mdi mdi-trash-can"></i>
                                         </button>
@@ -139,19 +123,24 @@
 
     <script src="{% static 'js/app.js' %}"></script>
 
-    <!-- MIO-->
+    <!-- Modal View -->
+    <script type="text/javascript">
+        var $ = jQuery.noConflict();
 
-    <script src = "{% static 'js/education/requisito.js' %}"></script>
-    
+        function openModal(url, idModal) {
+            $(idModal).load(url, function () {
+                $(this).modal('show')
+            });
+        }
 
-
+    </script>
 
     <!-- message success-->
     {% if messages %}
         {% for m in messages %}
             <script>
                 Swal.fire({
-                    "title": "MENÚ",
+                    "title": "ROLES",
                     "text": "{{m}}",
                     "icon": "{{m.extra_tags}}",
                 })
@@ -159,10 +148,9 @@
         {% endfor %}
     {% endif %}
 
-
     <!-- delete -->
     <script>
-        function deleteRequisito(id) {
+        function deleteRol(id) {
             Swal.fire({
                 "title": "¿Esta seguro?",
                 "text": "Esta acción no se puede revertir",
@@ -176,11 +164,10 @@
                 .then(function (result) {
                     if (result.isConfirmed) {
                         console.log(id)
-                        window.location.href = "deleteRequisito/" + id
+                        window.location.href = "deleteRol/" + id
                     }
                 })
         }
     </script>
-
 
 {% endblock %}

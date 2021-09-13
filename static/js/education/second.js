@@ -1,4 +1,3 @@
-
 let input = document.getElementById('autocomplete-input');
 const formatJson = {
     course: "BD",
@@ -78,27 +77,6 @@ const search = (key) =>{
 }
 
 
-
-// function handleClick(event){
-//     let boton = event.srcElement.parentElement.parentElement.getElementsByTagName("td");
-//     console.log(boton)
-//     let id = boton[0].innerHTML;
-//     let curso = boton[1].innerHTML;
-//     let asesor = boton[2].firstElementChild.firstElementChild.value;  
-//     console.log(boton)  
-//     //let asesor = boton[2].firstElementChild.firstElementChild.value;
-        
-//     if (asesor == ""){
-//         alert("agregue al asesor para poder asignar curso");
-//     }
-
-//     else{
-//         console.log(id);
-//         console.log(curso);
-//         console.log(asesor);
-//     }
-// }
-
 function eventos(){
     let inputs = [...document.getElementsByName("asesores[]")];//El operador "..." spread sirve para convertir a array
     // let autos = [...document.getElementsByName("autocomplet[]")]; 
@@ -128,6 +106,8 @@ function eventos(){
         })
         return input;
     })
+
+
     //////
     const buscar = (key,autocompleteField) =>{
         const url = `/components/asesor/${key}`;
@@ -154,6 +134,36 @@ function eventos(){
         .catch(e =>{console.log(e)})
     }   
 }
+
+
+var curso;
+console.log(cursoTodos());
+
+console.log(curso);
+
+
+function cursoTodos(){
+    const url =  `/components/cursos/`;
+    fetch(url, {
+        method: "get",
+        headers: new Headers(),
+        mode : "cors",
+        cache : "default",
+    })
+    .then((res) => res.json())
+    .then((data)=>{
+        
+            curso = data.data.context.map((item) =>{
+                // 'id_curso_asesor','curso__tipo'
+                var items = [item.id,item.fullname]
+                
+                return items;
+            })
+
+    })
+    .catch(e =>{console.log(e)})
+}
+
 
 //se encarga de escribir la lista que se obtiene
 const build_lista = (items = []) =>{

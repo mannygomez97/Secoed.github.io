@@ -1,4 +1,5 @@
 import json
+import requests
 
 from django.db import transaction, IntegrityError
 from django.http import JsonResponse
@@ -11,6 +12,7 @@ from authentication.models import Usuario
 from eva.forms import CoevaluacionForm, AutoEvaluacionForm
 from eva.models import Respuesta, Docente, DetalleRespuesta, ResultadoProceso, ParametrosGeneral, Ciclo, \
     Pregunta, Categoria
+from secoed.settings import TOKEN_MOODLE, API_BASE
 
 
 class TeachersPendingEvaluationList(ListView):
@@ -49,6 +51,25 @@ class AutoEvaluacionCreateView(CreateView):
     @method_decorator(csrf_exempt)
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
+
+    def enroll_course(self, course):
+        data = []
+        params = {
+            "wstoken": TOKEN_MOODLE,
+            "wsfunction": "enrol_manual_enrol_users",
+            "moodlewsrestformat": "json",
+            "enrolments[0][userid]": self.request.user.moodle_user,
+            "enrolments[0][courseid]": course,
+            "enrolments[0][roleid]": self.request.user.rol_moodle
+        }
+        data = []
+
+        respuesta = requests.post(API_BASE, params)
+        if respuesta is None:
+            data['message'] = 'Alumno matriculado correctamente.'
+        else:
+            data['error'] = respuesta['message']
+        return data
 
     @transaction.atomic
     def post(self, request, *args, **kwargs):
@@ -131,6 +152,26 @@ class AutoEvaluacionCreateView(CreateView):
                             subtotal = float(result.Total_Proceso_Auto) + float(result.Total_Proceso_Coe)
                             result.Total_Proceso = round(subtotal / 2, 2)
 
+                            result_ped = (float(result.auto_result_Ped) + float(result.coe_result_Ped)) / 2
+                            result_did = (float(result.auto_result_Did) + float(result.coe_result_Did)) / 2
+                            result_tic = (float(result.auto_result_Tic) + float(result.coe_result_Tic)) / 2
+
+                            if result_ped > 85:
+                                message = 'Felicidades ha concluido en proceso de auto y co evaluaciòn de manera ' \
+                                          'èxitosa '
+                            else:
+                                data = self.enroll_course(self, 10)
+                            if result_did > 85:
+                                message = 'Felicidades ha concluido en proceso de auto y co evaluaciòn de manera ' \
+                                          'èxitosa '
+                            else:
+                                data = self.enroll_course(self, 11)
+                            if result_tic > 85:
+                                message = 'Felicidades ha concluido en proceso de auto y co evaluaciòn de manera ' \
+                                          'èxitosa '
+                            else:
+                                data = self.enroll_course(self, 12)
+
                         result.save()
                         data['message'] = 'Evaluación realizada correctamente.'
         except Exception as e:
@@ -162,16 +203,33 @@ class AutoEvaluacionCreateView(CreateView):
         return context
 
 
+def enroll_course_coevaluation(course, docente):
+    teacher = Docente.objects.filter(id=docente.id).first()
+    user = Usuario.objects.filter(id=teacher.user).first()
+    params = {
+        "wstoken": TOKEN_MOODLE,
+        "wsfunction": "enrol_manual_unenrol_users",
+        "moodlewsrestformat": "json",
+        "enrolments[0][userid]": user.moodle_user,
+        "enrolments[0][courseid]": course,
+        "enrolments[0][roleid]": user.rol_moodle
+    }
+    data = []
+    respuesta = requests.post(API_BASE, params)
+
+    respuesta = requests.post(API_BASE, params)
+    if respuesta is None:
+        data['message'] = 'Alumno matriculado correctamente.'
+    else:
+        data['error'] = respuesta['message']
+    return JsonResponse(data)
+
+
 class CoevaluacionCreateView(CreateView):
     model = Docente
     form_class = CoevaluacionForm
     template_name = 'evaluaciones/co-evaluation.html'
     success_url = reverse_lazy('eva:list-coevaluation')
-
-    def enroll_course(self, request):
-        course = None
-
-        return course
 
     @method_decorator(csrf_exempt)
     def dispatch(self, request, *args, **kwargs):
@@ -256,6 +314,27 @@ class CoevaluacionCreateView(CreateView):
                         if result.Total_Proceso_Auto > 0:
                             subtotal = float(result.Total_Proceso_Auto) + float(result.Total_Proceso_Coe)
                             result.Total_Proceso = round(subtotal / 2, 2)
+
+                            result_ped = (float(result.auto_result_Ped) + float(result.coe_result_Ped)) / 2
+                            result_did = (float(result.auto_result_Did) + float(result.coe_result_Did)) / 2
+                            result_tic = (float(result.auto_result_Tic) + float(result.coe_result_Tic)) / 2
+
+                            if result_ped > 85:
+                                message = 'Felicidades ha concluido en proceso de auto y co evaluaciòn de manera ' \
+                                          'èxitosa en Pedagogía'
+                            else:
+                                data = enroll_course_coevaluation(10, docente)
+                            if result_did > 85:
+                                message = 'Felicidades ha concluido en proceso de auto y co evaluaciòn de manera ' \
+                                          'èxitosa en '
+                            else:
+                                data = enroll_course_coevaluation(11, docente)
+
+                            if result_tic > 85:
+                                message = 'Felicidades ha concluido en proceso de auto y co evaluaciòn de manera ' \
+                                          'èxitosa en '
+                            else:
+                                data = enroll_course_coevaluation(12, docente)
 
                         result.save()
                         del request.session['docente']

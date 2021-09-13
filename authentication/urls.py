@@ -4,7 +4,7 @@ from authentication import views
 from django.contrib.auth import views as auth_views
 
 urlpatterns = [
-    path(r'perfil', login_required(views.UsuarioPerfilView.as_view()), name="perfil"),
+    path(r'user', login_required(views.UsuarioPerfilView.as_view()), name="user"),
     path(r'editUsuarioPerfil/<int:pk>', login_required(views.UsuarioPerfilView.editUsuarioPerfil),
          name='editUsuarioPerfil'),
     path(r'pages-login', views.PagesLoginView.as_view(), name="pages-login"),

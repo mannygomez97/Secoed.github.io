@@ -3,21 +3,22 @@
     <div class="modal-content">
         <div class="modal-header">
             <h5 class="modal-title">
-                {% if usuario.id %}
-                    Usuario: {{ usuarioPerfilForm.correo }}
+                {% if rol.id %}
+                    Rol: {{ rol.id }}
                 {% else %}
-                    Crear Usuario
+                    Crear Rol
                 {% endif %}
             </h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"/>
         </div>
-        <form method="POST" id="form" action="editUsuarioPerfil/{{ usuario.id }}" enctype="multipart/form-data">
+        <form method="POST" id="form"
+              action="{% if rol.id %} editRol/{{ rol.id }}{% else %}newRol{% endif %}">
             {% csrf_token %}
             <div class="modal-body">
-                {{ usuarioPerfilForm|crispy }}
+                {{ rolFormView|crispy }}
             </div>
             <div class="modal-footer">
-                <button type="submit" class="btn btn-success">
+                <button type="submit" class="btn btn-success" {% if view %}disabled{% endif %}>
                     <i class="mdi mdi-content-save"></i>
                     Guardar
                 </button>

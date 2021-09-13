@@ -1,10 +1,8 @@
-from django.http import JsonResponse
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView
-from openpyxl.styles.builtins import total
 
-from eva.models import ResultadoProceso, Docente, Ciclo, DetalleRespuesta
+from eva.models import ResultadoProceso, Docente, Ciclo
 
 
 class ProcessResultEvaluations(TemplateView):

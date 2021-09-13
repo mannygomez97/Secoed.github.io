@@ -1,9 +1,9 @@
-from django.forms import ModelForm, TextInput, Select, ModelChoiceField
+from django.forms import ModelForm, TextInput, Select, ModelChoiceField, NumberInput
 from conf.models import *
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 
-##ICONOS = Icono.objects.order_by('descripcion')
+# ICONOS = Icono.objects.order_by('descripcion')
 MODULOS = Modulo.objects.order_by('descripcion')
 
 
@@ -21,7 +21,7 @@ class ModuloForm(ModelForm):
         widgets = {
             'descripcion': TextInput(attrs={'class': 'form-control', 'placeHolder': 'Ingrese el nombre del modulo'}),
             'orden': TextInput(attrs={'class': 'form-control', 'min': '0', 'type': 'number'}),
-            ##'icon': Select(attrs={'class': 'form-control'}, choices=((x.descripcion, x.descripcion) for x in ICONOS)),
+            # 'icon': Select(attrs={'class': 'form-control'}, choices=((x.descripcion, x.descripcion) for x in ICONOS)),
             'key': TextInput(
                 attrs={'class': 'form-control', 'placeHolder': 'Generado por el sistema', 'readonly': 'true'}),
         }
@@ -49,7 +49,7 @@ class MenuForm(ModelForm):
         widgets = {
             'descripcion': TextInput(attrs={'class': 'form-control', 'placeHolder': 'Ingrese el nombre del modulo'}),
             'orden': TextInput(attrs={'class': 'form-control', 'min': '0', 'type': 'number'}),
-            ##'icon': Select(attrs={'class': 'form-control'}, choices=((x.descripcion, x.descripcion) for x in ICONOS)),
+            # 'icon': Select(attrs={'class': 'form-control'}, choices=((x.descripcion, x.descripcion) for x in ICONOS)),
             'href': TextInput(attrs={'class': 'form-control', 'placeHolder': 'Ingrese la url física'}),
             'url': TextInput(attrs={'class': 'form-control', 'placeHolder': 'Ingrese la url lógica'}),
             'key': TextInput(
@@ -63,6 +63,7 @@ class MenuForm(ModelForm):
         self.fields['url'].required = False
         self.fields['modulo_id'].required = False
         self.fields['parent_id'].required = False
+        self.fields['roles'].required = False
         self.fields['modulo_id'].blank = True
         self.fields['parent_id'].queryset = Menu.objects.none()
         self.fields['modulo_id'].queryset = Modulo.objects.order_by('orden')
@@ -196,3 +197,32 @@ class CarreraForm(ModelForm):
         self.fields['responsable'].required = False
         self.fields['telf_responsable'].required = False
         self.fields['correo_responsable'].required = False
+
+
+class RolForm(ModelForm):
+    class Meta:
+        model = Rol
+        fields = '__all__'
+        labels = {
+            'descripcion': 'Descripción:',
+        }
+        widgets = {
+            'descripcion': TextInput(
+                attrs={'class': 'form-control', 'placeHolder': 'Ingrese el nombre de la carrera'})
+        }
+
+
+class RolMoodleForm(ModelForm):
+    class Meta:
+        model = RolMoodle
+        fields = '__all__'
+        labels = {
+            'descripcion': 'Descripción:',
+            'codigo': 'Código:',
+        }
+        widgets = {
+            'descripcion': TextInput(
+                attrs={'class': 'form-control', 'placeHolder': 'Ingrese el nombre de la carrera'}),
+            'codigo': NumberInput(
+                attrs={'class': 'form-control', 'placeHolder': 'Ingrese el código del rol de moodle'})
+        }
