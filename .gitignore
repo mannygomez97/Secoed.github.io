@@ -49,14 +49,14 @@ db.sqlite3
 my.cnf
 
 #pymigrate
-/asesor/migrations
-/authentication/migrations
-/components/migrations
-/conf/migrations
-/cursos/migrations
-/eva/migrations
-/layout/migrations
-/secoed/migrations
+#/asesor/migrations
+#/authentication/migrations
+#/components/migrations
+#/conf/migrations
+#/cursos/migrations
+#/eva/migrations
+#/layout/migrations
+#/secoed/migrations
 
 #pycache
 /asesor/__pycache__
