@@ -98,11 +98,11 @@ WSGI_APPLICATION = 'secoed.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-CONEXION_NAME = 'secoed_pg_2'
+CONEXION_NAME = 'pg_secoed'
 CONEXION_USER = 'secoed'
 CONEXION_PASSWORD = 'secoed2021'
-CONEXION_HOST = '95.216.216.98'
-CONEXION_PORT = '5433'
+CONEXION_HOST = 'pgdb'
+CONEXION_PORT = 5432
 
 DATABASES = {
     'default': {
