@@ -6,7 +6,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 from django.conf.urls import handler404, handler500
 from secoed.views import Error404View, Error500View
-
+from secoed.settings import DEBUG
 urlpatterns = [
     # Inicio de sesión
     path('jsnCountLogin', views.AjaxEvent.jsnCountLogin, name="jsnCountLogin"),
@@ -37,8 +37,8 @@ urlpatterns = [
     # Components
     path('components/', include('components.urls')),
 ]
-
-urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+if DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 handler404 = Error404View.as_view()
 handler500 = Error500View.as_error_view()

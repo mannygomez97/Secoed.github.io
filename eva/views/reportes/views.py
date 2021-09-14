@@ -2,7 +2,8 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView
 
-from eva.models import ResultadoProceso, Docente, Ciclo
+from authentication.models import Usuario
+from eva.models import ResultadoProceso, Ciclo
 
 
 class ProcessResultEvaluations(TemplateView):
@@ -15,7 +16,7 @@ class ProcessResultEvaluations(TemplateView):
     def get_graph_co_evaluation_by_category(self):
         data = []
         try:
-            docente = Docente.objects.filter(user=self.request.user.id).first()
+            docente = Usuario.objects.filter(user=self.request.user.id).first()
             ciclo = Ciclo.objects.filter(is_active=True).first()
             result_by_teacher = ResultadoProceso.objects.filter(user=docente.id, cycle=ciclo.id).values(
                 'coe_result_Tic', 'coe_result_Did', 'coe_result_Ped').first()
@@ -34,9 +35,10 @@ class ProcessResultEvaluations(TemplateView):
     def get_total_auto_evaluation(self):
         total_auto = []
         try:
-            docente = Docente.objects.filter(user=self.request.user.id).first()
+            docente = Usuario.objects.filter(user=self.request.user.id).first()
             ciclo = Ciclo.objects.filter(is_active=True).first()
-            result = ResultadoProceso.objects.filter(user=docente.id, cycle=ciclo.id).values('Total_Proceso_Auto').first()
+            result = ResultadoProceso.objects.filter(user=docente.id, cycle=ciclo.id).values(
+                'Total_Proceso_Auto').first()
             for r in result:
                 tot = float(result['Total_Proceso_Auto'])
                 total_auto.append(tot)
@@ -47,7 +49,7 @@ class ProcessResultEvaluations(TemplateView):
     def get_total_auto(self):
         result = None
         try:
-            docente = Docente.objects.filter(user=self.request.user.id).first()
+            docente = Usuario.objects.filter(user=self.request.user.id).first()
             ciclo = Ciclo.objects.filter(is_active=True).first()
             result = ResultadoProceso.objects.filter(user=docente.id, cycle=ciclo.id).first()
         except:
@@ -57,9 +59,10 @@ class ProcessResultEvaluations(TemplateView):
     def get_total_co_evaluation(self):
         total_coe = []
         try:
-            docente = Docente.objects.filter(user=self.request.user.id).first()
+            docente = Usuario.objects.filter(user=self.request.user.id).first()
             ciclo = Ciclo.objects.filter(is_active=True).first()
-            result = ResultadoProceso.objects.filter(user=docente.id, cycle=ciclo.id).values('Total_Proceso_Coe').first()
+            result = ResultadoProceso.objects.filter(user=docente.id, cycle=ciclo.id).values(
+                'Total_Proceso_Coe').first()
             for r in result:
                 tot = float(result['Total_Proceso_Coe'])
                 total_coe.append(tot)
@@ -70,7 +73,7 @@ class ProcessResultEvaluations(TemplateView):
     def get_graph_auto_evaluation_by_category(self):
         data = []
         try:
-            docente = Docente.objects.filter(user=self.request.user.id).first()
+            docente = Usuario.objects.filter(user=self.request.user.id).first()
             ciclo = Ciclo.objects.filter(is_active=True).first()
             result_by_teacher = ResultadoProceso.objects.filter(user=docente.id, cycle=ciclo.id).values(
                 'auto_result_Tic', 'auto_result_Did', 'auto_result_Ped').first()

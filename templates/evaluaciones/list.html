@@ -2,7 +2,7 @@
 {% block cols %}
     <th>N°</th>
     <th>Nombre</th>
-    <th>Titulo</th>
+    <th>Identificación</th>
 {% endblock %}
 <!--Filas de la tabla-->
 {% block rows %}
@@ -10,9 +10,9 @@
         <tr>
             <td>{{ docente.id }}</td>
             <td>
-                 <a href="{% url 'eva:create-coevaluation' %}?docente={{ docente.pk }}" >{{ docente.user }}</a>
+                 <a href="{% url 'eva:create-coevaluation' %}?docente={{ docente.pk }}" >{{ docente.nombres }} {{ docente.apellidos }}</a>
             </td>
-            <td>{{ docente.title }}</td>
+            <td>{{ docente.identificacion }}</td>
         </tr>
     {% endfor %}
  {% endblock %}

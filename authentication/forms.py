@@ -2,7 +2,7 @@ from django import forms
 from django.contrib.auth.models import User
 from django.forms import HiddenInput
 
-from authentication.models import Usuario
+from authentication.models import Usuario, RolUser
 from django.contrib.auth.forms import PasswordResetForm, UserCreationForm, PasswordChangeForm, SetPasswordForm
 
 
@@ -11,7 +11,8 @@ class UserLoginForm(forms.Form):
                                widget=forms.TextInput(attrs={'placeholder': 'Ingrese su usuario', 'id': 'user'}),
                                max_length=50, required=True)
     password = forms.CharField(label='Contraseña',
-                               widget=forms.PasswordInput(attrs={'placeholder': 'Ingrese su contraseña', 'id': 'pwd'}),
+                               widget=forms.PasswordInput(
+                                   attrs={'placeholder': 'Ingrese su contraseña', 'id': 'pwd', 'type': 'password'}),
                                required=True)
 
     class Meta:
@@ -123,7 +124,6 @@ class UserRegisterForm(forms.ModelForm):
     def __init__(self, *args, **kwargs):
         super(self.__class__, self).__init__(*args, **kwargs)
         self.fields['username'].required = False
-        self.fields['roles'].required = False
         self.fields['moodle_user'].required = False
         self.fields['moodle_user'].widget = HiddenInput()
         if 'identificacion' in self.data:
@@ -150,6 +150,7 @@ class UserRegisterForm(forms.ModelForm):
             user.set_password(pswd)
         if commit:
             user.save()
+            self.save_m2m()
         return user
 
 

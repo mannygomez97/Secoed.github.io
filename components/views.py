@@ -205,6 +205,7 @@ def deleteRequisito(request, pk):
         messages.success(request, "Se ha eliminado correctamente", "success")
     return redirect('requisito')
 
+
 def deleteAsignacion(request, pk):
     deleteA = get_object_or_404(CursoAsesores, pk=pk)
     if deleteA:
@@ -286,7 +287,6 @@ class listadoAsesores(View):
         params.update(courseid = request.GET.get('id'))
         response = requests.get(apiBase,params)
 
-        greeting = {"heading":"Listado de asesores curso", "pageview":"Forms","curso":request.GET.get('id')}
 
         if response:
             datos = [rol for rol in response.json() if rol.get('roles') and rol['roles'][0]['roleid'] == 5]

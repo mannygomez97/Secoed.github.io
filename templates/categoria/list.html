@@ -1,7 +1,12 @@
 {% extends 'parciales/list.html' %}
 <!--Botón e icono crear-->
-{%block url_app %}{% url 'eva:create-category' %}{% endblock %}
-{%block icono %} fas fa-plus {% endblock %}
+{% block btn_creacion %}
+    <div class="mb-2">
+        <button class="rounded-circle btn btn-outline-info" new-register type="button" onclick="openModal('{% url 'eva:create-category' %}', 'createModal')" title="Nuevo registro: {{ entity }}" >
+            <i class="fas fa-plus"></i>
+        </button>
+    </div>
+{% endblock %}
 <!--Columnas de la tabla-->
 {% block cols %}
     <th>N°</th>

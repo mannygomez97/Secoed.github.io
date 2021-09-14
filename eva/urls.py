@@ -1,5 +1,4 @@
 from django.conf.urls import url
-from django.contrib.auth.decorators import login_required
 
 from eva.views.evaluaciones.views import *
 from eva.views.reportes.views import ProcessResultEvaluations
@@ -19,9 +18,6 @@ app_name = 'eva'
 urlpatterns = [
     url(r'^docente/lista/', login_required(TeacherListView.as_view()), name='list-teacher'),
     url(r'^docente/coevaluadores/lista/', TeacherCoevaluatorListView.as_view(), name='list-coevaluators'),
-    url(r'^docente/crear/', login_required(TeacherCreateView.as_view()), name='create-teacher'),
-    url(r'^docente/editar/(?P<pk>\d+)/$', login_required(TeacherUpdateView.as_view()), name='update-teacher'),
-    url(r'^docente/eliminar/(?P<pk>\d+)/$', login_required(TeacherDeleteView.as_view()), name='delete-teacher'),
     # TYPE routes
     url(r'^tipo/lista/', login_required(TypeListView.as_view()), name='list-type'),
     url(r'^tipo/crear/', login_required(TypeCreateView.as_view()), name='create-type'),
@@ -55,8 +51,10 @@ urlpatterns = [
     # Type routes
     url(r'^parametro_grl/values/lista/', login_required(ParameterGrlListView.as_view()), name='list-parameter-grl'),
     url(r'^parametro_grl/values/crear/', login_required(ParameterGrlCreateView.as_view()), name='create-parameter-grl'),
-    url(r'^parametro_grl/values/editar/(?P<pk>\d+)/$', login_required(ParameterGrlUpdateView.as_view()), name='update-parameter-grl'),
-    url(r'^parametro_grl/values/eliminar/(?P<pk>\d+)/$', login_required(ParameterGrlDeleteView.as_view()), name='delete-parameter-grl'),
+    url(r'^parametro_grl/values/editar/(?P<pk>\d+)/$', login_required(ParameterGrlUpdateView.as_view()),
+        name='update-parameter-grl'),
+    url(r'^parametro_grl/values/eliminar/(?P<pk>\d+)/$', login_required(ParameterGrlDeleteView.as_view()),
+        name='delete-parameter-grl'),
     # Type routes
     url(r'^pregunta/lista/', login_required(QuestionsListView.as_view()), name='list-questions'),
     url(r'^pregunta/autoevaluacion/', login_required(PreguntasAutoView.as_view()), name='auto-questions'),

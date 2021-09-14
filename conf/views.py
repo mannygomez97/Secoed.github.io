@@ -80,7 +80,7 @@ class MenuContentView(View):
     # AJAX
     def loadMenus(request):
         modulo_id = request.GET.get('modulo_id')
-        menus = Menu.objects.filter(Q(modulo_id=modulo_id) & Q(href='')).order_by('descripcion')
+        menus = Menu.objects.filter(Q(modulo_id=modulo_id) & Q(href__isnull=True)).order_by('descripcion')
         return render(request, 'conf/menuList.html', {'menus': menus})
 
 

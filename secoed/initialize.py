@@ -1,6 +1,6 @@
 from django.contrib.auth.models import AnonymousUser
-
-from authentication.models import RolUser
+from django.db.models import Q
+from authentication.models import RolUser, Usuario, Rol
 from conf.models import Menu, Modulo, RolMenu
 
 
@@ -17,14 +17,19 @@ def load_menu(request):
             return context
         # Cargar menu si no es administrador
         else:
-            arrayModulo = []
-            rolUsuario = RolUser.objects.filter(user_id=request.user.id)
-            rolMenu = RolMenu.objects.filter(rol__id__in=rolUsuario)
-            for x in rolMenu:
-                print(x.id)
-                print(x.menu.parent_id)
-                print(x.menu.modulo_id)
-            context['modulo'] = arrayModulo
+            roles = Rol.objects.filter(usuario__id=request.user.id)
+            modulos = Modulo.objects.filter(menu__menu__roles__in=roles).order_by('orden')
+            for mod in modulos:
+                mod.menus = []
+                menus = Menu.objects.filter((Q(menu__roles__in=roles) & Q(modulo_id=mod.id)) | (
+                        Q(roles__in=roles) & Q(modulo_id=mod.id))).order_by('orden')
+                for item in menus:
+                    item.items = []
+                    items = Menu.objects.filter(Q(parent_id=item.id) & Q(roles__in=roles)).order_by('orden')
+                    if items:
+                        item.items = items
+                    mod.menus.append(item)
+            context['modulo'] = modulos
             return context
 
 

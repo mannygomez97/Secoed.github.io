@@ -10,8 +10,8 @@ class DocenteForm(ModelForm):
         self.fields['user'].widget.attrs['autofocus'] = True
 
     class Meta:
-        model = Docente
-        fields = ['user', 'title', 'type_contract', 'dedication', 'position', 'is_evaluator']
+        model = Usuario
+        fields = ['nombres', 'apellidos', 'identificacion', 'roles', 'rol_moodle', 'moodle_user']
 
         labels = {
             'user': 'Usuario',
@@ -36,8 +36,8 @@ class MateriaForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.fields['teacher'].empty_label = 'Seleccione un docente'
-        self.fields['teacher'].queryset = Docente.objects.filter(is_evaluator=False)
-        self.fields['area'].empty_label = 'Seleccione una Carrera'
+        self.fields['teacher'].queryset = Usuario.objects.filter(roles=3, rol_moodle__codigo__gte=5)
+        self.fields['area'].empty_label = 'Seleccione una área de conocimiento'
         self.fields['area'].widget.attrs['autofocus'] = True
 
     class Meta:
@@ -175,7 +175,7 @@ class PreguntaForm(ModelForm):
 class AreasConocimientoForm(ModelForm):
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        self.fields['docente'].queryset = Docente.objects.filter(is_evaluator=True)
+        self.fields['docente'].queryset = Usuario.objects.filter(roles=2, rol_moodle__codigo__gte=4)
         self.fields['career'].empty_label = 'Seleccione una carrera'
         self.fields['docente'].empty_label = 'Seleccione una docente'
         self.fields['name'].widget.attrs['autofocus'] = True

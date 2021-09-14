@@ -51,7 +51,7 @@ class Usuario(AbstractBaseUser):
     roles = models.ManyToManyField(Rol, blank=False, through='RolUser')
     rol_moodle = models.ForeignKey(RolMoodle, on_delete=models.SET_NULL, null=True)
     objects = UsuarioManger()
-    moodle_user = models.IntegerField('Id del usuario de moodle',null=True)
+    moodle_user = models.IntegerField('Id del usuario de moodle', null=True)
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['email', 'nombres', 'apellidos', 'identificacion', 'telefono']
 

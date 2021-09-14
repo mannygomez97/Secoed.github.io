@@ -4,7 +4,6 @@ from import_export.admin import ImportExportModelAdmin
 from eva.models import *
 
 admin.site.register(Materia)
-admin.site.register(Docente)
 admin.site.register(Ciclo)
 admin.site.register(Categoria)
 admin.site.register(Tipo)

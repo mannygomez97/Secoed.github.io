@@ -1,22 +1,22 @@
 version: "3.8"
 
 services:
-  django:
-    build: .
-    container_name: django
-    command: python manage.py runserver 0.0.0.0:8000
-    volumes:
-      - .:/usr/src/app
-    ports:
-      - "8086:8000"
-    depends_on:
-      - pgdb
-  pgdb:
-    image: postgres
-    container_name: pgdb
-    environment:
-      - POSTGRES_DB=pg_secoed
-      - POSTGRES_USER=secoed
-      - POSTGRES_PASSWORD=secoed2021
-    ports:
-      - "5434:5432"
+    django:
+        build: .
+        container_name: django
+        command: python manage.py runserver 0.0.0.0:8000
+        volumes:
+            - .:/usr/src/app
+        ports:
+            - "8086:8000"
+        depends_on:
+            - pgdb
+    pgdb:
+        image: postgres
+        container_name: pgdb
+        environment:
+        - POSTGRES_DB=db_secoed
+        - POSTGRES_USER=secoed
+        - POSTGRES_PASSWORD=secoed2021
+        ports:
+            - "5434:5432"

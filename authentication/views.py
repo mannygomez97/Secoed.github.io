@@ -199,6 +199,7 @@ class UsuarioView(View):
             split = request.POST['nombres'].split(' ')
             split1 = request.POST['apellidos'].split(' ')
             pswd = split[0][0].upper() + split1[0][0].lower() + "-" + request.POST['identificacion']
+            """
             # Registar usuario en moodle
             params = {
                 "wstoken": TOKEN_MOODLE,
@@ -249,6 +250,7 @@ class UsuarioView(View):
                 print(e)
                 messages.success(request, "Error al registrar el rol-usuario en el moodle", "error")
                 return redirect('usuario')
+            """
             if userForm.is_valid():
                 subject = "USUARIO DE INGRESO PARA EL SECOED"
                 email_template_name = "authentication/register-email.txt"
@@ -298,6 +300,8 @@ class UsuarioView(View):
                 messages.warning(request, "El número de identificación es invalida", "warning")
                 return redirect('usuario')
             form = UserRegisterForm(request.POST, instance=usuario)
+            print("EXAMPLE")
+            print(request.POST['roles'])
             if form.is_valid():
                 form.save()
                 messages.success(request, "Se edito correctamente", "success")

@@ -10,20 +10,20 @@ from django.views.generic import ListView, CreateView
 
 from authentication.models import Usuario
 from eva.forms import CoevaluacionForm, AutoEvaluacionForm
-from eva.models import Respuesta, Docente, DetalleRespuesta, ResultadoProceso, ParametrosGeneral, Ciclo, \
+from eva.models import Respuesta, DetalleRespuesta, ResultadoProceso, ParametrosGeneral, Ciclo, \
     Pregunta, Categoria
-from secoed.settings import TOKEN_MOODLE, API_BASE
+from secoed.settings import TOKEN_MOODLE, API_BASE, COURSE_TICS, COURSE_DIDACTIC, COURSE_PEDAGOGY
 
 
 class TeachersPendingEvaluationList(ListView):
-    model = Docente
+    model = Usuario
     template_name = 'evaluaciones/list.html'
     success_url = reverse_lazy('eva:list-coevaluar')
 
     def get_pendings_evaluation(self):
         data = []
         resultado = ResultadoProceso.objects.all()
-        docentes = Docente.objects.all().filter(user__usuario_activo=True, is_evaluator=False).select_related('user')
+        docentes = Usuario.objects.all().filter(usuario_activo=True, rol_moodle__codigo__gte=5)
         if resultado.count() == 0:
             data = docentes
         else:
@@ -43,7 +43,7 @@ class TeachersPendingEvaluationList(ListView):
 
 
 class AutoEvaluacionCreateView(CreateView):
-    model = Docente
+    model = Usuario
     form_class = AutoEvaluacionForm
     template_name = 'evaluaciones/auto-evaluation.html'
     success_url = reverse_lazy('eva:result-evaluation')
@@ -51,25 +51,6 @@ class AutoEvaluacionCreateView(CreateView):
     @method_decorator(csrf_exempt)
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
-
-    def enroll_course(self, course):
-        data = []
-        params = {
-            "wstoken": TOKEN_MOODLE,
-            "wsfunction": "enrol_manual_enrol_users",
-            "moodlewsrestformat": "json",
-            "enrolments[0][userid]": self.request.user.moodle_user,
-            "enrolments[0][courseid]": course,
-            "enrolments[0][roleid]": self.request.user.rol_moodle
-        }
-        data = []
-
-        respuesta = requests.post(API_BASE, params)
-        if respuesta is None:
-            data['message'] = 'Alumno matriculado correctamente.'
-        else:
-            data['error'] = respuesta['message']
-        return data
 
     @transaction.atomic
     def post(self, request, *args, **kwargs):
@@ -79,7 +60,7 @@ class AutoEvaluacionCreateView(CreateView):
             if action == 'add':
                 with transaction.atomic():
                     question = json.loads(request.POST['answers'])
-                    docente = Docente.objects.filter(user=int(question['user'])).first()
+                    docente = Usuario.objects.filter(rol_moodle__codigo__gte=5, id=self.request.user.id).first()
                     if docente is None:
                         usuario = Usuario.objects.filter(id=request.user.id).first()
                         data['message'] = usuario.nombres + ' Usuario no habilitado para el actual proceso'
@@ -111,7 +92,7 @@ class AutoEvaluacionCreateView(CreateView):
 
                         details = DetalleRespuesta.objects.filter(answer=answer.id).values('category',
                                                                                            'question',
-                                                                                           'parameter')\
+                                                                                           'parameter') \
                             .order_by('category')
 
                         ac_tics = 0.00
@@ -160,17 +141,17 @@ class AutoEvaluacionCreateView(CreateView):
                                 message = 'Felicidades ha concluido en proceso de auto y co evaluaciòn de manera ' \
                                           'èxitosa '
                             else:
-                                data = self.enroll_course(self, 10)
+                                data = enroll_course_evaluation(self.request.user, COURSE_PEDAGOGY)
                             if result_did > 85:
                                 message = 'Felicidades ha concluido en proceso de auto y co evaluaciòn de manera ' \
                                           'èxitosa '
                             else:
-                                data = self.enroll_course(self, 11)
+                                data = enroll_course_evaluation(self.request.user, COURSE_DIDACTIC)
                             if result_tic > 85:
                                 message = 'Felicidades ha concluido en proceso de auto y co evaluaciòn de manera ' \
                                           'èxitosa '
                             else:
-                                data = self.enroll_course(self, 12)
+                                data = enroll_course_evaluation(self.request.user, COURSE_TICS)
 
                         result.save()
                         data['message'] = 'Evaluación realizada correctamente.'
@@ -189,7 +170,7 @@ class AutoEvaluacionCreateView(CreateView):
         context['parameters'] = ParametrosGeneral.objects.filter(parameter=1)
         cycle = Ciclo.objects.filter(is_active=True).first()
         context['cycle'] = cycle
-        teacher = Docente.objects.filter(user=self.request.user.id).first()
+        teacher = Usuario.objects.filter(id=self.request.user.id).first()
         flag = False
         if teacher is not None:
             evaluate = Respuesta.objects.filter(teacher=teacher.id,
@@ -203,9 +184,18 @@ class AutoEvaluacionCreateView(CreateView):
         return context
 
 
-def enroll_course_coevaluation(course, docente):
-    teacher = Docente.objects.filter(id=docente.id).first()
-    user = Usuario.objects.filter(id=teacher.user).first()
+course_moodle = {
+        '10': 'Pedagogía',
+        '11': 'Didactica',
+        '12': 'TICs',
+    }
+
+
+def switch_course(course):
+    return course_moodle.get(course, "NA")
+
+
+def enroll_course_evaluation(user: Usuario, course):
     params = {
         "wstoken": TOKEN_MOODLE,
         "wsfunction": "enrol_manual_unenrol_users",
@@ -214,19 +204,19 @@ def enroll_course_coevaluation(course, docente):
         "enrolments[0][courseid]": course,
         "enrolments[0][roleid]": user.rol_moodle
     }
-    data = []
-    respuesta = requests.post(API_BASE, params)
+    c = ''
+    response = requests.post(API_BASE, params)
 
-    respuesta = requests.post(API_BASE, params)
-    if respuesta is None:
-        data['message'] = 'Alumno matriculado correctamente.'
+    if response is None:
+        c = switch_course(course)
+        data = 'Alumno matriculado, ' + user.nombres + ' ' + user.apellidos + 'correctamente.' + c
     else:
-        data['error'] = respuesta['message']
-    return JsonResponse(data)
+        data = 'Hubo un problema al matricular al alumno, ' + user.nombres + ' ' + user.apellidos + 'en el curso ' + c
+    return data
 
 
 class CoevaluacionCreateView(CreateView):
-    model = Docente
+    model = Usuario
     form_class = CoevaluacionForm
     template_name = 'evaluaciones/co-evaluation.html'
     success_url = reverse_lazy('eva:list-coevaluation')
@@ -244,7 +234,7 @@ class CoevaluacionCreateView(CreateView):
             if action == 'add':
                 with transaction.atomic():
                     question = json.loads(request.POST['answers'])
-                    docente = Docente.objects.filter(id=int(request.session['docente'])).first()
+                    docente = Usuario.objects.filter(id=int(request.session['docente'])).first()
                     if docente is None:
                         data['message'] = 'usuario no habilitado para está evaluación'
                         return JsonResponse(data)
@@ -310,6 +300,7 @@ class CoevaluacionCreateView(CreateView):
                         result.coe_result_Did = aux_did
 
                         result.Total_Proceso_Coe = round((aux_tic + aux_ped + aux_did) / 3, 2)
+                        message = ''
 
                         if result.Total_Proceso_Auto > 0:
                             subtotal = float(result.Total_Proceso_Auto) + float(result.Total_Proceso_Coe)
@@ -323,22 +314,21 @@ class CoevaluacionCreateView(CreateView):
                                 message = 'Felicidades ha concluido en proceso de auto y co evaluaciòn de manera ' \
                                           'èxitosa en Pedagogía'
                             else:
-                                data = enroll_course_coevaluation(10, docente)
+                                data = enroll_course_evaluation(docente, COURSE_PEDAGOGY)
                             if result_did > 85:
                                 message = 'Felicidades ha concluido en proceso de auto y co evaluaciòn de manera ' \
                                           'èxitosa en '
                             else:
-                                data = enroll_course_coevaluation(11, docente)
-
+                                data = enroll_course_evaluation(docente, COURSE_DIDACTIC)
                             if result_tic > 85:
                                 message = 'Felicidades ha concluido en proceso de auto y co evaluaciòn de manera ' \
                                           'èxitosa en '
                             else:
-                                data = enroll_course_coevaluation(12, docente)
+                                message = enroll_course_evaluation(docente, COURSE_TICS)
 
                         result.save()
                         del request.session['docente']
-                        data['message'] = 'Evaluación realizada correctamente.'
+                        data['message'] = message
         except Exception as e:
             data['error'] = str(e)
         return JsonResponse(data)
@@ -349,7 +339,7 @@ class CoevaluacionCreateView(CreateView):
         context['heading'] = 'Coevaluacion'
         url = reverse_lazy('eva:list-coevaluar')
         context['list_url'] = url
-        docente = Docente.objects.filter(user=self.request.user.id).first()
+        docente = Usuario.objects.filter(user=self.request.user.id).first()
         if docente is not None:
             if docente.is_evaluator is False:
                 context['retorno'] = url
