@@ -42,7 +42,7 @@ apiBase = "http://academyec.com/moodle/webservice/rest/server.php"
 
 def wsfunction(function):
     return {
-        "wstoken":"958c77e27c859fac94cfb40ceec68a06",
+        "wstoken":"cae40824ddd52a292888f736c8843929",
         "wsfunction":function,
         "moodlewsrestformat":"json",
     }

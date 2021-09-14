@@ -1994,7 +1994,7 @@ def api_curso(request):
     u="Seguimiento Docente"
     t="Cursos"    
     apiBase="http://academyec.com/moodle/webservice/rest/server.php"
-    params={"wstoken":"958c77e27c859fac94cfb40ceec68a06",
+    params={"wstoken":"cae40824ddd52a292888f736c8843929",
             "wsfunction":"core_course_get_courses",
             "moodlewsrestformat":"json",                                    
             }    
@@ -2024,7 +2024,7 @@ def api_curso(request):
 def listado_estudiante(request, id, nombre):   
     nombre_curso=nombre         
     apiBase="http://academyec.com/moodle/webservice/rest/server.php"
-    params={"wstoken":"958c77e27c859fac94cfb40ceec68a06",
+    params={"wstoken":"cae40824ddd52a292888f736c8843929",
             "wsfunction":"gradereport_user_get_grade_items",
             "moodlewsrestformat":"json",
             "courseid":id                                   
@@ -2048,7 +2048,7 @@ def listado_estudiante(request, id, nombre):
 def actividades_user(request, id, nombre, idest):   
     nombre_Estudiante=nombre         
     apiBase="http://academyec.com/moodle/webservice/rest/server.php"
-    params={"wstoken":"958c77e27c859fac94cfb40ceec68a06",
+    params={"wstoken":"cae40824ddd52a292888f736c8843929",
             "wsfunction":"gradereport_user_get_grade_items",
             "moodlewsrestformat":"json",
             "courseid":id,

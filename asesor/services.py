@@ -7,7 +7,7 @@ def generate_request(url:str, params:Dict, verb:str = "GET")-> Any:
 
 def obtener_datos(params:Dict,verb:str = "GET")-> Any:
     defaultParams:Dict = {
-        "wstoken": "958c77e27c859fac94cfb40ceec68a06",
+        "wstoken": "cae40824ddd52a292888f736c8843929",
         "moodlewsrestformat": "json"
     }
     defaultParams.update(params)
