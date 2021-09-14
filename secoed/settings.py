@@ -20,9 +20,9 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'd!m50t)w$$&ff(*pn7%oqw-1yxo+eub*xcxd^8pzo=*2)ynq=w'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
-ALLOWED_HOSTS = ['95.216.216.98']
+ALLOWED_HOSTS = ['95.216.216.98','127.0.0.1']
 
 # Base APP
 
@@ -101,8 +101,8 @@ WSGI_APPLICATION = 'secoed.wsgi.application'
 CONEXION_NAME = 'pg_secoed'
 CONEXION_USER = 'secoed'
 CONEXION_PASSWORD = 'secoed2021'
-CONEXION_HOST = 'pgdb'
-CONEXION_PORT = 5432
+CONEXION_HOST = '95.216.216.98'
+CONEXION_PORT = '5434'
 
 DATABASES = {
     'default': {
@@ -150,7 +150,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+STATICFILES_DIRS = [os.path.join(BASE_DIR, '/static/')]
 STATIC_ROOT = os.path.join(BASE_DIR, 'assets')
 
 # SMTP Configure

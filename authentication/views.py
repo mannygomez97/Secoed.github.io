@@ -199,7 +199,6 @@ class UsuarioView(View):
             split = request.POST['nombres'].split(' ')
             split1 = request.POST['apellidos'].split(' ')
             pswd = split[0][0].upper() + split1[0][0].lower() + "-" + request.POST['identificacion']
-            """
             # Registar usuario en moodle
             params = {
                 "wstoken": TOKEN_MOODLE,
@@ -250,14 +249,13 @@ class UsuarioView(View):
                 print(e)
                 messages.success(request, "Error al registrar el rol-usuario en el moodle", "error")
                 return redirect('usuario')
-            """
             if userForm.is_valid():
                 subject = "USUARIO DE INGRESO PARA EL SECOED"
                 email_template_name = "authentication/register-email.txt"
                 emailUser = request.POST['email']
                 c = {
                     'username': request.POST['identificacion'],
-                    'password': request.POST['identificacion'],
+                    'password': pswd,
                     'nombres': request.POST['nombres'],
                     'apellidos': request.POST['apellidos'],
                 }
@@ -343,3 +341,4 @@ class UsuarioPerfilView(View):
             view = False
             context = {'usuarioPerfilForm': usuarioPerfilForm, 'usuario': usuario, 'view': view}
         return render(request, 'authentication/usuario-perfil.html', context)
+
