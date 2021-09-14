@@ -20,7 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'd!m50t)w$$&ff(*pn7%oqw-1yxo+eub*xcxd^8pzo=*2)ynq=w'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['95.216.216.98','127.0.0.1']
 
@@ -150,8 +150,13 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.1/howto/static-files/
 
 STATIC_URL = '/static/'
-STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
-STATIC_ROOT = os.path.join(BASE_DIR, 'assets')
+MEDIA_URL = '/media/'
+
+if DEBUG:
+    STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
+else:
+    STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 # SMTP Configure
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
@@ -164,9 +169,6 @@ DEFAULT_FROM_EMAIL = 'secoed.web@gmail.com'
 
 LOGIN_REDIRECT_URL = '/authentication/pages-login'
 LOGOUT_REDIRECT_URL = '/authentication/pages-login'
-
-MEDIA_URL = '/media/'
-MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
 DEFAULT_AUTO_FIELD = 'django.db.models.AutoField'
 
