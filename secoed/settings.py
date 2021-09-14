@@ -20,7 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'd!m50t)w$$&ff(*pn7%oqw-1yxo+eub*xcxd^8pzo=*2)ynq=w'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -98,11 +98,11 @@ WSGI_APPLICATION = 'secoed.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-CONEXION_NAME = 'po_secoed'
+CONEXION_NAME = 'pg_secoed'
 CONEXION_USER = 'secoed'
 CONEXION_PASSWORD = 'secoed2021'
-CONEXION_HOST = '95.216.216.98'
-CONEXION_PORT = '5433'
+CONEXION_HOST = 'pgdb'
+CONEXION_PORT = 5432
 
 DATABASES = {
     'default': {
