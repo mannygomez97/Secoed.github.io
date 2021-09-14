@@ -3,7 +3,7 @@ from conf.models import *
 from django.db.models import Q
 from django.shortcuts import get_object_or_404
 
-ICONOS = Icono.objects.order_by('descripcion')
+# ICONOS = Icono.objects.order_by('descripcion')
 MODULOS = Modulo.objects.order_by('descripcion')
 
 
@@ -21,7 +21,7 @@ class ModuloForm(ModelForm):
         widgets = {
             'descripcion': TextInput(attrs={'class': 'form-control', 'placeHolder': 'Ingrese el nombre del modulo'}),
             'orden': TextInput(attrs={'class': 'form-control', 'min': '0', 'type': 'number'}),
-            'icon': Select(attrs={'class': 'form-control'}, choices=((x.descripcion, x.descripcion) for x in ICONOS)),
+            # 'icon': Select(attrs={'class': 'form-control'}, choices=((x.descripcion, x.descripcion) for x in ICONOS)),
             'key': TextInput(
                 attrs={'class': 'form-control', 'placeHolder': 'Generado por el sistema', 'readonly': 'true'}),
         }
@@ -49,7 +49,7 @@ class MenuForm(ModelForm):
         widgets = {
             'descripcion': TextInput(attrs={'class': 'form-control', 'placeHolder': 'Ingrese el nombre del modulo'}),
             'orden': TextInput(attrs={'class': 'form-control', 'min': '0', 'type': 'number'}),
-            'icon': Select(attrs={'class': 'form-control'}, choices=((x.descripcion, x.descripcion) for x in ICONOS)),
+            # 'icon': Select(attrs={'class': 'form-control'}, choices=((x.descripcion, x.descripcion) for x in ICONOS)),
             'href': TextInput(attrs={'class': 'form-control', 'placeHolder': 'Ingrese la url física'}),
             'url': TextInput(attrs={'class': 'form-control', 'placeHolder': 'Ingrese la url lógica'}),
             'key': TextInput(

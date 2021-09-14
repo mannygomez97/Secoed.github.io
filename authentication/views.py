@@ -13,7 +13,7 @@ from django.utils.encoding import force_bytes
 from django.db.models.query_utils import Q
 from authentication.models import Usuario
 from authentication.forms import UserRegisterForm
-from secoed.settings import TOKEN_MOODLE, API_BASE
+from secoed.settings import TOKEN_MOODLE, API_BASE, CONTEXT_ID
 
 username = '';
 
@@ -255,7 +255,7 @@ class UsuarioView(View):
                 emailUser = request.POST['email']
                 c = {
                     'username': request.POST['identificacion'],
-                    'password': pswd,
+                    'password': request.POST['identificacion'],
                     'nombres': request.POST['nombres'],
                     'apellidos': request.POST['apellidos'],
                 }
@@ -298,8 +298,6 @@ class UsuarioView(View):
                 messages.warning(request, "El número de identificación es invalida", "warning")
                 return redirect('usuario')
             form = UserRegisterForm(request.POST, instance=usuario)
-            print("EXAMPLE")
-            print(request.POST['roles'])
             if form.is_valid():
                 form.save()
                 messages.success(request, "Se edito correctamente", "success")
@@ -341,4 +339,3 @@ class UsuarioPerfilView(View):
             view = False
             context = {'usuarioPerfilForm': usuarioPerfilForm, 'usuario': usuario, 'view': view}
         return render(request, 'authentication/usuario-perfil.html', context)
-
