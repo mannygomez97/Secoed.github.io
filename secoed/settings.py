@@ -98,7 +98,7 @@ WSGI_APPLICATION = 'secoed.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-CONEXION_NAME = 'po_secoed'
+CONEXION_NAME = 'pg_secoed'
 CONEXION_USER = 'secoed'
 CONEXION_PASSWORD = 'secoed2021'
 #CONEXION_HOST = '95.216.216.98'
