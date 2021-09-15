@@ -1,4 +1,4 @@
-url = "/components/notify/email"
+let url = "/components/notify/email"
 
 const syncButton = document.getElementById('sync-button')
 syncButton.addEventListener('click',()=>{

@@ -28,7 +28,9 @@ from django.contrib import messages
 from django.shortcuts import render, redirect, get_object_or_404
 from django.core.exceptions import ObjectDoesNotExist
 
+#Settings
 
+from secoed.settings import TOKEN_MOODLE, API_BASE
 
 # IMPORT
 import datetime
@@ -38,11 +40,11 @@ from asesor.models import Asesor
 
 ###########################  Recursos para consumir la api###########################
 
-apiBase = "http://academyec.com/moodle/webservice/rest/server.php"
+apiBase = API_BASE
 
 def wsfunction(function):
     return {
-        "wstoken":"cae40824ddd52a292888f736c8843929",
+        "wstoken":TOKEN_MOODLE,
         "wsfunction":function,
         "moodlewsrestformat":"json",
     }
@@ -152,7 +154,7 @@ def cursosTodos(request, *args, **kwargs):
 
 ##########################################################################################################################################
 ##########################################################################################################################################
-@login_required
+
 def menu(request):
     menusview =  AprobacionCurso.objects.filter(estado =True).order_by('nivel')
     greeting = {'heading': "REQUISITO DEL CURSO", 'pageview': "Gestor", "menusview": menusview}
@@ -287,12 +289,12 @@ class listadoAsesores(View):
         params.update(courseid = request.GET.get('id'))
         response = requests.get(apiBase,params)
 
-
+        greeting = {"heading":"Listado de Docentes","pageview":"Forms", "curso": request.GET.get('id')}
         if response:
             datos = [rol for rol in response.json() if rol.get('roles') and rol['roles'][0]['roleid'] == 5]
+
             if datos: 
                 greeting.update(context = datos)
-
                 if greeting.get("context"):
                     for fecha in greeting["context"]:
                         fecha.update(lastaccess = datetime.datetime.fromtimestamp(fecha['lastaccess']))   
@@ -308,10 +310,14 @@ class actividades(View):
         params.update(courseid = request.GET.get('curso'))
         response = requests.get(apiBase,params)
         
+
         if response.json().get("usergrades"):
             actividad = [actividades for actividades in response.json()["usergrades"] if actividades["userid"] == int(request.GET.get('id'))]
+            print(actividad)
         else:
             actividad = None
+
+
  
         greeting = {"heading":"Listado de Actividades", "pageview":"Forms"}
 

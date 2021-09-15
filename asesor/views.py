@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect, get_object_or_404
 import json
 import requests
+from secoed.settings import TOKEN_MOODLE
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import  Nivel_Académico, Cursos, Asesor, Docentes, Periodo, Recursos, Curso_Asesor, Cabecera_Crono, Titulos, Event, Observaciones, registro_historicos
@@ -1994,7 +1995,7 @@ def api_curso(request):
     u="Seguimiento Docente"
     t="Cursos"    
     apiBase="http://academyec.com/moodle/webservice/rest/server.php"
-    params={"wstoken":"cae40824ddd52a292888f736c8843929",
+    params={"wstoken":TOKEN_MOODLE,
             "wsfunction":"core_course_get_courses",
             "moodlewsrestformat":"json",                                    
             }    
@@ -2024,7 +2025,7 @@ def api_curso(request):
 def listado_estudiante(request, id, nombre):   
     nombre_curso=nombre         
     apiBase="http://academyec.com/moodle/webservice/rest/server.php"
-    params={"wstoken":"cae40824ddd52a292888f736c8843929",
+    params={"wstoken":TOKEN_MOODLE,
             "wsfunction":"gradereport_user_get_grade_items",
             "moodlewsrestformat":"json",
             "courseid":id                                   
@@ -2048,7 +2049,7 @@ def listado_estudiante(request, id, nombre):
 def actividades_user(request, id, nombre, idest):   
     nombre_Estudiante=nombre         
     apiBase="http://academyec.com/moodle/webservice/rest/server.php"
-    params={"wstoken":"cae40824ddd52a292888f736c8843929",
+    params={"wstoken":TOKEN_MOODLE,
             "wsfunction":"gradereport_user_get_grade_items",
             "moodlewsrestformat":"json",
             "courseid":id,

@@ -255,7 +255,7 @@ class UsuarioView(View):
                 emailUser = request.POST['email']
                 c = {
                     'username': request.POST['identificacion'],
-                    'password': request.POST['identificacion'],
+                    'password': pswd,
                     'nombres': request.POST['nombres'],
                     'apellidos': request.POST['apellidos'],
                 }
