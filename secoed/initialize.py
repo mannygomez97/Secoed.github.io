@@ -18,14 +18,17 @@ def load_menu(request):
         # Cargar menu si no es administrador
         else:
             roles = Rol.objects.filter(usuario__id=request.user.id)
-            modulos = Modulo.objects.filter(menu__menu__roles__in=roles).order_by('orden')
+            print(roles)
+            modulos = Modulo.objects.filter(menu__menu__roles__in=roles).order_by('orden').distinct()
+            print(modulos)
             for mod in modulos:
                 mod.menus = []
                 menus = Menu.objects.filter((Q(menu__roles__in=roles) & Q(modulo_id=mod.id)) | (
-                        Q(roles__in=roles) & Q(modulo_id=mod.id))).order_by('orden')
+                        Q(roles__in=roles) & Q(modulo_id=mod.id))).order_by('orden').distinct()
+                print(menus)
                 for item in menus:
                     item.items = []
-                    items = Menu.objects.filter(Q(parent_id=item.id) & Q(roles__in=roles)).order_by('orden')
+                    items = Menu.objects.filter(Q(parent_id=item.id) & Q(roles__in=roles)).order_by('orden').distinct()
                     if items:
                         item.items = items
                     mod.menus.append(item)

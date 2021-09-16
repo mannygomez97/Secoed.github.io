@@ -71,16 +71,13 @@ $(function(){
             dataType: 'json',
             processData: false,
             contentType: false,
-        }).done(function (data) {
-            if (!data.hasOwnProperty('error')) {
-                notification('Excelente!', data.message, 'success');
+        }).done(function (response) {
+            if (response.error === '') {
+                notification('Excelente!', response.message, 'success');
                 window.setTimeout(function () {
                     window.location.href = redirection;
                 }, 1500);
                 return true;
-            }
-            else{
-                console.log(data.message);
             }
         }).fail(function (jqXHR, textStatus, errorThrown) {
             alert(textStatus + ' ' + errorThrown);

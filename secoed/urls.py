@@ -39,9 +39,12 @@ urlpatterns = [
 
     # mis url de mi asesor
     path('asesor/', include('asesor.urls')),
-
     # Components
     path('components/', include('components.urls')),
+
+    # url de cursos
+    path(r'cursos/', include('cursos.urls')),
+
 ]
 if DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

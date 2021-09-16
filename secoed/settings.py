@@ -22,7 +22,7 @@ SECRET_KEY = 'd!m50t)w$$&ff(*pn7%oqw-1yxo+eub*xcxd^8pzo=*2)ynq=w'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = False
 
-ALLOWED_HOSTS = ['95.216.216.98','127.0.0.1']
+ALLOWED_HOSTS = ['95.216.216.98', '127.0.0.1', 'localhost']
 
 # Base APP
 
@@ -33,7 +33,6 @@ BASE_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
 ]
 
 # Third Party App
@@ -104,7 +103,7 @@ CONEXION_PASSWORD = 'secoed2021'
 CONEXION_HOST = 'pgdb'
 CONEXION_PORT = 5432
 #CONEXION_HOST = '95.216.216.98'
-#CONEXION_PORT = '5433'
+#CONEXION_PORT = '5434'
 
 DATABASES = {
     'default': {
@@ -153,6 +152,7 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 MEDIA_URL = '/media/'
+
 if DEBUG:
     STATICFILES_DIRS = [os.path.join(BASE_DIR, 'static')]
 else:

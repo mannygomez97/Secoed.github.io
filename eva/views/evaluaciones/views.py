@@ -1,8 +1,10 @@
 import json
 import requests
+from django.core.mail import send_mail
 
 from django.db import transaction, IntegrityError
 from django.http import JsonResponse
+from django.template.loader import render_to_string
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
@@ -22,8 +24,8 @@ class TeachersPendingEvaluationList(ListView):
 
     def get_pendings_evaluation(self):
         data = []
-        resultado = ResultadoProceso.objects.all()
-        docentes = Usuario.objects.all().filter(usuario_activo=True, rol_moodle__codigo__gte=5)
+        resultado = ResultadoProceso.objects.filter(coevaluator__isnull=False)
+        docentes = Usuario.objects.filter(usuario_activo=True, rol_moodle__codigo__gte=5)
         if resultado.count() == 0:
             data = docentes
         else:
@@ -55,6 +57,12 @@ class AutoEvaluacionCreateView(CreateView):
     @transaction.atomic
     def post(self, request, *args, **kwargs):
         data = {}
+        flag_p = False
+        flag_d = False
+        flag_t = False
+        message = ''
+        course = ''
+        content = {}
         try:
             action = request.POST['action']
             if action == 'add':
@@ -80,15 +88,6 @@ class AutoEvaluacionCreateView(CreateView):
                             resp.question = int(i['question'])
                             resp.parameter = int(i['parameter'])
                             resp.save()
-
-                        result = ResultadoProceso.objects.filter(cycle=answer.cycle,
-                                                                 user=answer.teacher,
-                                                                 coevaluator__isnull=False).first()
-                        if result is None:
-                            result = ResultadoProceso()
-                            result.answer_id = answer.id
-                            result.user = answer.teacher
-                            result.cycle = answer.cycle
 
                         details = DetalleRespuesta.objects.filter(answer=answer.id).values('category',
                                                                                            'question',
@@ -122,39 +121,94 @@ class AutoEvaluacionCreateView(CreateView):
                         aux_tic = round((float(ac_tics) / c_tic) * 100, 2)
                         aux_ped = round((float(ac_ped) / c_ped) * 100, 2)
                         aux_did = round((float(ac_did) / c_did) * 100, 2)
+                        total_auto = round((aux_tic + aux_ped + aux_did) / 3, 2)
 
-                        result.auto_result_Tic = aux_tic
-                        result.auto_result_Ped = aux_ped
-                        result.auto_result_Did = aux_did
+                        result = ResultadoProceso.objects.filter(cycle=answer.cycle,
+                                                                 user=answer.teacher,
+                                                                 coevaluator__isnull=False).first()
+                        if result is None:
+                            result = ResultadoProceso()
+                            result.answer_id = answer.id
+                            result.user = answer.teacher
+                            result.cycle = answer.cycle
 
-                        result.Total_Proceso_Auto = round((aux_tic + aux_ped + aux_did) / 3, 2)
+                            result.auto_result_Tic = aux_tic
+                            result.auto_result_Ped = aux_ped
+                            result.auto_result_Did = aux_did
 
-                        if result.Total_Proceso_Coe > 0:
-                            subtotal = float(result.Total_Proceso_Auto) + float(result.Total_Proceso_Coe)
-                            result.Total_Proceso = round(subtotal / 2, 2)
+                            result.Total_Proceso_Auto = total_auto
 
-                            result_ped = (float(result.auto_result_Ped) + float(result.coe_result_Ped)) / 2
-                            result_did = (float(result.auto_result_Did) + float(result.coe_result_Did)) / 2
-                            result_tic = (float(result.auto_result_Tic) + float(result.coe_result_Tic)) / 2
+                            result.save()
 
-                            if result_ped > 85:
-                                message = 'Felicidades ha concluido en proceso de auto y co evaluaciòn de manera ' \
-                                          'èxitosa '
-                            else:
-                                data = enroll_course_evaluation(self.request.user, COURSE_PEDAGOGY)
-                            if result_did > 85:
-                                message = 'Felicidades ha concluido en proceso de auto y co evaluaciòn de manera ' \
-                                          'èxitosa '
-                            else:
-                                data = enroll_course_evaluation(self.request.user, COURSE_DIDACTIC)
-                            if result_tic > 85:
-                                message = 'Felicidades ha concluido en proceso de auto y co evaluaciòn de manera ' \
-                                          'èxitosa '
-                            else:
-                                data = enroll_course_evaluation(self.request.user, COURSE_TICS)
+                            message = 'Autoevaluación concluida correctamente'
+                            error = ''
+                            response = JsonResponse({'message': message, 'error': error})
+                            response.status_code = 201
+                            return response
+                        else:
+                            result = ResultadoProceso.objects. \
+                                filter(cycle=answer.cycle,
+                                       user=answer.teacher,
+                                       coevaluator__isnull=False).update(auto_result_Tic=aux_tic,
+                                                                         auto_result_Ped=aux_ped,
+                                                                         auto_result_Did=aux_did,
+                                                                         Total_Proceso_Auto=total_auto)
+                            if result:
+                                obj = ResultadoProceso.objects.filter(cycle=answer.cycle, user=answer.teacher,
+                                                                      coevaluator__isnull=False).first()
 
-                        result.save()
-                        data['message'] = 'Evaluación realizada correctamente.'
+                                if obj.Total_Proceso_Coe > 0:
+                                    subtotal = float(obj.Total_Proceso_Auto) + float(obj.Total_Proceso_Coe)
+                                    obj.Total_Proceso = round(subtotal / 2, 2)
+
+                                    obj.save()
+
+                                    result_ped = (float(obj.auto_result_Ped) + float(obj.coe_result_Ped)) / 2
+                                    result_did = (float(obj.auto_result_Did) + float(obj.coe_result_Did)) / 2
+                                    result_tic = (float(obj.auto_result_Tic) + float(obj.coe_result_Tic)) / 2
+                                    message = ''
+
+                                    if result_ped > 85:
+
+                                        data[
+                                            'message'] = 'Felicidades ha concluido en proceso de auto y co evaluaciòn de manera ' \
+                                                         'èxitosa '
+                                    else:
+                                        course = switch_course(COURSE_PEDAGOGY)
+                                        message = enroll_course_evaluation(self.request.user, COURSE_PEDAGOGY)
+                                        response = JsonResponse({'message': message})
+                                        flag_p = True
+                                    if result_did > 85:
+                                        data[
+                                            'message'] = 'Felicidades ha concluido en proceso de auto y co evaluaciòn de manera ' \
+                                                         'èxitosa '
+                                    else:
+                                        course = switch_course(COURSE_DIDACTIC)
+                                        message = enroll_course_evaluation(self.request.user, COURSE_DIDACTIC)
+                                        response = JsonResponse({'message': message})
+                                        flag_d = True
+                                    if result_tic > 85:
+                                        data['message'] = 'Felicidades ha concluido en proceso de auto y co evaluaciòn de manera ' \
+                                                         'èxitosa '
+                                    else:
+                                        course = switch_course(COURSE_TICS)
+                                        message = enroll_course_evaluation(self.request.user, COURSE_TICS)
+                                        response = JsonResponse({'message': message})
+                                        flag_t = True
+
+                                    content = {
+                                        'nombres': docente.nombres,
+                                        'apellidos': docente.apellidos,
+                                        'course': course,
+                                    }
+
+                                if flag_d is not None:
+                                    send_mail_notification(docente.email, content)
+                                if flag_t is not None:
+                                    send_mail_notification(docente.email, content)
+                                if flag_p is not None:
+                                    send_mail_notification(docente.email, content)
+                                return response
         except Exception as e:
             data['error'] = str(e)
             transaction.rollback()
@@ -185,29 +239,37 @@ class AutoEvaluacionCreateView(CreateView):
 
 
 course_moodle = {
-        '10': 'Pedagogía',
-        '11': 'Didactica',
-        '12': 'TICs',
-    }
+    '10': 'Pedagogía',
+    '11': 'Didactica',
+    '12': 'TICs',
+}
 
 
 def switch_course(course):
     return course_moodle.get(course, "NA")
 
 
+def send_mail_notification(email, content):
+    subject = 'Matriculación Automatica'
+    email_template_name = "evaluaciones/enroll-email.txt"
+    c = content
+    email_1 = render_to_string(email_template_name, c)
+    send_mail(subject, email_1, 'secoed.web@gmail.com', [email], fail_silently=False)
+
+
 def enroll_course_evaluation(user: Usuario, course):
     params = {
         "wstoken": TOKEN_MOODLE,
-        "wsfunction": "enrol_manual_unenrol_users",
+        "wsfunction": "enrol_manual_enrol_users",
         "moodlewsrestformat": "json",
         "enrolments[0][userid]": user.moodle_user,
         "enrolments[0][courseid]": course,
-        "enrolments[0][roleid]": user.rol_moodle
+        "enrolments[0][roleid]": user.rol_moodle.codigo
     }
     c = ''
     response = requests.post(API_BASE, params)
 
-    if response is None:
+    if response.ok:
         c = switch_course(course)
         data = 'Alumno matriculado, ' + user.nombres + ' ' + user.apellidos + 'correctamente.' + c
     else:
@@ -228,7 +290,12 @@ class CoevaluacionCreateView(CreateView):
     @transaction.atomic
     def post(self, request, *args, **kwargs):
         data = {}
-
+        content = {}
+        flag_p = False
+        flag_d = False
+        flag_t = False
+        message = ''
+        course = ''
         try:
             action = self.request.POST['action']
             if action == 'add':
@@ -251,19 +318,7 @@ class CoevaluacionCreateView(CreateView):
                             resp.question = int(i['question'])
                             resp.parameter = int(i['parameter'])
                             resp.save()
-                        evaluated = ResultadoProceso.objects.filter(user=docente.id).first()
-                        if evaluated is None:
-                            result = ResultadoProceso()
-                            result.answer_id = answer.id
-                            result.cycle = answer.cycle
-                            result.user = docente.id
-                        elif evaluated.coevaluator is not None:
-                            usuario = Usuario.objects.filter(id=self.request.user.id).first()
-                            result = ResultadoProceso.objects.filter(user=docente.id, cycle=answer.cycle).first()
-                            result.coevaluator = usuario.identificacion
-                        else:
-                            data['message'] = 'Usted ya realizó la co evaluación al docente' + docente.name
-                            return JsonResponse(data)
+
                         detalle = DetalleRespuesta.objects.filter(answer=answer.id) \
                             .values('category', 'question', 'parameter').order_by('category')
 
@@ -294,41 +349,90 @@ class CoevaluacionCreateView(CreateView):
                         aux_tic = round((float(coe_tics) / c_tic) * 100, 2)
                         aux_ped = round((float(coe_peda) / c_ped) * 100, 2)
                         aux_did = round((float(coe_dida) / c_did) * 100, 2)
+                        total_coe = round((aux_tic + aux_ped + aux_did) / 3, 2)
 
-                        result.coe_result_Tic = aux_tic
-                        result.coe_result_Ped = aux_ped
-                        result.coe_result_Did = aux_did
+                        evaluated = ResultadoProceso.objects.filter(user=docente.id, cycle=answer.cycle).first()
+                        if evaluated is None:
+                            result = ResultadoProceso()
+                            result.answer_id = answer.id
+                            result.cycle = answer.cycle
+                            result.user = docente.id
+                            result.coevaluator = docente.identificacion
 
-                        result.Total_Proceso_Coe = round((aux_tic + aux_ped + aux_did) / 3, 2)
-                        message = ''
+                            result.coe_result_Tic = aux_tic
+                            result.coe_result_Ped = aux_ped
+                            result.coe_result_Did = aux_did
 
-                        if result.Total_Proceso_Auto > 0:
-                            subtotal = float(result.Total_Proceso_Auto) + float(result.Total_Proceso_Coe)
-                            result.Total_Proceso = round(subtotal / 2, 2)
+                            result.Total_Proceso_Coe = total_coe
 
-                            result_ped = (float(result.auto_result_Ped) + float(result.coe_result_Ped)) / 2
-                            result_did = (float(result.auto_result_Did) + float(result.coe_result_Did)) / 2
-                            result_tic = (float(result.auto_result_Tic) + float(result.coe_result_Tic)) / 2
+                            result.save()
+                            message = 'Coevaluación concluida correctamente'
+                            error = ''
+                            response = JsonResponse({'message': message, 'error': error})
+                            response.status_code = 201
+                            return response
+                        else:
+                            result = ResultadoProceso.objects. \
+                                filter(cycle=answer.cycle, user=answer.teacher)\
+                                .update(coevaluator=docente.identificacion,
+                                        coe_result_Tic=aux_tic,
+                                        coe_result_Ped=aux_ped,
+                                        coe_result_Did=aux_did,
+                                        Total_Proceso_Coe=total_coe)
 
-                            if result_ped > 85:
-                                message = 'Felicidades ha concluido en proceso de auto y co evaluaciòn de manera ' \
-                                          'èxitosa en Pedagogía'
-                            else:
-                                data = enroll_course_evaluation(docente, COURSE_PEDAGOGY)
-                            if result_did > 85:
-                                message = 'Felicidades ha concluido en proceso de auto y co evaluaciòn de manera ' \
-                                          'èxitosa en '
-                            else:
-                                data = enroll_course_evaluation(docente, COURSE_DIDACTIC)
-                            if result_tic > 85:
-                                message = 'Felicidades ha concluido en proceso de auto y co evaluaciòn de manera ' \
-                                          'èxitosa en '
-                            else:
-                                message = enroll_course_evaluation(docente, COURSE_TICS)
+                            if result:
 
-                        result.save()
-                        del request.session['docente']
-                        data['message'] = message
+                                obj = ResultadoProceso.objects.filter(cycle=answer.cycle, user=answer.teacher,
+                                                                      coevaluator__isnull=False).first()
+
+                                subtotal = float(obj.Total_Proceso_Auto) + float(obj.Total_Proceso_Coe)
+                                obj.Total_Proceso = round(subtotal / 2, 2)
+                                obj.save()
+
+                                result_ped = (float(obj.auto_result_Ped) + float(obj.coe_result_Ped)) / 2
+                                result_did = (float(obj.auto_result_Did) + float(obj.coe_result_Did)) / 2
+                                result_tic = (float(obj.auto_result_Tic) + float(obj.coe_result_Tic)) / 2
+
+                                if result_ped > 85:
+                                    message = 'Felicidades ha concluido en proceso de auto y co evaluaciòn de manera ' \
+                                              'èxitosa en Pedagogía'
+                                else:
+                                    course = switch_course(COURSE_PEDAGOGY)
+                                    message = enroll_course_evaluation(docente, COURSE_PEDAGOGY)
+                                    response = JsonResponse({'message': message})
+                                    flag_p = True
+                                if result_did > 85:
+                                    message = 'Felicidades ha concluido en proceso de auto y co evaluaciòn de manera ' \
+                                              'èxitosa en '
+                                else:
+                                    course = switch_course(COURSE_DIDACTIC)
+                                    message = enroll_course_evaluation(docente, COURSE_DIDACTIC)
+                                    response = JsonResponse({'message': message})
+                                    flag_d = True
+                                if result_tic > 85:
+                                    message = 'Felicidades ha concluido en proceso de auto y co evaluaciòn de manera ' \
+                                              'èxitosa en '
+                                else:
+                                    course = switch_course(COURSE_TICS)
+                                    message = enroll_course_evaluation(docente, COURSE_TICS)
+                                    response = JsonResponse({'message': message})
+                                    flag_t = True
+
+                                content = {
+                                    'nombres': docente.nombres,
+                                    'apellidos': docente.apellidos,
+                                    'course': course,
+                                }
+
+                            del request.session['docente']
+
+            if flag_d is not None:
+                send_mail_notification(docente.email, content)
+            if flag_t is not None:
+                send_mail_notification(docente.email, content)
+            if flag_p is not None:
+                send_mail_notification(docente.email, content)
+            return response
         except Exception as e:
             data['error'] = str(e)
         return JsonResponse(data)
@@ -339,12 +443,11 @@ class CoevaluacionCreateView(CreateView):
         context['heading'] = 'Coevaluacion'
         url = reverse_lazy('eva:list-coevaluar')
         context['list_url'] = url
-        docente = Usuario.objects.filter(user=self.request.user.id).first()
+        docente = Usuario.objects.filter(id=self.request.user.id).first()
         if docente is not None:
-            if docente.is_evaluator is False:
+            if docente.rol_moodle.codigo != 4:
                 context['retorno'] = url
                 return context
-            return context
         context['object_list'] = Pregunta.objects.filter(type=2)
         context['categories'] = Categoria.objects.all()
         context['parameters'] = ParametrosGeneral.objects.filter(parameter=2)

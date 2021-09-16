@@ -16,7 +16,7 @@ class ProcessResultEvaluations(TemplateView):
     def get_graph_co_evaluation_by_category(self):
         data = []
         try:
-            docente = Usuario.objects.filter(user=self.request.user.id).first()
+            docente = Usuario.objects.filter(id=self.request.user.id).first()
             ciclo = Ciclo.objects.filter(is_active=True).first()
             result_by_teacher = ResultadoProceso.objects.filter(user=docente.id, cycle=ciclo.id).values(
                 'coe_result_Tic', 'coe_result_Did', 'coe_result_Ped').first()
@@ -32,10 +32,24 @@ class ProcessResultEvaluations(TemplateView):
             pass
         return data
 
+    def get_total_co_evaluation(self):
+        total_coe = []
+        try:
+            docente = Usuario.objects.filter(id=self.request.user.id).first()
+            ciclo = Ciclo.objects.filter(is_active=True).first()
+            result = ResultadoProceso.objects.filter(user=docente.id, cycle=ciclo.id).values(
+                'Total_Proceso_Coe').first()
+            for r in result:
+                tot = float(result['Total_Proceso_Coe'])
+                total_coe.append(tot)
+        except:
+            pass
+        return total_coe
+
     def get_total_auto_evaluation(self):
         total_auto = []
         try:
-            docente = Usuario.objects.filter(user=self.request.user.id).first()
+            docente = Usuario.objects.filter(id=self.request.user.id).first()
             ciclo = Ciclo.objects.filter(is_active=True).first()
             result = ResultadoProceso.objects.filter(user=docente.id, cycle=ciclo.id).values(
                 'Total_Proceso_Auto').first()
@@ -49,31 +63,17 @@ class ProcessResultEvaluations(TemplateView):
     def get_total_auto(self):
         result = None
         try:
-            docente = Usuario.objects.filter(user=self.request.user.id).first()
+            docente = Usuario.objects.filter(id=self.request.user.id).first()
             ciclo = Ciclo.objects.filter(is_active=True).first()
             result = ResultadoProceso.objects.filter(user=docente.id, cycle=ciclo.id).first()
         except:
             pass
         return result
 
-    def get_total_co_evaluation(self):
-        total_coe = []
-        try:
-            docente = Usuario.objects.filter(user=self.request.user.id).first()
-            ciclo = Ciclo.objects.filter(is_active=True).first()
-            result = ResultadoProceso.objects.filter(user=docente.id, cycle=ciclo.id).values(
-                'Total_Proceso_Coe').first()
-            for r in result:
-                tot = float(result['Total_Proceso_Coe'])
-                total_coe.append(tot)
-        except:
-            pass
-        return total_coe
-
     def get_graph_auto_evaluation_by_category(self):
         data = []
         try:
-            docente = Usuario.objects.filter(user=self.request.user.id).first()
+            docente = Usuario.objects.filter(id=self.request.user.id).first()
             ciclo = Ciclo.objects.filter(is_active=True).first()
             result_by_teacher = ResultadoProceso.objects.filter(user=docente.id, cycle=ciclo.id).values(
                 'auto_result_Tic', 'auto_result_Did', 'auto_result_Ped').first()
