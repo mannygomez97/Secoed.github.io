@@ -40,12 +40,14 @@ class PagesLoginView(View):
             else:
                 user = auth.authenticate(username=username, password=password)
                 if user is not None:
+                    print("USUARIO-ACTIVO: ",user.usuario_activo)
                     if user.usuario_activo:
                         request.session['username'] = username
                         request.session['isModulo'] = False
                         auth.login(request, user)
                         return redirect('dashboard')
                     else:
+                        user = None
                         messages.error(request, 'Usuario inactivo')
                         return redirect('pages-login')
                 else:
