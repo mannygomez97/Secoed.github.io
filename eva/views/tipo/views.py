@@ -1,7 +1,7 @@
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
-from eva.models import Tipo
+from eva.models import Tipo, Ciclo
 from eva.forms import TipoForm
 from django.http import JsonResponse
 
@@ -13,7 +13,9 @@ class TypeListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['entity'] = 'Tipos'
+        context['heading'] = 'Matenimiento Tipos de Evaluaciones'
+        cycle = Ciclo.objects.filter(is_active=True).first()
+        context['pageview'] = cycle.name
         context['create_url'] = reverse_lazy('eva:create-type')
         context['url_list'] = reverse_lazy('eva:list-type')
         return context
@@ -98,7 +100,8 @@ class TypeDeleteView(DeleteView):
     def delete(self, request, *args, **kwargs):
         if request.is_ajax():
             type = self.get_object()
-            type.delete()
+            type.state = False
+            type.save()
             message = f'{self.model.__name__} eliminada correctamente!'
             errors = 'No se encontraron errores'
             response = JsonResponse({'message': message, 'error': errors})

@@ -5,6 +5,7 @@ from authentication.models import Usuario
 from conf.models import Carrera
 
 
+# Migración
 class AreasConocimiento(models.Model):
     name = models.CharField(max_length=255, db_column='nombre', unique=True)
     career = models.ForeignKey(Carrera, null=False, blank=False, on_delete=models.CASCADE, db_column='carrera')
@@ -23,6 +24,7 @@ class AreasConocimiento(models.Model):
         ordering = ['name']
 
 
+# Migración
 class Materia(models.Model):
     area = models.ForeignKey(AreasConocimiento, db_column='area', null=False, blank=False, on_delete=models.CASCADE)
     teacher = models.ForeignKey(Usuario, db_column='id_docente', null=False, blank=False, on_delete=models.CASCADE)
@@ -40,6 +42,7 @@ class Materia(models.Model):
         db_table = "pt_materia"
 
 
+# Migración
 class MateriaDocente(models.Model):
     matter = models.ForeignKey(Materia, null=False, blank=False, on_delete=models.CASCADE, db_column='materia')
     docente = models.ForeignKey(Usuario, null=False, blank=False, on_delete=models.CASCADE, db_column='tutor')
@@ -56,6 +59,7 @@ class MateriaDocente(models.Model):
         db_table = 'pt_materia_docente'
 
 
+# Migración
 class Ciclo(models.Model):
     name = models.CharField(max_length=100, unique=True, db_column='nombre')
     is_active = models.BooleanField(default=False, db_column='es_activo')
@@ -72,8 +76,10 @@ class Ciclo(models.Model):
         db_table = "pt_ciclo"
 
 
+# Desarrollo Nuevo FCI-016
 class Categoria(models.Model):
     name = models.CharField(max_length=100, unique=True, db_column='nombre')
+    state = models.BooleanField(default=True, db_column='estado')
     date_created = models.DateTimeField(auto_now_add=True, db_column='fecha_creacion',
                                         help_text='Registra la fecha de creación de un valor')
     date_update = models.DateTimeField(auto_now=True, db_column='fecha_edicion',
@@ -91,8 +97,10 @@ class Categoria(models.Model):
         db_table = "pt_categoria"
 
 
+# Desarrollo Nuevo FCI-016
 class Tipo(models.Model):
     name = models.CharField(max_length=60, unique=True, db_column='nombre')
+    state = models.BooleanField(default=True, db_column='estado')
     date_created = models.DateTimeField(auto_now_add=True, db_column='fecha_creacion',
                                         help_text='Registra la fecha de creación del tipo de Evaluación')
     date_update = models.DateTimeField(auto_now=True, db_column='fecha_edicion',
@@ -105,6 +113,7 @@ class Tipo(models.Model):
         db_table = "pt_tipo"
 
 
+# Desarrollo Nuevo FCI-016
 class Parametro(models.Model):
     name = models.CharField(max_length=20, null=False, blank=False, unique=True, db_column='nombre')
     description = models.CharField(max_length=100, null=False, blank=False, unique=True, db_column='Descripcion')
@@ -122,6 +131,7 @@ class Parametro(models.Model):
         ordering = ['name']
 
 
+# Desarrollo Nuevo FCI-016
 class ParametrosGeneral(models.Model):
     parameter = models.ForeignKey(Parametro, null=False, blank=False, on_delete=models.CASCADE,
                                   verbose_name='parametro_id')
@@ -140,6 +150,7 @@ class ParametrosGeneral(models.Model):
         db_table = "pt_parametro_general"
 
 
+# Desarrollo Nuevo FCI-016
 class Pregunta(models.Model):
     title = models.CharField(max_length=1000, db_column='titulo', help_text='registra el titulo de la pregunta')
     description = models.CharField(db_column='description', max_length=255,
@@ -164,6 +175,7 @@ class Pregunta(models.Model):
         ordering = ['title']
 
 
+# Migración
 class Respuesta(models.Model):
     teacher = models.IntegerField(db_column='docente', null=False, blank=False)
     cycle = models.IntegerField(db_column='ciclo', null=False, blank=False)
@@ -175,6 +187,7 @@ class Respuesta(models.Model):
         db_table = "pt_respuesta"
 
 
+# Desarrollo Nuevo FCI-016
 class DetalleRespuesta(models.Model):
     answer = models.ForeignKey(Respuesta, db_column='respuesta', null=False, blank=False, on_delete=models.CASCADE)
     category = models.IntegerField(db_column='categoria', null=False, blank=False)
@@ -187,6 +200,7 @@ class DetalleRespuesta(models.Model):
         db_table = "pt_detalle_respuesta"
 
 
+# Desarrollo Nuevo FCI-016
 class ResultadoProceso(models.Model):
     answer = models.ForeignKey(Respuesta, db_column='respuesta', null=False, blank=False, on_delete=models.CASCADE)
     cycle = models.IntegerField(null=False, blank=False, db_column='ciclo')

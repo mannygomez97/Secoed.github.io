@@ -32,11 +32,11 @@
                         </tr>
                         </thead>
                         <tbody>
-                        {% for rolMenu in rolesUsuarioView %}
+                        {% for rolUser in rolesUsuarioView %}
                             <tr>
-                                <td>{{ rolMenu.id }}</td>
-                                <td>{{ rolMenu.menu.descripcion }}</td>
-                                <td>{{ rolMenu.rol.descripcion }}</td>
+                                <td>{{ rolUser.id }}</td>
+                                <td>{{ rolUser.user.username }}</td>
+                                <td>{{ rolUser.rol.descripcion }}</td>
                                 <td>
                                     <div class="btn-group mt-4 mt-md-0" role="group" aria-label="Basic example">
                                         <button type="submit" onclick="deleteRolUsuario({{ men.id }})"

@@ -11,7 +11,6 @@
 <!--Columnas de la tabla-->
 {% block cols %}
     <th>N°</th>
-    <th>Nombre</th>
     <th>Código</th>
     <th>Valor</th>
     <th>Acción</th>
@@ -21,7 +20,6 @@
     {% for item in object_list %}
         <tr>
             <td>{{ item.id }}</td>
-            <td>{{ item.parameter_id }}</td>
             <td>{{ item.code }}</td>
             <td>{{ item.value }}</td>
             <td>

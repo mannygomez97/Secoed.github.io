@@ -1,7 +1,7 @@
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
-from eva.models import Parametro
+from eva.models import Parametro, Ciclo
 from eva.forms import ParametroForm
 from django.http import JsonResponse
 
@@ -13,7 +13,9 @@ class ParameterListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['entity'] = 'Parámetro'
+        context['heading'] = 'Matenimiento Cabecera Parámetros'
+        cycle = Ciclo.objects.filter(is_active=True).first()
+        context['pageview'] = cycle.name
         context['create_url'] = reverse_lazy('eva:create-parameter')
         context['url_list'] = reverse_lazy('eva:list-parameter')
         return context

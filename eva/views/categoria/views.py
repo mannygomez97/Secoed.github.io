@@ -1,7 +1,7 @@
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
-from eva.models import Categoria
+from eva.models import Categoria, Ciclo
 from eva.forms import CategoriaForm
 from django.http import JsonResponse
 
@@ -13,7 +13,10 @@ class CategoryListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['entity'] = 'Categorias'
+        context['heading'] = 'Matenimiento Categorias'
+        cycle = Ciclo.objects.filter(is_active=True).first()
+        context['pageview'] = cycle.name
+        context['object_list'] = Categoria.objects.filter(state=True)
         context['create_url'] = reverse_lazy('eva:create-category')
         context['url_list'] = reverse_lazy('eva:list-category')
         return context
@@ -98,7 +101,8 @@ class CategoryDeleteView(DeleteView):
     def delete(self, request, *args, **kwargs):
         if request.is_ajax():
             category = self.get_object()
-            category.delete()
+            category.state = False
+            category.save()
             message = f'{self.model.__name__} eliminada correctamente!'
             errors = 'No se encontraron errores'
             response = JsonResponse({'message': message, 'error': errors})

@@ -325,7 +325,7 @@ class RolContentView(View):
     # Carga los datos iniciales del HTML
     def get(self, request):
         rol = Rol.objects.order_by('descripcion')
-        greeting = {'heading': "Roles", 'pageview': "Administración", 'rolview': rol}
+        greeting = {'heading': "Roles del SECOED", 'pageview': "Administración", 'rolview': rol}
         return render(request, 'conf/roles.html', greeting)
 
     # Metodo para guardar un nuevo rol
@@ -381,7 +381,7 @@ class RolMenuContentView(View):
     # Carga los datos iniciales del HTML
     def get(self, request):
         rolesMenu = RolMenu.objects.order_by('descripcion')
-        greeting = {'heading': "Roles-Menu", 'pageview': "Administración", 'rolesMenuView': rolesMenu}
+        greeting = {'heading': "Roles de menú del SECOED", 'pageview': "Administración", 'rolesMenuView': rolesMenu}
         return render(request, 'conf/rolMenu.html', greeting)
 
     # Elimina un registro del rol-usuario
@@ -397,7 +397,7 @@ class RolUsuarioContentView(View):
     # Carga los datos iniciales del HTML
     def get(self, request):
         rolesUsuario = RolUser.objects.order_by('descripcion')
-        greeting = {'heading': "Roles-Usuario", 'pageview': "Administración", 'rolesUsuarioView': rolesUsuario}
+        greeting = {'heading': "Roles de usuario del SECOED", 'pageview': "Administración", 'rolesUsuarioView': rolesUsuario}
         return render(request, 'conf/rolUsuarios.html', greeting)
 
     # Elimina un registro del rol-usuario

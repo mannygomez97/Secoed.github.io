@@ -33,6 +33,7 @@ BASE_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+
 ]
 
 # Third Party App
@@ -100,10 +101,10 @@ WSGI_APPLICATION = 'secoed.wsgi.application'
 CONEXION_NAME = 'pg_secoed'
 CONEXION_USER = 'secoed'
 CONEXION_PASSWORD = 'secoed2021'
+#CONEXION_HOST = 'localhost'
+#CONEXION_PORT = '5432'
 CONEXION_HOST = 'pgdb'
 CONEXION_PORT = 5432
-#CONEXION_HOST = '95.216.216.98'
-#CONEXION_PORT = '5434'
 
 DATABASES = {
     'default': {

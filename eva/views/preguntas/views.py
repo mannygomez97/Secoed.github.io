@@ -3,7 +3,7 @@ from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, TemplateView
-from eva.models import Pregunta, Categoria
+from eva.models import Pregunta, Categoria, Ciclo
 from eva.forms import PreguntaForm
 from django.http import JsonResponse
 
@@ -15,7 +15,9 @@ class QuestionsListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['entity'] = 'Pregunta'
+        context['heading'] = 'Mantenimiento Pregunta'
+        cycle = Ciclo.objects.filter(is_active=True).first()
+        context['pageview'] = cycle.name
         context['create_url'] = reverse_lazy('eva:create-questions')
         context['url_list'] = reverse_lazy('eva:list-questions')
         return context

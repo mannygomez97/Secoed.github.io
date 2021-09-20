@@ -1,7 +1,7 @@
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
-from eva.models import ParametrosGeneral
+from eva.models import ParametrosGeneral, Ciclo
 from eva.forms import ParametrosGeneralForm
 from django.http import JsonResponse
 
@@ -13,7 +13,12 @@ class ParameterGrlListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['entity'] = 'Parámetros Generales'
+        context['heading'] = 'Matenimiento Parámetros Generales'
+        cycle = Ciclo.objects.filter(is_active=True).first()
+        context['pageview'] = cycle.name
+        parameters = ParametrosGeneral.objects.select_related('parameter')
+        print(parameters)
+        context['object_list'] = parameters
         context['create_url'] = reverse_lazy('eva:create-parameter-grl')
         context['url_list'] = reverse_lazy('eva:list-parameter-grl')
         return context

@@ -1,7 +1,7 @@
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
-from eva.models import AreasConocimiento
+from eva.models import AreasConocimiento, Ciclo
 from eva.forms import AreasConocimientoForm
 from django.http import JsonResponse
 
@@ -13,7 +13,9 @@ class KnowledgeAreasListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['entity'] = 'Áreas de Conocimiento'
+        context['heading'] = 'Matenimiento Áreas de Conocimiento'
+        cycle = Ciclo.objects.filter(is_active=True).first()
+        context['pageview'] = cycle.name
         context['action'] = 'add'
         context['create_url'] = reverse_lazy('eva:create-area')
         context['url_list'] = reverse_lazy('eva:list-area')
@@ -108,4 +110,3 @@ class KnowledgeAreasDeleteView(DeleteView):
             return response
         else:
             return redirect('eva:list-area')
-
