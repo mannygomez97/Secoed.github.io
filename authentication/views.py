@@ -40,10 +40,14 @@ class PagesLoginView(View):
             else:
                 user = auth.authenticate(username=username, password=password)
                 if user is not None:
-                    request.session['username'] = username
-                    request.session['isModulo'] = False
-                    auth.login(request, user)
-                    return redirect('dashboard')
+                    if user.usuario_activo:
+                        request.session['username'] = username
+                        request.session['isModulo'] = False
+                        auth.login(request, user)
+                        return redirect('dashboard')
+                    else:
+                        messages.error(request, 'Usuario inactivo')
+                        return redirect('pages-login')
                 else:
                     messages.error(request, 'Credenciales invalidas')
                     return redirect('pages-login')
