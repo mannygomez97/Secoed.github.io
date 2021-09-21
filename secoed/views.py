@@ -1,5 +1,5 @@
 import psycopg2
-from django.http import request, JsonResponse
+from django.http import JsonResponse
 from django.shortcuts import render, redirect
 from django.views import View
 from django.views.generic import TemplateView
@@ -51,6 +51,6 @@ class Error500View(TemplateView):
         def view(request):
             r = v(request)
             r.render()
-            return request
+            return r
 
         return view
