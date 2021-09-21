@@ -1,5 +1,7 @@
 from django.contrib import admin
 from django.urls import path
+
+import secoed.views
 from secoed import views
 from django.urls import include
 from django.conf import settings
@@ -54,4 +56,4 @@ if DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 handler404 = Error404View.as_view()
-handler500 = Error500View.as_error_view()
+handler500 = secoed.views.error_500()

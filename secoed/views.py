@@ -41,16 +41,6 @@ class Error404View(TemplateView):
     template_name = "utility/utility-404error.html"
 
 
-class Error500View(TemplateView):
-    template_name = "utility/utility-500error.html"
-
-    @classmethod
-    def as_error_view(cls):
-        v = cls.as_view()
-
-        def view(request):
-            r = v(request)
-            r.render()
-            return r
-
-        return view
+def error_500(solicitud):
+    datos = {}
+    return render(solicitud, 'utility/utility-500error.html', datos)
