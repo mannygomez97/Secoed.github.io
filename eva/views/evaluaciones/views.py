@@ -31,7 +31,7 @@ class TeachersPendingEvaluationList(ListView):
         else:
             for r in resultado:
                 for d in docentes:
-                    if r.user is not d.id:
+                    if r.user != d.id:
                         data.append(d)
         return data
 
@@ -157,11 +157,11 @@ class AutoEvaluacionCreateView(CreateView):
                             if result:
                                 obj = ResultadoProceso.objects.filter(cycle=answer.cycle, user=answer.teacher,
                                                                       coevaluator__isnull=False).first()
-                                coevaluator = Usuario.objects.filter(identificacion=obj.coevaluator)
+                                coevaluator = Usuario.objects.filter(identificacion=obj.coevaluator).first()
 
                                 if obj.Total_Proceso_Coe > 0:
-                                    subtotal = float(obj.Total_Proceso_Auto) + float(obj.Total_Proceso_Coe)
-                                    obj.Total_Proceso = round(subtotal / 2, 2)
+                                    auto_subtotal = float(obj.Total_Proceso_Coe) + float(obj.Total_Proceso_Auto)
+                                    obj.Total_Proceso = round(auto_subtotal / 2, 2)
 
                                     obj.save()
 
@@ -185,7 +185,7 @@ class AutoEvaluacionCreateView(CreateView):
                                         response_enroll = enroll_course_evaluation(self.request.user, COURSE_PEDAGOGY)
                                         if response_enroll == 'OK':
                                             # Envio de correo al docente
-                                            send_mail_notification(docente.email, None, content)
+                                            send_mail_notification(docente, None, course)
                                             # Envio de Correo al Coevaluador
                                             send_mail_notification(docente, coevaluator, course)
                                     if result_did > n3:
@@ -197,7 +197,7 @@ class AutoEvaluacionCreateView(CreateView):
                                         response_enroll = enroll_course_evaluation(self.request.user, COURSE_DIDACTIC)
                                         if response_enroll == 'OK':
                                             # Envio de correo al docente
-                                            send_mail_notification(docente.email, None, content)
+                                            send_mail_notification(docente, None, course)
                                             # Envio de Correo al Coevaluador
                                             send_mail_notification(docente, coevaluator, course)
                                     if result_tic > n3:
@@ -209,23 +209,23 @@ class AutoEvaluacionCreateView(CreateView):
                                         response_enroll = enroll_course_evaluation(self.request.user, COURSE_TICS)
                                         if response_enroll == 'OK':
                                             # Envio de correo al docente
-                                            send_mail_notification(docente.email, None, course)
+                                            send_mail_notification(docente, None, course)
                                             # Envio de Correo al Coevaluador
                                             send_mail_notification(docente, coevaluator, course)
 
                                 message = 'Proceso de Coevaluación concluido correctamente'
                                 error = ''
 
-                            response = JsonResponse({'message': message, 'error': error})
-                            response.status_code = 201
-                            return response
+                                response = JsonResponse({'message': message, 'error': error})
+                                response.status_code = 201
+                                return response
         except Exception as e:
-            data['error'] = str(e)
+            response['error'] = str(e)
             transaction.rollback()
-            return JsonResponse(data)
+            return JsonResponse(response)
         except IntegrityError:
             transaction.rollback()
-            return JsonResponse(data)
+            return JsonResponse(response)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -395,58 +395,58 @@ class CoevaluacionCreateView(CreateView):
 
                                 obj = ResultadoProceso.objects.filter(cycle=answer.cycle, user=answer.teacher,
                                                                       coevaluator__isnull=False).first()
+                                if obj.Total_Proceso_Auto > 0:
+                                    subtotal = float(obj.Total_Proceso_Auto) + float(obj.Total_Proceso_Coe)
+                                    obj.Total_Proceso = round(subtotal / 2, 2)
+                                    obj.save()
 
-                                subtotal = float(obj.Total_Proceso_Auto) + float(obj.Total_Proceso_Coe)
-                                obj.Total_Proceso = round(subtotal / 2, 2)
-                                obj.save()
+                                    result_ped = (float(obj.auto_result_Ped) + float(obj.coe_result_Ped)) / 2
+                                    result_did = (float(obj.auto_result_Did) + float(obj.coe_result_Did)) / 2
+                                    result_tic = (float(obj.auto_result_Tic) + float(obj.coe_result_Tic)) / 2
+                                    kpi = ParametrosGeneral.objects.filter(parameter=3)
 
-                                result_ped = (float(obj.auto_result_Ped) + float(obj.coe_result_Ped)) / 2
-                                result_did = (float(obj.auto_result_Did) + float(obj.coe_result_Did)) / 2
-                                result_tic = (float(obj.auto_result_Tic) + float(obj.coe_result_Tic)) / 2
-                                kpi = ParametrosGeneral.objects.filter(parameter=3)
+                                    for ind in kpi:
+                                        if ind.code == 'RCAI':
+                                            n3 = float(ind.value)
 
-                                for ind in kpi:
-                                    if ind.code == 'RCAI':
-                                        n3 = float(ind.value)
+                                    if result_ped > n3:
+                                        message = 'Felicidades ha concluido en proceso de auto y co evaluaciòn de manera ' \
+                                                  'èxitosa en Pedagogía'
+                                    else:
+                                        course = 'Pedagogía en Educación Superior'
+                                        # Matriculación en moodle
+                                        response_enroll = enroll_course_evaluation(docente, COURSE_PEDAGOGY)
+                                        if response_enroll == 'OK':
+                                            # Envio de correo al docente
+                                            send_mail_notification(docente, None, course)
+                                            # Envio de Correo al Coevaluador
+                                            send_mail_notification(docente, coevaluator, course)
+                                    if result_did > n3:
+                                        message = 'Felicidades ha concluido en proceso de auto y co evaluaciòn de manera ' \
+                                                  'èxitosa en '
+                                    else:
+                                        course = 'Didáctica General y Didáctica de las matemáticas'
+                                        # Matriculación en moodle
+                                        response_enroll = enroll_course_evaluation(docente, COURSE_DIDACTIC)
+                                        if response_enroll == 'OK':
+                                            # Envio de correo al docente
+                                            send_mail_notification(docente, None, course)
+                                            # Envio de Correo al Coevaluador
+                                            send_mail_notification(docente, coevaluator, course)
+                                    if result_tic > n3:
+                                        message = 'Felicidades ha concluido en proceso de auto y co evaluaciòn de manera ' \
+                                                  'èxitosa en '
+                                    else:
+                                        course = 'TICs En Educación'
+                                        # Matriculación en moodle
+                                        response_enroll = enroll_course_evaluation(docente, COURSE_TICS)
+                                        if response_enroll == 'OK':
+                                            # Envio de correo al docente
+                                            send_mail_notification(docente, None, course)
+                                            # Envio de Correo al Coevaluador
+                                            send_mail_notification(docente, coevaluator, course)
 
-                                if result_ped > n3:
-                                    message = 'Felicidades ha concluido en proceso de auto y co evaluaciòn de manera ' \
-                                              'èxitosa en Pedagogía'
-                                else:
-                                    course = 'Pedagogía en Educación Superior'
-                                    # Matriculación en moodle
-                                    response_enroll = enroll_course_evaluation(docente, COURSE_PEDAGOGY)
-                                    if response_enroll == 'OK':
-                                        # Envio de correo al docente
-                                        send_mail_notification(docente, None, course)
-                                        # Envio de Correo al Coevaluador
-                                        send_mail_notification(docente, coevaluator, course)
-                                if result_did > n3:
-                                    message = 'Felicidades ha concluido en proceso de auto y co evaluaciòn de manera ' \
-                                              'èxitosa en '
-                                else:
-                                    course = 'Didáctica General y Didáctica de las matemáticas'
-                                    # Matriculación en moodle
-                                    response_enroll = enroll_course_evaluation(docente, COURSE_DIDACTIC)
-                                    if response_enroll == 'OK':
-                                        # Envio de correo al docente
-                                        send_mail_notification(docente, None, course)
-                                        # Envio de Correo al Coevaluador
-                                        send_mail_notification(docente, coevaluator, course)
-                                if result_tic > n3:
-                                    message = 'Felicidades ha concluido en proceso de auto y co evaluaciòn de manera ' \
-                                              'èxitosa en '
-                                else:
-                                    course = 'TICs En Educación'
-                                    # Matriculación en moodle
-                                    response_enroll = enroll_course_evaluation(docente, COURSE_TICS)
-                                    if response_enroll == 'OK':
-                                        # Envio de correo al docente
-                                        send_mail_notification(docente, None, course)
-                                        # Envio de Correo al Coevaluador
-                                        send_mail_notification(docente, coevaluator, course)
-                                    message = 'Coevaluación concluida correctamente'
-
+                                message = 'Coevaluación concluida correctamente'
                                 del request.session['docente']
 
                                 error = ''
@@ -454,8 +454,12 @@ class CoevaluacionCreateView(CreateView):
                                 response.status_code = 201
                                 return response
         except Exception as e:
-            data['error'] = str(e)
-            return JsonResponse(data)
+            response['error'] = str(e)
+            transaction.rollback()
+            return JsonResponse(response)
+        except IntegrityError:
+            transaction.rollback()
+            return JsonResponse(response)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

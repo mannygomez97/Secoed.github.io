@@ -98,13 +98,26 @@ WSGI_APPLICATION = 'secoed.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-CONEXION_NAME = 'pg_secoed'
-CONEXION_USER = 'secoed'
-CONEXION_PASSWORD = 'secoed2021'
+#CONEXION LOCAL --> debe regitrar su conexion si trabajara localmente
+#CONEXION_NAME = 'pg_secoed'
+#CONEXION_USER = 'secoed'
+#CONEXION_PASSWORD = 'secoed2021'
 #CONEXION_HOST = 'localhost'
 #CONEXION_PORT = '5432'
+
+#CONEXION PREPRODUCCION --> debe regitrar su conexion si trabajara con preproduccion
+CONEXION_NAME = 'db_pre_secoed'
+CONEXION_USER = 'secoed'
+CONEXION_PASSWORD = 'secoed2021'
 CONEXION_HOST = 'pgdb'
 CONEXION_PORT = 5432
+
+#CONEXION PRODUCCION --> debe regitrar su conexion si trabajara con produccion
+#CONEXION_NAME = 'db_pro_secoed'
+#CONEXION_USER = 'secoed'
+#CONEXION_PASSWORD = 'secoed2021'
+#CONEXION_HOST = 'pgdb'
+#CONEXION_PORT = 5432
 
 DATABASES = {
     'default': {
