@@ -6,11 +6,11 @@ from secoed import views
 from django.urls import include
 from django.conf import settings
 from django.conf.urls.static import static
-from django.conf.urls import handler404, handler500
-from secoed.views import Error404View, Error500View
+from secoed.views import Error404View
 from secoed.settings import DEBUG
 from django.conf.urls import url
 from django.views.static import serve
+from django.conf.urls import handler500
 
 urlpatterns = [
 
@@ -56,4 +56,4 @@ if DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 handler404 = Error404View.as_view()
-handler500 = secoed.views.error_500()
+handler500 = secoed.views.error_500
