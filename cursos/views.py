@@ -1,5 +1,6 @@
 from builtins import print
 
+import delorean
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 import requests
@@ -224,7 +225,7 @@ class CursoView(View):
             "courseids[0]": idCourse,
         }
         try:
-            respuesta = requests.post(apiBse, params)
+            respuesta = requests.post(API_BASE, params)
             if respuesta:
                 r = respuesta.json()
             if respuesta.status_code == 400:
