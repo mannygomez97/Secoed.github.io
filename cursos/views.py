@@ -1,9 +1,9 @@
 from builtins import print
 
-import delorean
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 import requests
+import delorean as delorean
 from django.utils.datetime_safe import datetime
 # Create your views here.
 from django.views import View
