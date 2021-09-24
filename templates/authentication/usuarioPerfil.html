@@ -145,4 +145,20 @@
         }
     </script>
 
+    <!--SWEET-ALERT -->
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- message success-->
+    {% if messages %}
+        {% for m in messages %}
+            <script>
+                Swal.fire({
+                    "title": "PERFIL",
+                    "text": "{{m}}",
+                    "icon": "{{m.extra_tags}}",
+                })
+            </script>
+        {% endfor %}
+    {% endif %}
+
 {% endblock %}
