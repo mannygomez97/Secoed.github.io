@@ -40,7 +40,6 @@ class PagesLoginView(View):
             else:
                 user = auth.authenticate(username=username, password=password)
                 if user is not None:
-                    print("USUARIO-ACTIVO: ",user.usuario_activo)
                     if user.usuario_activo:
                         request.session['username'] = username
                         request.session['isModulo'] = False
@@ -89,7 +88,6 @@ class PagesRecoverpwView(View):
                                 'protocol': 'http',
                             }
                             email = render_to_string(email_template_name, c)
-                            print([user.email])
                             try:
                                 send_mail(subject, email, 'secoed.web@gmail.com',
                                           [user.email], fail_silently=False)
@@ -220,7 +218,6 @@ class UsuarioView(View):
                 respuesta = requests.post(API_BASE, params)
                 if respuesta:
                     r = respuesta.json()
-                    print(r)
                     if respuesta.status_code == 400:
                         messages.success(request, "Error 400", "error")
                         return redirect('usuario')
@@ -231,7 +228,6 @@ class UsuarioView(View):
                             request.POST['moodle_user'] = id['id']
                         request.POST._mutable = mutable
             except Exception as e:
-                print(e)
                 messages.success(request, "Error al registrar el usuario en el moodle", "error")
                 return redirect('usuario')
             # crear rol-usuario en moodle
@@ -329,16 +325,20 @@ class UsuarioPerfilView(View):
     def get(self, request):
         usuario = get_object_or_404(Usuario, pk=request.user.id)
         usuarioPerfilForm = UsuarioPerfilForm(instance=usuario)
-        greeting = {'heading': "Perfil", 'pageview': "Perfil", "form": usuarioPerfilForm}
+        greeting = {'heading': "Perfil", 'pageview': "Perfil", "form": usuarioPerfilForm, "usuario": usuario}
         return render(request, self.template_name, greeting)
 
     def editUsuarioPerfil(request, pk):
         usuario = get_object_or_404(Usuario, pk=pk)
         if request.method == 'POST':
-            usuarioPerfilForm = UsuarioPerfilForm(request.POST, instance=usuario, files=request.FILES)
+            usuarioPerfilForm = UsuarioPerfilForm(data = request.POST, instance=usuario, files=request.FILES)
+            print(usuarioPerfilForm)
             if usuarioPerfilForm.is_valid():
                 usuarioPerfilForm.save()
                 messages.success(request, "Se edito correctamente", "success")
+                return redirect('user')
+            else:
+                messages.success(request, "No se puede editar", "error")
                 return redirect('user')
         else:
             usuarioPerfilForm = UsuarioPerfilForm(instance=usuario)

@@ -14,11 +14,9 @@ from django.conf.urls import handler500
 
 urlpatterns = [
 
-
-    url(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT}),
+    url(r'^media/(?P<path>.*)$', serve, {'document_root': settings.MEDIA_ROOT, 'show_indexes': True}),
 
     url(r'^static/(?P<path>.*)$', serve, {'document_root': settings.STATIC_ROOT}),
-
 
     # Inicio de sesión
     path('jsnCountLogin', views.AjaxEvent.jsnCountLogin, name="jsnCountLogin"),
@@ -52,7 +50,7 @@ urlpatterns = [
     path(r'cursos/', include('cursos.urls')),
 
 ]
-if DEBUG:
+if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
 
 handler404 = Error404View.as_view()

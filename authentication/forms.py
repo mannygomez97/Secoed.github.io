@@ -193,10 +193,13 @@ class UsuarioPerfilForm(forms.ModelForm):
                     'maxlength': '10'
                 }
             ),
-            'imagen': forms.TextInput(
+            'imagen': forms.FileInput(
                 attrs={
                     'class': 'form-control',
-                    'type': 'file'
                 }
             ),
         }
+
+    def __init__(self, *args, **kwargs):
+        super(self.__class__, self).__init__(*args, **kwargs)
+        self.fields['imagen'].required = False

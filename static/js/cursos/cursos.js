@@ -3,6 +3,7 @@ $(document).ready ( function(){
     cargarlista();
    $("#divCategoria").hide();
    $("#divCursos").hide();
+    $("#botonesCategoria").show();
 });
 
 function editarCategoria(item) {
@@ -90,7 +91,7 @@ function cargarlista() {
 /*        async:false,*/
         success: function (data) {
             $("#comboCategorias").empty();
-            $("#comboCategorias").append('<option value="0">RAIZ</option>');
+            // $("#comboCategorias").append('<option value="0">RAIZ</option>');
             for (var i=0; i <= data.context.length; i++) {
                 $("#comboCategorias").append('<option value="' + data.context[i].id + '">' + data.context[i].name + '</option>');
             }

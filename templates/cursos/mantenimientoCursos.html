@@ -33,7 +33,6 @@
                             <table class="table table-bordered dt-responsive nowrap w-100" id="datatable-buttons">
                                 <thead class="table-light">
                                 <tr>
-                                    <th scope="col" style="width: 70px;">#</th>
                                     <th scope="col">Nombre Completo</th>
                                     <th scope="col">Nombre corto</th>
                                     <th scope="col">Categoria</th>
@@ -45,7 +44,6 @@
                                 {% if cursos %}
                                     {% for item in cursos.courses %}
                                         <tr>
-                                            <td>{{ item.id }}</td>
                                             <td>{{ item.fullname }}</td>
                                             <td>{{ item.shortname }}</td>
                                             <td>{{ item.categoryname }}</td>
@@ -81,7 +79,6 @@
                 </div>
             </div>
         </div>
-    </div>
     </div>
     {#Modal cursos#}
     <div class="modal fade" id="modal-categoria" data-bs-backdrop="static"
@@ -210,16 +207,34 @@
 {% block footer %}
     {% include 'partials/footer.html' %}
 {% endblock %}
+
+
 {% block javascript %}
+
+    <!-- JAVASCRIPT -->
     <script src="{% static 'libs/jquery/jquery.min.js' %}"></script>
-    <script src="{% static 'js/cursos/cursos.js' %}"></script>
     <script src="{% static 'libs/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-    <script src="{% static 'js/pages/datatables.init.js' %}"></script>
-    <script src="{% static 'libs/datatables.net/js/jquery.dataTables.min.js' %}"></script>
-    <script src="{% static 'libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+    <script src="{% static 'libs/metismenu/metisMenu.min.js' %}"></script>
+    <script src="{% static 'libs/simplebar/simplebar.min.js' %}"></script>
+    <script src="{% static 'libs/node-waves/waves.min.js' %}"></script>
     <script src="{% static 'libs/@chenfengyuan/datepicker/datepicker.min.js' %}"></script>
     <script src="{% static 'libs/bootstrap-datepicker/js/bootstrap-datepicker.min.js' %}"></script>
-    <script src="{% static 'js/pages/form-advanced.init.js' %}"></script>
-    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-{% endblock %}
+    <!-- CURSOS -->
+    <script src="{% static 'js/cursos/cursos.js' %}"></script>
 
+    <!-- Required datatable js -->
+    <script src="{% static 'libs/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+
+    <!-- Responsive examples -->
+    <script src="{% static 'libs/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js' %}"></script>
+
+    <!-- Datatable init js -->
+    <script src="{% static 'js/pages/datatables.init.js' %}"></script>
+
+    <!--SWEET-ALERT -->
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script src="{% static 'js/app.js' %}"></script>
+{% endblock %}

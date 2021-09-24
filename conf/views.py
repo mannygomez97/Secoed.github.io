@@ -52,7 +52,6 @@ class MenuContentView(View):
             ##editarField
             request.POST._mutable = True
             request.POST['descripcion'] = request.POST['descripcion'].capitalize()
-            print(request.POST['descripcion'])
             request.POST['key'] = request.POST['descripcion'].replace(" ", "_").lower() + "_" + request.POST['orden']
             if request.POST['modulo_id'] and request.POST['parent_id']:
                 request.POST['modulo_id'] = ''

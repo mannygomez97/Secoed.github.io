@@ -1,9 +1,9 @@
 from builtins import print
 
+import delorean
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
 import requests
-import delorean as delorean
 from django.utils.datetime_safe import datetime
 # Create your views here.
 from django.views import View
@@ -210,6 +210,7 @@ class CursoView(View):
                     print("ENTRA AL IF 500 " + str(response))
                     print("500")
                 if response.status_code == 200:
+                    print(r)
                     print("ENTRA AL IF 200 " + str(response))
             else:
                 print("NO ENTRA al if")
