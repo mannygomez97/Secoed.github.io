@@ -109,8 +109,8 @@ WSGI_APPLICATION = 'secoed.wsgi.application'
 CONEXION_NAME = 'db_pre_secoed'
 CONEXION_USER = 'secoed'
 CONEXION_PASSWORD = 'secoed2021'
-CONEXION_HOST = '95.216.216.98'
-CONEXION_PORT = 5434
+CONEXION_HOST = 'pgdb'
+CONEXION_PORT = 5432
 
 #CONEXION PRODUCCION --> debe regitrar su conexion si trabajara con produccion
 #CONEXION_NAME = 'db_pro_secoed'
