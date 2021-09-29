@@ -2,6 +2,7 @@
 {% block cols %}
     <th>N°</th>
     <th>Nombre</th>
+    <th>Correo</th>
     <th>Identificación</th>
 {% endblock %}
 <!--Filas de la tabla-->
@@ -12,6 +13,7 @@
             <td>
                  <a href="{% url 'eva:create-coevaluation' %}?docente={{ docente.pk }}" >{{ docente.nombres }} {{ docente.apellidos }}</a>
             </td>
+            <td>{{ docente.email }}</td>
             <td>{{ docente.identificacion }}</td>
         </tr>
     {% endfor %}

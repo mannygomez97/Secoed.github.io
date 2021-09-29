@@ -18,11 +18,7 @@
         <div class="card">
             <div class="card-body">
                 {% block btn_creacion %}
-                    <div class="mb-2">
-                        <button class="rounded-circle btn btn-outline-info" new-register type="button" onclick="openModal('{%block url_app %}{% endblock %}', 'createModal')" title="Nuevo registro: {{ entity }}" >
-                            <i class="{% block icono %}{% endblock %}"></i>
-                        </button>
-                    </div>
+
                 {% endblock %}
                 <table id="datatable" class="table table-bordered dt-responsive nowrap w-100">
                     <thead>

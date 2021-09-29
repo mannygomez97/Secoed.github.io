@@ -11,7 +11,8 @@
 <!--Columnas de la tabla-->
 {% block cols %}
     <th>N°</th>
-    <th>Nombre</th>
+    <th>Área</th>
+    <th>Nombre materia</th>
     <th>Docente</th>
     <th>Acción</th>
 {% endblock %}
@@ -20,6 +21,7 @@
     {% for item in object_list %}
         <tr>
             <td>{{ item.id }}</td>
+            <td>{{ item.area }}</td>
             <td>{{ item.name }}</td>
             <td>{{ item.teacher }}</td>
             <td>

@@ -157,6 +157,7 @@ class Pregunta(models.Model):
                                    help_text='registra la descripción de la pregunta')
     category = models.ForeignKey(Categoria, db_column='categoria', null=False, blank=False, on_delete=models.CASCADE)
     type = models.ForeignKey(Tipo, db_column='tipo', null=False, blank=False, on_delete=models.CASCADE)
+    state = models.BooleanField(default=True, db_column='estado')
     date_created = models.DateTimeField(db_column='fecha_creacion', auto_now_add=True,
                                         help_text='Registra la fecha de creación de un valor')
     date_update = models.DateTimeField(db_column='fecha_edicion', auto_now=True,

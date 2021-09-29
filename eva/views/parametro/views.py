@@ -38,13 +38,13 @@ class ParameterCreateView(CreateView):
                     error = 'No han ocurrido errores'
                     response = JsonResponse({'message': message, 'error': error})
                     response.status_code = 201
-                    return response
+                    # return response
                 else:
                     message = f'{self.model.__name__} no se pudo registrar!'
                     error = form.errors
                     response = JsonResponse({'message': message, 'error': error})
                     response.status_code = 400
-                    return response
+                    # return response
         except Exception as e:
             data['error'] = str(e)
         return JsonResponse(data)

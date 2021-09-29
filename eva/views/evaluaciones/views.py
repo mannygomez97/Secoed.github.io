@@ -1,8 +1,10 @@
 import json
+
+import psycopg2
 import requests
 from django.core.mail import send_mail
 
-from django.db import transaction, IntegrityError
+from django.db import transaction, IntegrityError, connection
 from django.http import JsonResponse
 from django.template.loader import render_to_string
 from django.urls import reverse_lazy
@@ -13,7 +15,8 @@ from django.views.generic import ListView, CreateView
 from authentication.models import Usuario
 from eva.forms import CoevaluacionForm, AutoEvaluacionForm
 from eva.models import Respuesta, DetalleRespuesta, ResultadoProceso, ParametrosGeneral, Ciclo, \
-    Pregunta, Categoria
+    Pregunta, Categoria, Tipo, Parametro, Materia, AreasConocimiento
+from secoed import settings
 from secoed.settings import TOKEN_MOODLE, API_BASE, COURSE_TICS, COURSE_DIDACTIC, COURSE_PEDAGOGY
 
 
@@ -24,20 +27,31 @@ class TeachersPendingEvaluationList(ListView):
 
     def get_pendings_evaluation(self):
         data = []
+        by_co_evaluate = []
         resultado = ResultadoProceso.objects.filter(coevaluator__isnull=False)
         docentes = Usuario.objects.filter(usuario_activo=True, rol_moodle__codigo__gte=5)
-        if resultado.count() == 0:
-            data = docentes
-        else:
-            for r in resultado:
+        area = AreasConocimiento.objects.filter(docente=self.request.user.id).first()
+        if area is not None:
+            materia = Materia.objects.filter(area=area.id)
+
+            for m in materia:
                 for d in docentes:
-                    if r.user != d.id:
-                        data.append(d)
+                    if m.teacher_id == d.id:
+                        by_co_evaluate.append(d)
+
+            if resultado.count() == 0:
+                data = by_co_evaluate
+            else:
+                for r in resultado:
+                    for d in by_co_evaluate:
+                        if r.user is not d.id:
+                            data.append(d)
         return data
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['heading'] = 'Docentes pendientes de coevaluar'
+        coevaluator = self.request.user.id
         docentes = self.get_pendings_evaluation()
         context['object_list'] = docentes
         context['list_url'] = reverse_lazy('eva:list-coevaluar')
@@ -230,9 +244,11 @@ class AutoEvaluacionCreateView(CreateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['heading'] = 'AutoEvaluación'
-        context['object_list'] = Pregunta.objects.filter(type=1)
-        context['categories'] = Categoria.objects.all()
-        context['parameters'] = ParametrosGeneral.objects.filter(parameter=1)
+        tipo = Tipo.objects.filter(name='Coevaluación').first()
+        parametro = Parametro.objects.filter(name='Coevaluación').first()
+        context['object_list'] = Pregunta.objects.filter(type=tipo.id, state=True)
+        context['categories'] = Categoria.objects.filter(state=True)
+        context['parameters'] = ParametrosGeneral.objects.filter(parameter=parametro.id)
         cycle = Ciclo.objects.filter(is_active=True).first()
         context['cycle'] = cycle
         teacher = Usuario.objects.filter(id=self.request.user.id).first()
@@ -240,11 +256,11 @@ class AutoEvaluacionCreateView(CreateView):
         if teacher is not None:
             evaluate = Respuesta.objects.filter(teacher=teacher.id,
                                                 cycle=cycle.id,
-                                                type_evaluation=1).first()
+                                                type_evaluation=tipo.id).first()
             if evaluate is None:
                 flag = True
         context['verification'] = flag
-        context['type'] = 1
+        context['type'] = tipo.id
         context['type_evaluation'] = 'AUTO EVALUACIÓN DOCENTE'
         return context
 
@@ -472,17 +488,19 @@ class CoevaluacionCreateView(CreateView):
             if docente.rol_moodle.codigo != 4:
                 context['retorno'] = url
                 return context
-        context['object_list'] = Pregunta.objects.filter(type=2)
-        context['categories'] = Categoria.objects.all()
-        context['parameters'] = ParametrosGeneral.objects.filter(parameter=2)
+        tipo = Tipo.objects.filter(name='Coevaluación').first()
+        parametro = Parametro.objects.filter(name='Coevaluación').first()
+        context['object_list'] = Pregunta.objects.filter(type=tipo.id)
+        context['categories'] = Categoria.objects.filter(state=True)
+        context['parameters'] = ParametrosGeneral.objects.filter(parameter=parametro.id)
         cycle = Ciclo.objects.filter(is_active=True).first()
         context['cycle'] = cycle
         teacher = int(self.request.GET.get('docente'))
-        evaluate = Respuesta.objects.filter(teacher=teacher, cycle=cycle.id, type_evaluation=2).first()
+        evaluate = Respuesta.objects.filter(teacher=teacher, cycle=cycle.id, type_evaluation=tipo.id).first()
         flag = False
         if evaluate is None:
             flag = True
         context['verification'] = flag
-        context['type'] = 2
+        context['type'] = tipo.id
         context['type_evaluation'] = 'COE EVALUACION DOCENTE'
         return context
