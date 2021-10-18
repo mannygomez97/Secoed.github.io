@@ -81,8 +81,8 @@ $(function(){
             }
         }).fail(function (jqXHR, textStatus, errorThrown) {
             alert(textStatus + ' ' + errorThrown);
-            notification('Error!', data.message, 'error');
-        }).always(function (data) {
+            notification('Error!', response.message, 'error');
+        }).always(function (response) {
 
         });
     }

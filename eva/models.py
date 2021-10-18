@@ -136,7 +136,7 @@ class ParametrosGeneral(models.Model):
     parameter = models.ForeignKey(Parametro, null=False, blank=False, on_delete=models.CASCADE,
                                   verbose_name='parametro_id')
     code = models.CharField(max_length=5, null=False, blank=False, unique=True, db_column='codigo')
-    value = models.DecimalField(max_digits=4, decimal_places=2, default=0, db_column='valor')
+    value = models.DecimalField(max_digits=5, decimal_places=2, default=0, db_column='valor')
     date_created = models.DateTimeField(auto_now_add=True, db_column='fecha_creacion',
                                         help_text='Registra la fecha de creación de un valor')
     date_update = models.DateTimeField(auto_now=True, db_column='fecha_edicion',
@@ -207,15 +207,15 @@ class ResultadoProceso(models.Model):
     cycle = models.IntegerField(null=False, blank=False, db_column='ciclo')
     user = models.IntegerField(null=False, blank=False, db_column='docente')
     coevaluator = models.CharField(max_length=10, null=True, blank=True, db_column='coevaluador')
-    auto_result_Tic = models.DecimalField(max_digits=4, decimal_places=2, default=0)
-    auto_result_Did = models.DecimalField(max_digits=4, decimal_places=2, default=0)
-    auto_result_Ped = models.DecimalField(max_digits=4, decimal_places=2, default=0)
-    Total_Proceso_Auto = models.DecimalField(max_digits=4, decimal_places=2, default=0)
-    coe_result_Tic = models.DecimalField(max_digits=4, decimal_places=2, default=0)
-    coe_result_Did = models.DecimalField(max_digits=4, decimal_places=2, default=0)
-    coe_result_Ped = models.DecimalField(max_digits=4, decimal_places=2, default=0)
-    Total_Proceso_Coe = models.DecimalField(max_digits=4, decimal_places=2, default=0)
-    Total_Proceso = models.DecimalField(max_digits=4, decimal_places=2, default=0)
+    auto_result_Tic = models.DecimalField(max_digits=9, decimal_places=2, default=0)
+    auto_result_Did = models.DecimalField(max_digits=9, decimal_places=2, default=0)
+    auto_result_Ped = models.DecimalField(max_digits=9, decimal_places=2, default=0)
+    Total_Proceso_Auto = models.DecimalField(max_digits=9, decimal_places=2, default=0)
+    coe_result_Tic = models.DecimalField(max_digits=9, decimal_places=2, default=0)
+    coe_result_Did = models.DecimalField(max_digits=9, decimal_places=2, default=0)
+    coe_result_Ped = models.DecimalField(max_digits=9, decimal_places=2, default=0)
+    Total_Proceso_Coe = models.DecimalField(max_digits=9, decimal_places=2, default=0)
+    Total_Proceso = models.DecimalField(max_digits=9, decimal_places=2, default=0)
     date_created = models.DateTimeField(db_column='fecha_creacion', auto_now_add=True,
                                         help_text='Registra la fecha de creación de un valor')
     updated_at = models.DateTimeField(db_column='fecha_edicion', auto_now=True,
@@ -223,3 +223,21 @@ class ResultadoProceso(models.Model):
 
     class Meta:
         db_table = "pt_resultado_proceso"
+
+
+class Courses(models.Model):
+    idMoodle = models.IntegerField(db_column='id_moodle')
+    sortName = models.CharField(max_length=150, db_column='nombre_corto')
+    fullName = models.CharField(max_length=150, db_column='nombre_completo')
+    categoryName = models.CharField(max_length=150, db_column='categoria')
+    image = models.ImageField(upload_to='images/eva/', max_length=300, db_column='imagen', default='')
+    startDate = models.DateTimeField(db_column='fecha_inicio')
+    date_created = models.DateTimeField(db_column='fecha_creacion', auto_now_add=True,
+                                        help_text='Registra la fecha de creación de un valor')
+
+    def __str__(self):
+        return self.sortName
+
+    class Meta:
+        db_table = 'pt_curso'
+

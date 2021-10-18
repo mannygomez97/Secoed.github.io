@@ -3,7 +3,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import TemplateView
 
 from authentication.models import Usuario
-from eva.models import ResultadoProceso, Ciclo, ParametrosGeneral
+from eva.models import ResultadoProceso, Ciclo, ParametrosGeneral, Parametro
 
 
 class ProcessResultEvaluations(TemplateView):
@@ -42,7 +42,8 @@ class ProcessResultEvaluations(TemplateView):
 
         docente = Usuario.objects.filter(id=self.request.user.id).first()
         ciclo = Ciclo.objects.filter(is_active=True).first()
-        kpi = ParametrosGeneral.objects.filter(parameter=3)
+        parameter = Parametro.objects.filter(name='Indicadores').first()
+        kpi = ParametrosGeneral.objects.filter(parameter=parameter.id)
 
         for ind in kpi:
             if ind.code == 'IND':
@@ -74,7 +75,7 @@ class ProcessResultEvaluations(TemplateView):
             elif auto_ped <= n3:
                 traffic_light_yellow = 'images/eva/amarillo.png'
                 sap = traffic_light_yellow
-            elif auto_ped <= n4:
+            elif n3 < auto_ped <= n4:
                 traffic_light_green = 'images/eva/verde.png'
                 sap = traffic_light_green
 
@@ -87,7 +88,7 @@ class ProcessResultEvaluations(TemplateView):
             elif auto_did <= n3:
                 traffic_light_yellow = 'images/eva/amarillo.png'
                 sad = traffic_light_yellow
-            elif auto_did <= n4:
+            elif n3 < auto_did <= n4:
                 traffic_light_green = 'images/eva/verde.png'
                 sad = traffic_light_green
 
@@ -97,10 +98,10 @@ class ProcessResultEvaluations(TemplateView):
             elif auto_tic <= n2:
                 traffic_light_orange = 'images/eva/naranja.png'
                 sat = traffic_light_orange
-            elif auto_tic <= n3:
+            elif n2 < auto_tic <= n3:
                 traffic_light_yellow = 'images/eva/amarillo.png'
                 sat = traffic_light_yellow
-            elif auto_tic <= n4:
+            elif n3 < auto_tic <= n4:
                 traffic_light_green = 'images/eva/verde.png'
                 sat = traffic_light_green
 
@@ -110,10 +111,10 @@ class ProcessResultEvaluations(TemplateView):
             elif coe_ped <= n2:
                 traffic_light_orange = 'images/eva/naranja.png'
                 scp = traffic_light_orange
-            elif coe_ped <= n3:
+            elif n2 < coe_ped <= n3:
                 traffic_light_yellow = 'images/eva/amarillo.png'
                 scp = traffic_light_yellow
-            elif coe_ped <= n4:
+            elif n3 < coe_ped <= n4:
                 traffic_light_green = 'images/eva/verde.png'
                 scp = traffic_light_green
 
@@ -126,7 +127,7 @@ class ProcessResultEvaluations(TemplateView):
             elif coe_did <= n3:
                 traffic_light_yellow = 'images/eva/amarillo.png'
                 scd = traffic_light_yellow
-            elif coe_did <= n4:
+            elif n3 > coe_did <= n4:
                 traffic_light_green = 'images/eva/verde.png'
                 scd = traffic_light_green
 
@@ -139,7 +140,7 @@ class ProcessResultEvaluations(TemplateView):
             elif coe_tic <= n3:
                 traffic_light_yellow = 'images/eva/amarillo.png'
                 sct = traffic_light_yellow
-            elif coe_tic <= n4:
+            elif n3 < coe_tic <= n4:
                 traffic_light_green = 'images/eva/verde.png'
                 sct = traffic_light_green
 
@@ -157,7 +158,6 @@ class ProcessResultEvaluations(TemplateView):
             data.append(coe_ped)
             data.append(coe_did)
             return data
-
 
     def get_graph_co_evaluation_by_category(self):
         data = []
@@ -242,16 +242,15 @@ class ProcessResultEvaluations(TemplateView):
         context['pageview'] = cycle.name
         kpi = self.get_kpi()
         if kpi is not None:
-            context['semaforo_auto_tic'] = kpi[0]['semaforo_atic']
-            context['semaforo_auto_ped'] = kpi[1]['semaforo_aped']
-            context['semaforo_auto_did'] = kpi[2]['semaforo_adid']
-            context['semaforo_coe_tic'] = kpi[3]['semaforo_ctic']
-            context['semaforo_coe_ped'] = kpi[4]['semaforo_cped']
-            context['semaforo_coe_did'] = kpi[5]['semaforo_cdid']
+            context['semaforo_atic'] = kpi[0]['semaforo_atic']
+            context['semaforo_aped'] = kpi[1]['semaforo_aped']
+            context['semaforo_adid'] = kpi[2]['semaforo_adid']
+            context['semaforo_ctic'] = kpi[3]['semaforo_ctic']
+            context['semaforo_cped'] = kpi[4]['semaforo_cped']
+            context['semaforo_cdid'] = kpi[5]['semaforo_cdid']
         context['auto'] = self.get_total_auto()
         context['total_auto'] = self.get_total_auto_evaluation()
         context['total_coe'] = self.get_total_co_evaluation()
         context['graph_evaluation'] = self.get_graph_auto_evaluation_by_category()
         context['graph_co_evaluation'] = self.get_graph_co_evaluation_by_category()
         return context
-

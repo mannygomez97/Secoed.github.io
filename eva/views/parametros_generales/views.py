@@ -31,7 +31,7 @@ class ParameterGrlCreateView(CreateView):
     success_url = reverse_lazy('eva:list-parameter-grl')
     
     def post(self, request, *args, **kwargs):
-        reponse = None
+        data = None
         try:
             if request.is_ajax():
                 form = self.form_class(request.POST)
@@ -49,9 +49,8 @@ class ParameterGrlCreateView(CreateView):
                     response.status_code = 400
                     return response
         except Exception as e:
-            message = 'error'
-            response = JsonResponse({'message': message, 'error': str(e)})
-        return JsonResponse(response)
+            data['error'] = str(e)
+        return JsonResponse(data)
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

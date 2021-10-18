@@ -21,9 +21,7 @@
         <tr>
             <td>{{ area.id }}</td>
             <td>{{ area.name }}</td>
-            <td>
-                {{ area.docente}}
-            </td>
+            <td>{{ area.docente}}</td>
             <td>
                 <button onclick="openModal('{% url 'eva:update-area' area.pk %}', 'updateModal')" class="rounded-circle btn btn-outline-secondary btn-sm edit" title="Editar">
                     <i class="fas fa-pencil-alt"></i>

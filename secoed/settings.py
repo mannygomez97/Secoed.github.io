@@ -20,7 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'd!m50t)w$$&ff(*pn7%oqw-1yxo+eub*xcxd^8pzo=*2)ynq=w'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['95.216.216.98', '127.0.0.1', 'localhost']
 
@@ -98,26 +98,35 @@ WSGI_APPLICATION = 'secoed.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-#CONEXION LOCAL --> debe regitrar su conexion si trabajara localmente
-#CONEXION_NAME = 'pg_secoed'
-#CONEXION_USER = 'secoed'
-#CONEXION_PASSWORD = 'secoed2021'
-#CONEXION_HOST = 'localhost'
-#CONEXION_PORT = '5432'
+# CONEXION LOCAL --> debe regitrar su conexion si trabajara localmente
+# CONEXION_NAME = 'pg_secoed'
+# CONEXION_USER = 'secoed'
+# CONEXION_PASSWORD = 'secoed2021'
+# CONEXION_HOST = 'localhost'
+# CONEXION_PORT = '5432'
 
-#CONEXION PREPRODUCCION --> debe regitrar su conexion si trabajara con preproduccion
+# CONEXION PREPRODUCCION --> debe regitrar su conexion si trabajara con preproduccion
+
+"""
 CONEXION_NAME = 'db_pre_secoed'
 CONEXION_USER = 'secoed'
 CONEXION_PASSWORD = 'secoed2021'
-CONEXION_HOST = 'pgdb'
+CONEXION_HOST = '95.216.216.98'
+CONEXION_PORT = 5434
+"""
+
+CONEXION_NAME = 'secoed'
+CONEXION_USER = 'dba'
+CONEXION_PASSWORD = 'dba2021'
+CONEXION_HOST = 'localhost'
 CONEXION_PORT = 5432
 
-#CONEXION PRODUCCION --> debe regitrar su conexion si trabajara con produccion
-#CONEXION_NAME = 'db_pro_secoed'
-#CONEXION_USER = 'secoed'
-#CONEXION_PASSWORD = 'secoed2021'
-#CONEXION_HOST = 'pgdb'
-#CONEXION_PORT = 5432
+# CONEXION PRODUCCION --> debe regitrar su conexion si trabajara con produccion
+# CONEXION_NAME = 'db_pro_secoed'
+# CONEXION_USER = 'secoed'
+# CONEXION_PASSWORD = 'secoed2021'
+# CONEXION_HOST = 'pgdb'
+# CONEXION_PORT = 5432
 
 DATABASES = {
     'default': {
@@ -199,6 +208,3 @@ DJANGO_EASY_AUDIT_ADMIN_SHOW_REQUEST_EVENTS = False
 TOKEN_MOODLE = 'cae40824ddd52a292888f736c8843929'
 API_BASE = 'http://academyec.com/moodle/webservice/rest/server.php'
 CONTEXT_ID = 116
-COURSE_PEDAGOGY = 10
-COURSE_DIDACTIC = 11
-COURSE_TICS = 12

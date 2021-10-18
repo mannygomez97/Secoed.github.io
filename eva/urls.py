@@ -1,5 +1,6 @@
 from django.conf.urls import url
 
+from eva.views.cursos.views import CursosEva
 from eva.views.evaluaciones.views import *
 from eva.views.reportes.views import ProcessResultEvaluations
 from eva.views.tipo.views import *
@@ -55,7 +56,7 @@ urlpatterns = [
         name='update-parameter-grl'),
     url(r'^parametro_grl/values/eliminar/(?P<pk>\d+)/$', login_required(ParameterGrlDeleteView.as_view()),
         name='delete-parameter-grl'),
-    # Type routes
+    # Questions routes
     url(r'^pregunta/lista/', login_required(QuestionsListView.as_view()), name='list-questions'),
     url(r'^pregunta/autoevaluacion/', login_required(PreguntasAutoView.as_view()), name='auto-questions'),
     url(r'^pregunta/coevaluacion/', login_required(PreguntasCoeView.as_view()), name='coe-questions'),
@@ -68,5 +69,7 @@ urlpatterns = [
     url(r'^evaluacion/co-evaluacion', login_required(CoevaluacionCreateView.as_view()), name='create-coevaluation'),
     # Reports Auto y Co Evaluation
     url(r'^evaluacion/reportes', login_required(ProcessResultEvaluations.as_view()), name='report-evaluation'),
+    # Cursos routes
+    url(r'^cursos/lista', login_required(CursosEva.as_view()), name='cursos-evaluation'),
 ]
 
