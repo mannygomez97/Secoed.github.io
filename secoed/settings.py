@@ -33,7 +33,6 @@ BASE_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
 ]
 
 # Third Party App
@@ -55,6 +54,7 @@ LOCAL_APPS = [
     'asesor',
     'components',
     'easyaudit',
+    'docentes'
 ]
 
 INSTALLED_APPS = BASE_APPS + LOCAL_APPS + THIRD_APPS
@@ -105,13 +105,13 @@ WSGI_APPLICATION = 'secoed.wsgi.application'
 # CONEXION_HOST = 'localhost'
 # CONEXION_PORT = '5432'
 
-# CONEXION PREPRODUCCION --> debe regitrar su conexion si trabajara con preproduccion
+# CONEXION DEVELOPER --> debe regitrar su conexion si trabajara con preproduccion
 
 
-CONEXION_NAME = 'db_pre_secoed'
+CONEXION_NAME = 'db_secoed'
 CONEXION_USER = 'secoed'
 CONEXION_PASSWORD = 'secoed2021'
-CONEXION_HOST = 'pgdb'
+CONEXION_HOST = 'localhost'
 CONEXION_PORT = 5432
 
 

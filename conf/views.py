@@ -21,7 +21,6 @@ class MenuContentView(View):
     # Metodo para guardar un nuevo menu
     def newMenu(request):
         if request.method == 'POST':
-            print("if")
             menuForm = MenuForm(request.POST)
             if menuForm.is_valid():
                 menuForm.save()
@@ -30,7 +29,6 @@ class MenuContentView(View):
                 messages.error(request, "No se puedo registrar", "error")
             return redirect('menu')
         else:
-            print("else")
             menuFormView = MenuForm()
             menu = Menu()
             view = False
