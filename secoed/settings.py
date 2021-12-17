@@ -108,7 +108,7 @@ WSGI_APPLICATION = 'secoed.wsgi.application'
 # CONEXION PREPRODUCCION --> debe regitrar su conexion si trabajara con preproduccion
 
 
-CONEXION_NAME = 'db_secoedS'
+CONEXION_NAME = 'db_secoed'
 CONEXION_USER = 'secoed'
 CONEXION_PASSWORD = 'secoed2021'
 CONEXION_HOST = 'pgdb'
