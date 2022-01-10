@@ -11,4 +11,7 @@ urlpatterns = [
     path(r'viewConfPreguntas/<int:pk>', login_required(views.ConfPreguntasView.viewConfPreguntas), name='viewConfPreguntas'),
     path(r'deleteConfPreguntas/<int:pk>', login_required(views.ConfPreguntasView.deleteConfPreguntas), name='deleteConfPreguntas'),
 
+    # evaluacion de la plataforma por parte de los docentes
+    path(r'evaluacion-plataforma', login_required(views.EvaluacionView.as_view()), name='evaluacion-plataforma'),
+    path(r'saveEvaluacion', login_required(views.EvaluacionView.saveEvaluacion), name='saveEvaluacion'),
 ]

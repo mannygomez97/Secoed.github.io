@@ -1,0 +1,136 @@
+{% extends 'partials/base.html' %}
+{% load static %}
+
+{% load crispy_forms_tags %}
+
+{% block css %}
+{% include 'partials/css.html' %}
+{% endblock %}
+
+{% block extra_css %}
+<link href="{% static 'libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css' %}"
+      rel="stylesheet" type="text/css"/>
+<link href="{% static 'libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css' %}"
+      rel="stylesheet" type="text/css"/>
+<link href="{% static 'libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css' %}"
+      rel="stylesheet" type="text/css"/>
+{% endblock %}
+
+
+{% block contents %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                {% if preguntas %}
+                {% if comprobacion == True %}
+                <div class="">
+                    <p>
+                        Califique su nivel de satisfación sobre la plataforma SECOED, siendo 1 la mas baja calificación
+                        y 5 la máxima calificación.
+                    </p>
+                    <form id="a" action="saveEvaluacion" class="form-label-left input_mask" method="POST">
+                        {% csrf_token %}
+                        <table class="table table-bordered rwd_auto">
+                            <tbody>
+                            <tr class="table-active" style="text-align: center">
+                                <th class="aling-text" rowspan="2" style="text-align: center">
+                                    <h3>PREGUNTAS</h3>
+                                </th>
+                                <th class="aling-text" colspan="5">
+                                    OPCIONES
+                                </th>
+                            </tr>
+                            <tr class="table-info" style="text-align: center">
+                                <th>1</th>
+                                <th>2</th>
+                                <th>3</th>
+                                <th>4</th>
+                                <th>5</th>
+                            </tr>
+                            {% for evaluacion in evaluacion %}
+                            <tr>
+                                <td>
+                                    {{ evaluacion.pregunta.pregunta }}
+                                </td>
+                                {% for val in value %}
+                                <td style="text-align: center">
+                                    <input id="{{ evaluacion.id }}" type="radio" class="hidden-inputs"
+                                           name="{{ evaluacion.id }}" value="{{ val }}" required/>
+                                </td>
+                                {% endfor %}
+                            </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                        <table class="table table-bordered rwd_auto">
+                            <tr>
+                                <td colspan="8">
+                                    <input type="submit" class="btn btn-success mt-3 mt-lg-0"
+                                           value="Guardar" style="float: right">
+                                </td>
+                            </tr>
+                        </table>
+                    </form>
+                </div>
+                {% else %}
+                <div class="title">
+                    <div class="col-title">
+                        <center>
+                            <img src="{% static 'images/docentes/logo-evaluacion.png'%}" alt="" height="270">
+                            <br/><br/><br/>
+                            <h3>USTED YA REALIZO LA EVALUACIÓN DEL {{periodo}} DE LA PLATAFORMA SECOED</h3>
+                        </center>
+                    </div>
+                </div>
+                {% endif %}
+                {% else %}
+                <div class="panel>">
+                    <center>
+                        <img src="{% static 'images/docentes/logo-calendario.png'%}" alt="" height="270">
+                        <br/><br/><br/>
+                        <h3>NO EXITE NINGUNA EVALUACIÓN VIGENTE EN ESTE {{periodo}}</h3>
+                    </center>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block r_sidebar %}
+    {% include 'partials/rightsidebar.html' %}
+{% endblock %}
+
+{% block footer %}
+    {% include 'partials/footer.html' %}
+{% endblock %}
+
+{% block javascript %}
+
+    <!-- JAVASCRIPT -->
+    <script src="{% static 'libs/jquery/jquery.min.js' %}"></script>
+    <script src="{% static 'libs/metismenu/metisMenu.min.js' %}"></script>
+
+    <!--SWEET-ALERT -->
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <script src="{% static 'js/app.js' %}"></script>
+
+    <!-- message success-->
+    {% if messages %}
+        {% for m in messages %}
+
+        <script>
+            Swal.fire({
+                "title": "EVALUACIÓN SECOED",
+                "text": "{{m}}",
+                "icon": "{{m.extra_tags}}",
+            })
+        </script>
+
+        {% endfor %}
+    {% endif %}
+
+{% endblock %}
