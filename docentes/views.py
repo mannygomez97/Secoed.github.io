@@ -7,8 +7,59 @@ from datetime import datetime
 from docentes.models import *
 from docentes.forms import *
 
+class CategoriaView(View):
+    def get(self, request):
+        categoriasView = Categoria.objects.order_by('categoria')
+        greeting = {'heading': 'Categoria de preguntas', 'pageview': 'Docentes', 'categoriasView': categoriasView, }
+        return render(request, 'docentes/categoriaPreguntas.html', greeting)
 
-# Create your views here.
+    # Metodo para guardar una nueva categoria
+    def newCategoria(request):
+        if request.method == 'POST':
+            categoriaForm = CategoriaForm(request.POST)
+            if categoriaForm.is_valid():
+                categoriaForm.save()
+                messages.success(request, "Se registro correctamente", "success")
+            else:
+                messages.error(request, "No se puedo registrar", "error")
+            return redirect('categoriaPregunta')
+        else:
+            categoriaFormView = CategoriaForm()
+            categoria = Categoria()
+            view = False
+            context = {'categoriaFormView': categoriaFormView, 'categoria': categoria, 'view': view}
+        return render(request, 'docentes/categoriaForm.html', context)
+
+    # Consulta el registro de una categoria por su pk
+    def viewCategoria(request, pk):
+        categoria = get_object_or_404(Categoria, pk=pk)
+        categoriaFormView = CategoriaForm(instance=categoria)
+        view = True
+        context = {'categoriaFormView': categoriaFormView, 'categoria': categoria, 'view': view}
+        return render(request, 'docentes/categoriaForm.html', context)
+
+    # Editar los datos de una categoria por su pk
+    def editCategoria(request, pk):
+        categoria = get_object_or_404(Categoria, pk=pk)
+        if request.method == 'POST':
+            form = CategoriaForm(request.POST, instance=categoria)
+            if form.is_valid():
+                form.save()
+                messages.success(request, "Se edito correctamente", "success")
+                return redirect('categoriaPregunta')
+        else:
+            categoriaFormView = CategoriaForm(instance=categoria)
+            view = False
+            context = {'categoriaFormView': categoriaFormView, 'categoria': categoria, 'view': view}
+        return render(request, 'docentes/categoriaForm.html', context)
+
+    # Elimina una categoria
+    def deleteCategoria(request, pk):
+        categoria = get_object_or_404(Categoria, pk=pk)
+        if categoria:
+            categoria.delete()
+            messages.success(request, "Se ha eliminado correctamente", "success")
+        return redirect('categoriaPregunta')
 
 class ConfPreguntasView(View):
 
@@ -81,6 +132,7 @@ class EvaluacionView(View):
         fecha = datetime.now()
         periodo = fecha.year
         username = request.session['username']
+        categoria = Categoria.objects.order_by('categoria')
         preguntas = ConfPreguntas.objects.filter(periodo = periodo)
         evaluacion = Evaluacion.objects.filter(usuario = username).filter(contestado = False)
         for i in evaluacion:
@@ -93,7 +145,7 @@ class EvaluacionView(View):
                 saveLoadPreguntas(preguntas, username)
             else:
                 comprobacion = False
-        greeting = {'heading': "Evaluación de la plataforma SECOED", 'pageview':"Docentes", 'preguntas':preguntas, 'comprobacion':comprobacion, 'evaluacion':evaluacion, 'value':value, 'periodo':periodo}
+        greeting = {'heading': "Evaluación de la plataforma SECOED", 'pageview':"Docentes", 'preguntas':preguntas, 'comprobacion':comprobacion, 'evaluacion':evaluacion, 'value':value, 'periodo':periodo, 'categoria':categoria}
         return render(request, 'docentes/evaluacionPlataforma.html', greeting)
 
     def saveEvaluacion(request):

@@ -37,6 +37,7 @@
                     <thead class="table-light">
                     <tr>
                         <th>PERIODO</th>
+                        <th>CATEGORIA</th>
                         <th>PREGUNTA</th>
                         <th>ACCIONES</th>
                     </tr>
@@ -45,6 +46,7 @@
                     {% for conf in confPreguntasView %}
                     <tr>
                         <td>{{ conf.periodo }}</td>
+                        <td>{{ conf.categoria.categoria }}</td>
                         <td>{{ conf.pregunta }}</td>
                         <td>
                             <div class="btn-group mt-4 mt-md-0" role="group" aria-label="Basic example">

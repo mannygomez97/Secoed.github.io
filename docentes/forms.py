@@ -3,6 +3,17 @@ from django.shortcuts import get_object_or_404
 from docentes.models import *
 from datetime import datetime
 
+class CategoriaForm(ModelForm):
+    class Meta:
+        model = Categoria
+        fields = '__all__'
+        labels = {
+            'categoria': 'Categoria:'
+        }
+        widgets = {
+            'categoria': TextInput(attrs={'class': 'form-control', 'placeHolder': 'Ingrese una categoria'}),
+        }
+
 class ConfPreguntasForm(ModelForm):
     class Meta:
         model = ConfPreguntas
@@ -10,6 +21,7 @@ class ConfPreguntasForm(ModelForm):
         labels = {
             'pregunta': 'Pregunta:',
             'periodo': 'Período:',
+            'categoria': 'Categoria:'
         }
         widgets = {
             'pregunta': TextInput(attrs={'class': 'form-control', 'placeHolder': 'Ingrese una pregunta'}),

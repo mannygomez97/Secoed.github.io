@@ -48,7 +48,14 @@
                                 <th>4</th>
                                 <th>5</th>
                             </tr>
+                            {% for categoria in categoria %}
+                            <tr class="table-primary" >
+                                <td style="text-align: center" colspan="6">
+                                    <h5>{{ categoria.categoria|upper }}</h5>
+                                </td>
+                            </tr>
                             {% for evaluacion in evaluacion %}
+                            {% ifequal categoria.id evaluacion.pregunta.categoria.id %}
                             <tr>
                                 <td>
                                     {{ evaluacion.pregunta.pregunta }}
@@ -60,6 +67,8 @@
                                 </td>
                                 {% endfor %}
                             </tr>
+                            {% endifequal %}
+                            {% endfor %}
                             {% endfor %}
                             </tbody>
                         </table>
@@ -100,37 +109,37 @@
 {% endblock %}
 
 {% block r_sidebar %}
-    {% include 'partials/rightsidebar.html' %}
+{% include 'partials/rightsidebar.html' %}
 {% endblock %}
 
 {% block footer %}
-    {% include 'partials/footer.html' %}
+{% include 'partials/footer.html' %}
 {% endblock %}
 
 {% block javascript %}
 
-    <!-- JAVASCRIPT -->
-    <script src="{% static 'libs/jquery/jquery.min.js' %}"></script>
-    <script src="{% static 'libs/metismenu/metisMenu.min.js' %}"></script>
+<!-- JAVASCRIPT -->
+<script src="{% static 'libs/jquery/jquery.min.js' %}"></script>
+<script src="{% static 'libs/metismenu/metisMenu.min.js' %}"></script>
 
-    <!--SWEET-ALERT -->
-    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<!--SWEET-ALERT -->
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-    <script src="{% static 'js/app.js' %}"></script>
+<script src="{% static 'js/app.js' %}"></script>
 
-    <!-- message success-->
-    {% if messages %}
-        {% for m in messages %}
+<!-- message success-->
+{% if messages %}
+{% for m in messages %}
 
-        <script>
-            Swal.fire({
-                "title": "EVALUACIÓN SECOED",
-                "text": "{{m}}",
-                "icon": "{{m.extra_tags}}",
-            })
-        </script>
+<script>
+    Swal.fire({
+        "title": "EVALUACIÓN SECOED",
+        "text": "{{m}}",
+        "icon": "{{m.extra_tags}}",
+    })
+</script>
 
-        {% endfor %}
-    {% endif %}
+{% endfor %}
+{% endif %}
 
 {% endblock %}

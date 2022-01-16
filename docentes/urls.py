@@ -4,6 +4,14 @@ from docentes import views
 
 urlpatterns = [
 
+    # categoria de las preguntas
+    path(r'categoriaPregunta', login_required(views.CategoriaView.as_view()), name='categoriaPregunta'),
+    path(r'newCategoria', login_required(views.CategoriaView.newCategoria), name='newCategoria'),
+    path(r'editCategoria/<int:pk>', login_required(views.CategoriaView.editCategoria), name='editCategoria'),
+    path(r'viewCategoria/<int:pk>', login_required(views.CategoriaView.viewCategoria), name='viewCategoria'),
+    path(r'deleteCategoria/<int:pk>', login_required(views.CategoriaView.deleteCategoria), name='deleteCategoria'),
+
+
     # configuracion de la pregunta de evaluacion
     path(r'conf_preguntas', login_required(views.ConfPreguntasView.as_view()), name='conf_preguntas'),
     path(r'newConfPreguntas', login_required(views.ConfPreguntasView.newConfPreguntas), name='newConfPreguntas'),
