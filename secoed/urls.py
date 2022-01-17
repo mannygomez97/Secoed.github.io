@@ -48,6 +48,7 @@ urlpatterns = [
 
     # url de cursos
     path(r'cursos/', include('cursos.urls')),
+    
 
 ]
 if settings.DEBUG:

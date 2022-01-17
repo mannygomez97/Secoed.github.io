@@ -8,6 +8,7 @@ from .models import  Nivel_Académico, Cursos, Asesor, Docentes, Periodo, Recurs
 from .forms import  Nivel_AcadémicoForm, CursosForm, AsesorForm, DocentesForm, PeriodoForm, RecursosForm, Curso_AsesorForm, Cabecera_CronoForm, TitulosForm, Cabecera_Crono_ObForm, EventForm, historiasForm, curso_FechaForm
 from django.http import HttpResponse
 
+
 #Calendario
 from .utils import Calendar
 from datetime import datetime, date
@@ -1278,7 +1279,7 @@ def eliminar_producto_Ti(request, id):
 def Tablas_Cab_Cro(request): 
     u="Procesos"
     t="Tabla"
-    uni=Cabecera_Crono.objects.all()
+    uni=Cabecera_Crono.objects.all() 
     data = {   
         'uni_nombre':uni,
         'heading': u,
@@ -1990,6 +1991,7 @@ def estadistico(request):
         'aprob':opcion2.count,        
     }   
     return render(request, "asesor/base/t-estadistico.html", data)
+
 @login_required
 def api_curso(request):
     u="Seguimiento Docente"
@@ -2021,6 +2023,7 @@ def api_curso(request):
     except Exception as e:
         print(e)
     return render(request,'asesor/seguimiento_docente/lista_cursos.html',context)
+
 @login_required
 def listado_estudiante(request, id, nombre):   
     nombre_curso=nombre         
@@ -2071,5 +2074,9 @@ def actividades_user(request, id, nombre, idest):
     except Exception as e:
         print(e)
     return render(request,'asesor/seguimiento_docente/act_pdf.html',context)
-
-
+@login_required
+def actividadesapi(request):
+    return render(request,'asesor/operacion/cursos.html')
+@login_required
+def cronogramapi(request):
+    return render(request,'asesor/operacion/cronograma.html')

@@ -23,12 +23,7 @@ urlpatterns = [
     # actualizar requisito
     path('updateRequisito/<int:pk>',views.UpdateRequisito.as_view(), name = 'updateRequisito'),
 
-
-
-
-
-
-                                # Asesor
+    # Asesor
     # Listar asesor curso
     path('formasesor',views.FormAsesor.as_view(), name="forms-asesor"),
 
@@ -56,7 +51,7 @@ urlpatterns = [
 
     path('formeducativo1',views.FormEducaciona.as_view(), name='forms-educativo1'),
 
-                            # Evaluacion
+    # Evaluacion
     #Vista evaluacion
     path('formevaluation',views.FormEvaluation.as_view(), name='forms-evaluation'),
     #Notificar email

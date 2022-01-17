@@ -233,7 +233,7 @@ def loadRequisito(request):
 class FormEducacion(View):
     def get(self, request):
         greeting = {}
-        greeting['heading'] = "Designar asesor curso"
+        greeting['heading'] = "Asesores por cursos."
         greeting['pageview'] = "Forms"
 
         queryset = request.GET.get("buscar")

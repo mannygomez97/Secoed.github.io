@@ -1,5 +1,6 @@
 from django.urls import path
 from asesor import views
+
 urlpatterns = [
     #Tablas Módulos Asesor           
     
@@ -93,5 +94,9 @@ urlpatterns = [
     #19api
     path('cursos_api', views.api_curso, name='cursos_api'),
     path('listado_estudiante/<id>/<nombre>/', views.listado_estudiante, name='listado_estudiante'),
-    path('actividades_user/<id>/<nombre>/<idest>/', views.actividades_user, name='actividades_user')
+    path('actividades_user/<id>/<nombre>/<idest>/', views.actividades_user, name='actividades_user'),
+    path('actividades_api', views.actividadesapi, name='actividades_api'),
+    path('cronograma_api', views.cronogramapi, name='cronograma_api'),
+
+    
 ]   

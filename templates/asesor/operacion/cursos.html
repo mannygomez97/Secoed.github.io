@@ -1,0 +1,127 @@
+{% extends 'partials/base.html' %}
+{% load static %}
+
+{% block css%}
+{% include 'partials/css.html' %}
+{% endblock %}
+{% block extra_css %}
+<link href="{% static 'libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" />
+<link href="{% static 'libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" />
+
+<!-- Responsive datatable examples -->
+<link href="{% static 'libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" /> 
+{% endblock %}
+{% block contents %}
+
+{% load static %}
+
+<div id="lista_courses">
+  <div id="tbl_cursos">
+      <table class="table table-striped">
+          <thead>
+            <tr>
+              <th scope="col">ID</th>
+              <th scope="col">Nombre</th>
+              <th scope="col">Fecha inicio</th>
+              <th scope="col">Fecha Fin</th>
+              <th scope="col">Opciones</th>
+            </tr>
+          </thead>
+          <tbody>
+              <tr v-for="course in courses" :key="course.id">
+                  <td>{$course.id$}</td>
+                  <td>{$course.fullname$}</td>
+                  <td>{$course.startdate$}</td>
+                  <td>{$course.enddate$}</td>
+                  <td><button class="btn btn-outline-info" v-on:click="getDetailCourse(course.id)"><i class="fas fa-list"></i></button></td>
+              </tr>
+          </tbody>
+      </table>
+  </div>
+  
+  <div id="tbl_cursosbyid">
+      <table class="table table-striped">
+          <thead>
+            <tr>
+              <th scope="col">ID</th>
+              <th scope="col">Nombre</th>
+              <th scope="col">Detalles</th>
+            </tr>
+          </thead>
+          <tbody>
+              <tr v-for="contC in content_course" :key="contC.id">
+                  <td>{$contC.id$}</td>
+                  <td>{$contC.name$}</td>
+                  <td><button class="btn btn-outline-info" v-on:click="getContentCourseByModule(contC.id)"><i class="fas fa-list"></i></button></td>
+              </tr>
+          </tbody>
+      </table>
+  </div>
+  
+  <div id="tbl_detail_course">
+      <table class="table table-striped">
+          <thead>
+            <tr>
+              <th scope="col">ID</th>
+              <th scope="col">Nombre</th>
+              <th scope="col">Tipo Actividad</th>
+              <th scope="col">Autor</th>
+            </tr>
+          </thead>
+          <tbody>
+              <tr v-for="contU in content_courseByModule" :key="contU.id">
+                  <td>{$contU.id$}</td>
+                  <td>{$contU.name$}</td>
+                  <td>{$contU.modname$}</td>
+              </tr>
+          </tbody>
+      </table>
+  </div>
+</div>
+
+  {% block js %}
+  <script type="text/javascript" src="{% static 'js/vue.js' %}"></script>
+  <script type="text/javascript" src="{% static 'js/axios.min.js' %}"></script>
+
+  <!-- JAVASCRIPT -->
+  <script src="{% static 'libs/jquery/jquery.js' %}"></script>
+  <script src="{% static 'libs/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+  <script src="{% static 'libs/metismenu/metisMenu.min.js' %}"></script>
+  <script src="{% static 'libs/simplebar/simplebar.min.js' %}"></script>
+  <script src="{% static 'libs/node-waves/waves.min.js' %}"></script>
+                  
+  <script src="{% static 'libs/datatables.net/js/jquery.dataTables.min.js' %}"></script>        
+  <script src="{% static 'libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+
+  <script src="{% static 'libs/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
+  <script src="{% static 'libs/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js' %}"></script>
+  <script src="{% static 'libs/jszip/jszip.min.js' %}"></script>
+  <script src="{% static 'libs/pdfmake/build/pdfmake.min.js' %}"></script>
+  <script src="{% static 'libs/pdfmake/build/vfs_fonts.js' %}"></script>        
+  <script src="{% static 'libs/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
+  
+  <script src="{% static 'js/pages/datatables.init.js' %}"></script>   
+  
+  <script type="text/javascript" src="{% static 'js/cursos.js' %}"></script>
+
+  <script src="{% static 'js/cursos.js' %}"></script>
+         
+  <script type="text/javascript">          
+      function timeToHuman() {
+          var theDate = new Date(document.u2h.timeStamp.value * 1000);
+          dateString = theDate.toGMTString();
+          document.u2h.result.value = dateString;
+      }                         
+  </script>
+{% endblock %}
+
+{% endblock %}
+{% block r_sidebar %}
+{% include 'partials/rightsidebar.html' %}
+{% endblock %}
+{% block footer %}
+{% include 'partials/footer.html' %}
+
+{% endblock %}
+
+
