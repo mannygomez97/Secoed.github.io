@@ -3,6 +3,7 @@ from django.shortcuts import render
 from django.views import View
 from django.shortcuts import render, redirect, get_object_or_404
 from datetime import datetime
+import numpy
 
 from docentes.models import *
 from docentes.forms import *
@@ -122,11 +123,6 @@ class ConfPreguntasView(View):
             messages.success(request, "Se ha eliminado correctamente", "success")
         return redirect('conf_preguntas')
 
-def saveLoadPreguntas(preguntas, username):
-     for i in preguntas:
-        c = Evaluacion(pregunta = i, opcion = 1, usuario = username, contestado = False)
-        c.save()
-
 class EvaluacionView(View):
     def get(self, request):
         fecha = datetime.now()
@@ -135,16 +131,66 @@ class EvaluacionView(View):
         categoria = Categoria.objects.order_by('categoria')
         preguntas = ConfPreguntas.objects.filter(periodo = periodo)
         evaluacion = Evaluacion.objects.filter(usuario = username).filter(contestado = False)
-        for i in evaluacion:
-            print()
         comprobacion = True
         value = [1,2,3,4,5]
-        if not evaluacion:
-            condicion = Evaluacion.objects.filter(usuario = username).filter(contestado = True)
-            if not condicion:
-                saveLoadPreguntas(preguntas, username)
+        val1 = numpy.size(preguntas)
+        val2 = numpy.size(evaluacion)
+        if not preguntas:
+            print('1.')
+            comprobacion = False
+        else:
+            print('2.')
+            if not evaluacion:
+                print('2.1.')
+                _evaluacion = Evaluacion.objects.filter(usuario = username).filter(contestado = True)
+                if not _evaluacion:
+                    print('2.1.1.')
+                    for i in preguntas:
+                        c = Evaluacion(pregunta = i, opcion = 1, usuario = username, contestado = False)
+                        c.save()
+                    evaluacion = Evaluacion.objects.filter(usuario = username).filter(contestado = False)
+                else:
+                    print('2.1.2.')
+                    val3 = numpy.size(_evaluacion)
+                    if val1 > val3:
+                        print('2.1.2.1.')
+                        idPregunta = []
+                        for i in _evaluacion:
+                            idPregunta.append(i.pregunta.id)
+                        temp = ConfPreguntas.objects.exclude(id__in = idPregunta)
+                        for i in temp:
+                            c = Evaluacion(pregunta = i, opcion = 1, usuario = username, contestado = False)
+                            c.save()
+                        evaluacion = Evaluacion.objects.filter(usuario = username).filter(contestado = False)
+                    else:
+                        print('2.1.2.2.')
+                        comprobacion = False
             else:
-                comprobacion = False
+                print('2.2.')
+                _evaluacion = Evaluacion.objects.filter(usuario = username).filter(contestado = True)
+                if not _evaluacion:
+                    if val1 > val2 :
+                        print('2.2.1.')
+                        evaluacion.delete()
+                        for i in preguntas:
+                            c = Evaluacion(pregunta = i, opcion = 1, usuario = username, contestado = False)
+                            c.save()
+                        evaluacion = Evaluacion.objects.filter(usuario = username).filter(contestado = False)
+                else:
+                    val3 = numpy.size(_evaluacion)
+                    if val1 > val3:
+                        evaluacion.delete()
+                        idPregunta = []
+                        for i in _evaluacion:
+                            idPregunta.append(i.pregunta.id)
+                        temp = ConfPreguntas.objects.exclude(id__in = idPregunta)
+                        for i in temp:
+                            c = Evaluacion(pregunta = i, opcion = 1, usuario = username, contestado = False)
+                            c.save()
+                        evaluacion = Evaluacion.objects.filter(usuario = username).filter(contestado = False)
+                    else:
+                        print('2.2.2.2.')
+                        comprobacion = False
         greeting = {'heading': "Evaluación de la plataforma SECOED", 'pageview':"Docentes", 'preguntas':preguntas, 'comprobacion':comprobacion, 'evaluacion':evaluacion, 'value':value, 'periodo':periodo, 'categoria':categoria}
         return render(request, 'docentes/evaluacionPlataforma.html', greeting)
 
@@ -153,7 +199,7 @@ class EvaluacionView(View):
             cont = 1
             for key, values in request.POST.lists():
                 if cont > 1:
-                    print(key, values)
+                    print('Key: ', key,' ---> Valor: ',values[0])
                     evaluacion = get_object_or_404(Evaluacion, pk=key)
                     evaluacion.opcion = values[0]
                     evaluacion.contestado = True
