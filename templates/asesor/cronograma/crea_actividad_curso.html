@@ -12,10 +12,35 @@
 <link href="{% static 'libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" /> 
 {% endblock %}
 {% block contents %}
-
-<h1>Cronogramas</h1>
-
-
+<h1>Listado de actividades</h1>
+<div class="table-responsive">
+    <table id="curso" class="table table-bordered dt-responsive nowrap w-100">
+        <thead>
+        <tr>
+            <th>Id</th>
+            <th>Nombre</th>
+            <th>Titulo</th>                                                        
+            <th>Icon</th>                                                                                                                                                      
+        </tr>
+        </thead>                
+        <tbody>                                                   
+        {% if context %}
+            {% for item in context %}                            
+                <tr>                             
+                    <td>{{item.id}}</td>
+                    <td>{{item.name}}</td>
+                    <td>{{item.title}}</td>
+                    <td>{{item.icon}}</td>                                                      
+                    <td>
+                        <!--<a href="{% url 'modules_by_course' item.id item.fullname %}" class="btn btn-outline-success btn-sm"><i class="fas fa-plus"></i></a>
+                         <a href="{% url 'calendar_by_course' item.id %}" class="btn btn-outline-info btn-sm"><i class="fas fa-clock"></i></a> -->
+                    </td>
+                </tr>     
+            {% endfor %}                                 
+        {% endif %}
+        </tbody>
+    </table>
+</div> 
 {% endblock %}
 {% block r_sidebar %}
 {% include 'partials/rightsidebar.html' %}

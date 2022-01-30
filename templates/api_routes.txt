@@ -1,0 +1,23 @@
+admin
+**adminJuka1982**
+{
+  "token": "2fb3df9ba2006ef257f072651b547b3d",
+  "privatetoken": null
+}
+
+------------------------------------------------------
+jintriagos@ug.edu.ec
+Ji12345678*
+{
+  "token": "cae40824ddd52a292888f736c8843929",
+  "privatetoken": null
+}
+
+
+--LISTA DE CURSOS: core_course_get_courses
+
+--CURSOS_CONTENDIDO: 	core_course_get_contents
+    PARAMS: courseid = 33
+
+--MODULO_CURSO: 	core_course_get_course_module
+    PARAMS: cmid = 100

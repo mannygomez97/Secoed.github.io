@@ -1,3 +1,4 @@
 from django.contrib import admin
+from .models import Valoracion_Modulos
 
-# Register your models here.
+admin.site.register(Valoracion_Modulos)

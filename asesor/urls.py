@@ -95,8 +95,11 @@ urlpatterns = [
     path('cursos_api', views.api_curso, name='cursos_api'),
     path('listado_estudiante/<id>/<nombre>/', views.listado_estudiante, name='listado_estudiante'),
     path('actividades_user/<id>/<nombre>/<idest>/', views.actividades_user, name='actividades_user'),
-    path('actividades_api', views.actividadesapi, name='actividades_api'),
-    path('cronograma_api', views.cronogramapi, name='cronograma_api'),
-
     
+    #URLS_EORRALA
+    path('modules_by_course/<id>/<fullname>/', views.modules_by_course, name='modules_by_course'),
+    path('details_module/<int:course>/<id>/', views.details_module, name='details_module'),
+    path('add_activity_module/<int:course>/<id>/', views.add_activity_module, name='add_activity_module'),
+    path('valorate_module/<id>/<fullname>/<name>/', views.valorate_module, name='valorate_module'),
+    path('valoration_list/', views.valoration_list, name='valoration_list'),
 ]   

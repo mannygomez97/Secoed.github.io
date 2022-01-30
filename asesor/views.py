@@ -1,10 +1,11 @@
+from multiprocessing import context
 from django.shortcuts import render, redirect, get_object_or_404
 import json
 import requests
 from secoed.settings import TOKEN_MOODLE
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import  Nivel_Académico, Cursos, Asesor, Docentes, Periodo, Recursos, Curso_Asesor, Cabecera_Crono, Titulos, Event, Observaciones, registro_historicos
+from .models import  Nivel_Académico, Cursos, Asesor, Docentes, Periodo, Recursos, Curso_Asesor, Cabecera_Crono, Titulos, Event, Observaciones, registro_historicos,Valoracion_Modulos
 from .forms import  Nivel_AcadémicoForm, CursosForm, AsesorForm, DocentesForm, PeriodoForm, RecursosForm, Curso_AsesorForm, Cabecera_CronoForm, TitulosForm, Cabecera_Crono_ObForm, EventForm, historiasForm, curso_FechaForm
 from django.http import HttpResponse
 
@@ -1994,8 +1995,8 @@ def estadistico(request):
 
 @login_required
 def api_curso(request):
-    u="Seguimiento Docente"
-    t="Cursos"    
+    u="Curso"
+    t="Detalle cursos"    
     apiBase="http://academyec.com/moodle/webservice/rest/server.php"
     params={"wstoken":TOKEN_MOODLE,
             "wsfunction":"core_course_get_courses",
@@ -2074,9 +2075,82 @@ def actividades_user(request, id, nombre, idest):
     except Exception as e:
         print(e)
     return render(request,'asesor/seguimiento_docente/act_pdf.html',context)
+
+#Obtener los modulos de un curso por id - tesis 2022 Orrala - Rodriguez
 @login_required
-def actividadesapi(request):
-    return render(request,'asesor/operacion/cursos.html')
+def modules_by_course(request,id, fullname):
+    u="Modulos del curso: "+fullname
+    t="Cursos"
+    apiBase="http://academyec.com/moodle/webservice/rest/server.php"
+    params={"wstoken":TOKEN_MOODLE,
+            "wsfunction":"core_course_get_contents",
+            "moodlewsrestformat":"json",
+            "courseid":id          
+            }
+    context={}
+    try:
+        response=requests.post(apiBase, params)
+        if response.status_code==400:
+            return render(request,'lista_Estudiantes.html',context={"context":"Bad request"})
+        if response:
+            r=response.json()      
+            context={"context":r, 'heading': u,'pageview': t, 'course':id, 'fullname':fullname}                        
+    except Exception as e:
+        print(e)
+    return render(request,'asesor/seguimiento_docente/modules_course.html',context)
+
 @login_required
-def cronogramapi(request):
-    return render(request,'asesor/operacion/cronograma.html')
+def details_module(request,course, id):
+    u="Detalle modulo"
+    t="Cursos" 
+    apiBase="http://academyec.com/moodle/webservice/rest/server.php"
+    params={"wstoken":TOKEN_MOODLE,
+            "wsfunction":"core_course_get_contents",
+            "moodlewsrestformat":"json",
+            "courseid": course
+            }
+    context={}
+    try:
+        response=requests.post(apiBase, params)
+        if response.status_code==400:
+            return render(request,'lista_Estudiantes.html',context={"context":"Bad request"})
+        if response:
+            res=response.json()
+            for r in res:
+                if r["id"]==int(id):
+                    context={"context":r["modules"], 'heading': u,'pageview': t, 'course':course,}
+    except Exception as e:
+        print(e)
+    return render(request,'asesor/seguimiento_docente/details_module.html',context)
+
+@login_required
+def add_activity_module(request, course, id):
+    u="Agregar actividad al modulo"
+    t="Cursos" 
+    apiBase="http://academyec.com/moodle/webservice/rest/server.php"
+    params={"wstoken":TOKEN_MOODLE,
+            "wsfunction":"core_course_get_course_content_items",
+            "moodlewsrestformat":"json",
+            "courseid": course
+            }
+    context={}
+    try:
+        response=requests.post(apiBase, params)
+        if response.status_code==400:
+            return render(request,'lista_Estudiantes.html',context={"context":"Bad request"})
+        if response:
+            res=response.json()["content_items"]
+            context={"context":res, 'heading': u,'pageview': t, 'item':id,}
+    except Exception as e:
+        print(e)
+    return render(request,'asesor/seguimiento_docente/add_activity_module.html',context)
+
+@login_required
+def valorate_module(request, id, fullname, name):
+    return render(request,'asesor/seguimiento_docente/valorate_module.html',{'id':id, 'fullname':fullname, 'name':name})
+
+@login_required
+def valoration_list(request):
+    valorations=Valoracion_Modulos.objects.all()
+    greeting = {'valoration':valorations}
+    return render(request,'asesor/seguimiento_docente/valoration_list.html',greeting)

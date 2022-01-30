@@ -122,7 +122,7 @@ class Event(models.Model):
 
     def __str__(self):
         return self.title
-           
+        
     def get_absolute_url(self):
         return reverse('event-detail', args=(self.id,))
     
@@ -152,3 +152,15 @@ class registro_historicos(models.Model):
 
     def __str__(self):
         return self.title
+
+#Vaoracion de modulos del curso
+class Valoracion_Modulos(models.Model):
+    id=models.AutoField(primary_key=True)
+    nombre_curso=models.CharField(max_length=200)
+    modulo_id=models.IntegerField()
+    nombre_modulo=models.CharField(max_length=200)
+    comentario=models.CharField(max_length=500)
+    valoracion=models.IntegerField()
+
+    def __str__(self):
+        return self.nombre_curso
