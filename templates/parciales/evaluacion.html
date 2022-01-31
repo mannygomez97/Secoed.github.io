@@ -25,8 +25,9 @@
                 <form id="form_evaluacion" action="{%block action %}{% endblock %}"  method="POST">
                     {% csrf_token %}
                     <section class="intro first">
-                        <p>Buenos días,</p>
-                        <p>Por favor, dedique unos minutos de su tiempo para rellenar el siguiente cuestionario.</p>
+                        <p>BIENVENIDOS,</p>
+                        <p>El proceso de fortalecimiento de la profesión docente es posible con su ayuda.
+Le invitamos a completar el test de manera objetiva.</p>
                     </section>
                     <section class="intro first">
                         <H2 style="text-align: center">Tabla de Valoración</H2>
@@ -34,10 +35,10 @@
                     <table class="table table-striped jambo_table bulk_action">
                         <thead>
                             <tr class="headings table-success">
-                                <th class="column-title">No cumple: 1</th>
-                                <th class="column-title">Medianamente cumple: 2</th>
-                                <th class="column-title">Usualmente cumple: 3</th>
-                                <th class="column-title">Si cumple: 4</th>
+                                <th class="column-title">Recuerdo: 1 </th>
+                                <th class="column-title">Recuerdo y Comprendo: 2</th>
+                                <th class="column-title">Recuerdo, comprendo y aplico: 3</th>
+                                <th class="column-title">Aplico e investigo: 4</th>
                             </tr>
                         </thead>
                     </table>
