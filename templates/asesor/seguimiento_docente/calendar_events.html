@@ -13,30 +13,42 @@
 {% endblock %}
 {% block contents %}
 
-
                         <div class="row">
                             <div class="col-12">
                                 <div class="card">
                                     <div class="card-body">        
+                                        <div class="button-items" style="margin-bottom: 10px">
+                                            <a href="{% url 'cursos_api' %}" type="button" class="btn btn-success waves-effect waves-light btn-rounded">
+                                                <i class="far fa-calendar-plus"></i>
+                                                Agregar evento
+                                            </a>
+                                        </div>                                        
                                         <div class="table-responsive">
                                             <table id="curso" class="table table-bordered dt-responsive nowrap w-100">
                                                 <thead>
                                                 <tr>
                                                     <th>Id</th>
-                                                    <th>Nombre</th>
-                                                    <th>Opciones del modulo</th>                                                                                                                                                      
+                                                    <th>Nombre evento</th>
+                                                    <th>Descripción</th>                                                        
+                                                    <th>ID curso</th>
+                                                    <th>Fecha inicio</th>
+                                                    <th>Duración</th>
+                                                    <th>Fecha final</th>                                                                                                                                                   
                                                 </tr>
                                                 </thead>                
                                                 <tbody>                                                   
                                                 {% if context %}
                                                     {% for item in context %}                            
                                                         <tr>                              
-                                                            <td>{{item.id}}</td>                                 
+                                                            <td>{{item.id}}</td>                           
                                                             <td>{{item.name}}</td>
-                                                            <!-- <td>{{item.modules}}</td> -->
+                                                            <td>{{item.description}}</td>
+                                                            <td>{{item.courseid}}</td>
+                                                            <td>{{item.timestart}}</td>                                                            
+                                                            <td>{{item.timeduration}}</td>
+                                                            <td>{{item.timemodified}}</td>
                                                             <td>
-                                                                <a href="{% url 'details_module' course item.id fullname item.name %}" class="btn btn-outline-info btn-md"><i class="fas fa-info-circle"></i></a>
-                                                                <a href="{% url 'list_activity_module' course item.id %}" class="btn btn-outline-warning btn-md"><i class="fas fa-graduation-cap"></i></a>
+                                                                <a href="#" class="btn btn-outline-success btn-sm"><i class="fas fa-cogs"></i></a>
                                                             </td>
                                                         </tr>     
                                                     {% endfor %}

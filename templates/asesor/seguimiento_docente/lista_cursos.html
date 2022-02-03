@@ -24,7 +24,7 @@
                                                 <tr>
                                                     <th>Id</th>
                                                     <th>Nombre del Curso</th>
-                                                    <th>Nombre Corto</th>                                                        
+                                                    <th>Participantes</th>                                                        
                                                     <th>Fecha Inicio</th>
                                                     <th>Fecha Final</th>
                                                     <th>Modulos</th>                                                                                                                                                      
@@ -36,11 +36,11 @@
                                                         <tr>                              
                                                             <td>{{item.id}}</td>                              
                                                             <td>{{item.fullname}}</td>
-                                                            <td>{{item.shortname}}</td>                                                            
+                                                            <td>{{item.showgrades}}</td>                                                            
                                                             <td>{{item.startdate}}</td>
                                                             <td>{{item.enddate}}</td>
                                                             <td>
-                                                                <a href="{% url 'modules_by_course' item.id item.fullname %}" class="btn btn-outline-success btn-sm"><i class="fas fa-list"></i></a>
+                                                                <a href="{% url 'modules_by_course' item.id item.fullname %}" class="btn btn-outline-info btn-md"><i class="fas fa-list"></i></a>
                                                             </td>
                                                         </tr>     
                                                     {% endfor %}

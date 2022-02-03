@@ -12,31 +12,30 @@
 <link href="{% static 'libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" /> 
 {% endblock %}
 {% block contents %}
-
-
                         <div class="row">
                             <div class="col-12">
                                 <div class="card">
                                     <div class="card-body">        
+                                        <h4 class="card-title">Cursos</h4>
                                         <div class="table-responsive">
                                             <table id="curso" class="table table-bordered dt-responsive nowrap w-100">
                                                 <thead>
                                                 <tr>
                                                     <th>Id</th>
                                                     <th>Nombre</th>
-                                                    <th>Opciones del modulo</th>                                                                                                                                                      
+                                                    <th>Link</th>
+                                                    <th>Icon</th>
                                                 </tr>
                                                 </thead>                
                                                 <tbody>                                                   
                                                 {% if context %}
                                                     {% for item in context %}                            
                                                         <tr>                              
-                                                            <td>{{item.id}}</td>                                 
-                                                            <td>{{item.name}}</td>
-                                                            <!-- <td>{{item.modules}}</td> -->
+                                                            <td>{{item.id}}</td>
+                                                            <td>{{item.title}}</td>
+                                                            <td><a target="_blank" href="{{item.link}}"><i class="fas fa-link"></i></a></td>
                                                             <td>
-                                                                <a href="{% url 'details_module' course item.id fullname item.name %}" class="btn btn-outline-info btn-md"><i class="fas fa-info-circle"></i></a>
-                                                                <a href="{% url 'list_activity_module' course item.id %}" class="btn btn-outline-warning btn-md"><i class="fas fa-graduation-cap"></i></a>
+                                                                <a href="{% url 'add_activity_module' course item.id %}" class="btn btn-outline-warning btn-md"><i class="fas fa-plus"></i></a>
                                                             </td>
                                                         </tr>     
                                                     {% endfor %}
@@ -52,15 +51,14 @@
                                                 {% endif %}
                                                 </tbody>
                                             </table>
-                                        </div>    
+                                        </div>
                                     </div>
                                 </div>
-                            </div> <!-- end col -->
-                        </div> <!-- end row -->
+                            </div>
+                        </div>
 
-                    </div> <!-- container-fluid -->
-                </div>
-                <!-- End Page-content -->             
+                    </div>
+                </div>         
 {% endblock %}
 {% block r_sidebar %}
 {% include 'partials/rightsidebar.html' %}

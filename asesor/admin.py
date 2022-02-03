@@ -1,4 +1,4 @@
 from django.contrib import admin
-from .models import Valoracion_Modulos
+from .models import Valoracion_Modulos, valoracion
 
-admin.site.register(Valoracion_Modulos)
+admin.site.register(valoracion)

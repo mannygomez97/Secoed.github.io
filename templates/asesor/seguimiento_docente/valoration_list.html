@@ -22,26 +22,36 @@
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
+                    <div class="button-items" style="margin-bottom: 10px">
+                        <a href="{% url 'cursos_api' %}" type="button" class="btn btn-success waves-effect waves-light btn-rounded">
+                            <i class="far fa-bookmark"></i>
+                            Cursos
+                        </a>
+                    </div>
+
                     <table id="datatable" class="table table-bordered dt-responsive nowrap w-100">
                         <thead>
                         <tr>
-                            <th>ID</th>
+                            <!-- <th>ID</th> -->
                             <th>NOMBRE CURSO</th>
-                            <th>ID MODULO</th>
+                            <!-- <th>ID MODULO</th> -->
                             <th>NOMBRE MODULO</th>
+                            <th>NOMBRE ACTIVIDAD</th>
                             <th>COMENTARIO</th>
                             <th>VALORACION</th>
+                            <th>FEEDBACK</th>
                         </tr>
                         </thead>
                         <tbody>
                         {% for val in valoration %}
                             <tr>
-                                <td >{{ val.id }}</td>
+                                <!-- <td >{{ val.id }}</td> -->
                                 <td>{{ val.nombre_curso }}</td>
-                                <td>{{ val.modulo_id }}</td>
                                 <td>{{ val.nombre_modulo }}</td>
+                                <td>{{ val.nombre_actividad }}</td>
                                 <td>{{ val.comentario }}</td>
                                 <td>{{ val.valoracion }}</td>
+                                <th><a href="#" class="btn btn-outline-success btn-md"><i class="far fa-comment-dots"></i></a></th>
                             </tr>
                         {% endfor %}
                         </tbody>

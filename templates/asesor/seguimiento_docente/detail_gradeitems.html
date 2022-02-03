@@ -12,27 +12,53 @@
 <link href="{% static 'libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" /> 
 {% endblock %}
 {% block contents %}
-<form>
-    <div class="form-group">
-        <label for="fcAssignmentName">Nombre de asignación</label>
-        <input type="hidden" class="form-control" id="fcCourse" value="{{course}}">
-        <input type="hidden" class="form-control" id="fcItemId" value="{{id}}">
 
-        <input type="text" class="form-control" id="fcAssignmentName" placeholder="Assignment name">
-    </div>
-    <div class="form-group">
-        <label for="Description">Descripcion</label>
-        <textarea class="form-control" id="fcDescription" rows="3"></textarea>
-    </div>
-    <!-- <div class="form-group">
-        <label for="fcAdditionalFiles">Archivos adjuntos</label>
-        <input type="file" class="form-control-file" id="fcAdditionalFiles">
-    </div> -->
-    <div class="col text-center">
-        <button type="submit" class="btn btn-success mb-2 align-center">Guardar</button>
-    </div>
-    
-</form>
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">        
+                <h4 class="card-title">Cursos</h4>                                         
+                <div class="table-responsive">
+                    <table id="curso" class="table table-bordered dt-responsive nowrap w-100">
+                        <thead>
+                        <tr>
+                            <!-- <th>Id</th> -->
+                            <th>ID</th>
+                            <th>Nombre completo</th>                                                                                                                                            
+                        </tr>
+                        </thead>                
+                        <tbody>                                                   
+                        {% if context %}
+                            {% for item in context %}                            
+                                <tr>                              
+                                    <td>{{item.id}}</td>                               
+                                    <td>{{item.itemname}}</td>
+                                    <td>{{item.itemmodule}}</td>
+                                    
+                                </tr>     
+                            {% endfor %}
+                        {% else %}                       
+                            <div class="row">
+                                <div class="alert alert-warning alert-dismissible fade show col-md-5 col-md-offset-4" role="alert">
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                    <span aria-hidden="true">&times;</span>
+                                    </button>
+                                    <strong>Advertencia!</strong> Búsqueda Fallida, dato no encontrado.
+                                </div>
+                            </div>                                 
+                        {% endif %}
+                        </tbody>
+                    </table>
+                </div>    
+            </div>
+        </div>
+    </div> <!-- end col -->
+</div> <!-- end row -->
+
+</div> <!-- container-fluid -->
+</div>
+<!-- End Page-content -->
+
 {% endblock %}
 {% block r_sidebar %}
 {% include 'partials/rightsidebar.html' %}

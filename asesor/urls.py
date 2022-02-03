@@ -98,8 +98,12 @@ urlpatterns = [
     
     #URLS_EORRALA
     path('modules_by_course/<id>/<fullname>/', views.modules_by_course, name='modules_by_course'),
-    path('details_module/<int:course>/<id>/', views.details_module, name='details_module'),
+    path('details_module/<int:course>/<id>/<fullname>/<name>/', views.details_module, name='details_module'),
+    path('list_activity_module/<int:course>/<id>/', views.list_activity_module, name='list_activity_module'),
     path('add_activity_module/<int:course>/<id>/', views.add_activity_module, name='add_activity_module'),
-    path('valorate_module/<id>/<fullname>/<name>/', views.valorate_module, name='valorate_module'),
+    path('valorate_module/<fullname>/<namemod>//<name>/', views.valorate_module, name='valorate_module'),
     path('valoration_list/', views.valoration_list, name='valoration_list'),
+    path('detail_course_module/<int:course>/<id>/', views.detail_course_module, name='detail_course_module'),
+    path('detail_gradeitems/<courseid>/<userid>/<int:cmid>/', views.detail_gradeitems, name='detail_gradeitems'),
+    path('calendar_events', views.calendar_events, name='calendar_events'),
 ]   

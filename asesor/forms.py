@@ -1,7 +1,8 @@
 
+from urllib.request import urlretrieve
 from django import forms
-from .models import Nivel_Académico, Cursos, Asesor, Docentes, Periodo, Recursos, Curso_Asesor, Cabecera_Crono, Titulos, Event, Observaciones, registro_historicos
-from django.forms import ModelForm, DateInput
+from .models import Nivel_Académico, Cursos, Asesor, Docentes, Periodo, Recursos, Curso_Asesor, Cabecera_Crono, Titulos, Event, Observaciones, registro_historicos, val_activity_module
+from django.forms import HiddenInput, ModelForm, DateInput, TextInput, Textarea
 
 
 #5
@@ -121,3 +122,29 @@ class historiasForm(ModelForm):
     # input_formats to parse HTML5 datetime-local input to datetime field
     self.fields['start_time'].input_formats = ('%Y-%m-%dT%H:%M',)
     self.fields['end_time'].input_formats = ('%Y-%m-%dT%H:%M',)
+  
+  # Guardar evaluacion del modulo
+class Val_activity_module(forms.ModelForm):
+  class Meta:
+    model = val_activity_module
+    fields = '__all__'
+    
+    labels = {
+            'nombre_curso': 'Curso:',
+            'nombre_modulo': 'Modulo:',
+            'nombre_actividad': 'Actividad:',
+            'comentario': 'Comentario:',
+            'valoracion': 'Valoracion:',
+        }
+    widgets = {
+            'nombre_curso': TextInput(
+              attrs={'class': 'form-control', 'placeholder': 'nombre del curso'}),
+            'nombre_modulo': TextInput(
+              attrs={'class': 'form-control', 'placeholder': 'nombre del modulo'}),
+            'nombre_actividad': TextInput(
+              attrs={'class': 'form-control', 'placeholder': 'Nombre de actividad'}),
+            'comentario': Textarea(
+              attrs={'class': 'form-control', 'placeHolder': 'Ingrese su comentario'}),
+            'valoracion': TextInput(
+              attrs={'class': 'form-control', 'placeHolder': 'Ingrese valoracion', 'type': 'number'}),
+        } 
