@@ -17,30 +17,29 @@
                             <div class="col-12">
                                 <div class="card">
                                     <div class="card-body">        
-                                        <!-- <h4 class="card-title">Cursos</h4> -->                                         
+                                        <h4 class="card-title">Lista Cursos Actuales</h4>                                         
                                         <div class="table-responsive">
                                             <table id="curso" class="table table-bordered dt-responsive nowrap w-100">
                                                 <thead>
                                                 <tr>
                                                     <th>Id</th>
-                                                    <th>Nombre del Curso</th>
-                                                    <th>Participantes</th>                                                        
+                                                    <th>Nombre del Curso</th>                                                    
                                                     <th>Fecha Inicio</th>
                                                     <th>Fecha Final</th>
-                                                    <th>Modulos</th>                                                                                                                                                      
+                                                    <th>Opción</th>                                                                                                                                                      
                                                 </tr>
                                                 </thead>                
                                                 <tbody>                                                   
                                                 {% if context %}
                                                     {% for item in context %}                            
                                                         <tr>                              
-                                                            <td>{{item.id}}</td>                              
-                                                            <td>{{item.fullname}}</td>
-                                                            <td>{{item.showgrades}}</td>                                                            
+                                                            <td>{{item.id}}</td>                                        
+                                                            <td>{{item.fullname}}</td>                                                           
                                                             <td>{{item.startdate}}</td>
                                                             <td>{{item.enddate}}</td>
                                                             <td>
-                                                                <a href="{% url 'modules_by_course' item.id item.fullname %}" class="btn btn-outline-info btn-md"><i class="fas fa-list"></i></a>
+                                                                <a href="{% url 'modules_by_course' item.id item.fullname %}" class="btn btn-outline-info btn-sm">Módulos</a>                                                                                                                    
+                                                                <a href="{% url 'listado_estudiante' item.id item.fullname %}" class="btn btn-outline-success btn-sm">Estudiantes</a>
                                                             </td>
                                                         </tr>     
                                                     {% endfor %}

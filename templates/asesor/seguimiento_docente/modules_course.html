@@ -23,8 +23,7 @@
                                                 <thead>
                                                 <tr>
                                                     <th>Id</th>
-                                                    <th>Nombre</th>
-                                                    <th>Opciones del modulo</th>                                                                                                                                                      
+                                                    <th>Nombre</th>                                                                                                                                                    
                                                 </tr>
                                                 </thead>                
                                                 <tbody>                                                   
@@ -35,8 +34,8 @@
                                                             <td>{{item.name}}</td>
                                                             <!-- <td>{{item.modules}}</td> -->
                                                             <td>
-                                                                <a href="{% url 'details_module' course item.id fullname item.name %}" class="btn btn-outline-info btn-md"><i class="fas fa-info-circle"></i></a>
-                                                                <a href="{% url 'list_activity_module' course item.id %}" class="btn btn-outline-warning btn-md"><i class="fas fa-graduation-cap"></i></a>
+                                                                <a href="{% url 'details_module' course item.id fullname item.name %}" class="btn btn-outline-info btn-sm">Detalle del módulo</a>
+                                                                <!-- <a href="{% url 'list_activity_module' course item.id %}" class="btn btn-outline-warning btn-md"><i class="fas fa-graduation-cap"></i></a> -->
                                                             </td>
                                                         </tr>     
                                                     {% endfor %}

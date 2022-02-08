@@ -5,9 +5,10 @@ import requests
 from secoed.settings import TOKEN_MOODLE
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import  Nivel_Académico, Cursos, Asesor, Docentes, Periodo, Recursos, Curso_Asesor, Cabecera_Crono, Titulos, Event, Observaciones, registro_historicos,Valoracion_Modulos, val_activity_module
-from .forms import  Nivel_AcadémicoForm, CursosForm, AsesorForm, DocentesForm, PeriodoForm, RecursosForm, Curso_AsesorForm, Cabecera_CronoForm, TitulosForm, Cabecera_Crono_ObForm, EventForm, historiasForm, curso_FechaForm, Val_activity_module
+from .models import  Nivel_Académico, Cursos, Asesor, Docentes, Periodo, Recursos, Curso_Asesor, Cabecera_Crono, Titulos, Event, Observaciones, registro_historicos, val_activity_module, cronograma_estudios
+from .forms import  Nivel_AcadémicoForm, CursosForm, AsesorForm, DocentesForm, PeriodoForm, RecursosForm, Curso_AsesorForm, Cabecera_CronoForm, TitulosForm, Cabecera_Crono_ObForm, EventForm, historiasForm, curso_FechaForm, Val_activity_module, Cronograma_Estudios
 from django.http import HttpResponse
+import numpy as np
 
 
 #Calendario
@@ -2211,39 +2212,32 @@ def detail_gradeitems(request,courseid, userid, cmid ):
         print(e)
     return render(request,'asesor/seguimiento_docente/detail_gradeitems.html',context)
 
+@login_required
+def schedule_course(request):
+    schedule=Cursos.objects.all()
+    context={'schedule':schedule}
+    return render(request,'asesor/seguimiento_docente/schedule_course.html',context)
 
 @login_required
-def valoration_list(request):
-    valorations=val_activity_module.objects.all()
-    greeting = {'valoration':valorations}
-    return render(request,'asesor/seguimiento_docente/valoration_list.html',greeting)
+def schedule_study(request):
+    schedule=cronograma_estudios.objects.all()
+    context={'schedule':schedule}
+    return render(request,'asesor/cronograma/schedule_study.html',context)
 
 @login_required
-def calendar_events(request):
-    u="Eventos del calendario"
-    t="Cursos"    
-    apiBase="http://academyec.com/moodle/webservice/rest/server.php"
-    params={"wstoken":TOKEN_MOODLE,
-            "wsfunction":"core_calendar_get_calendar_events",
-            "moodlewsrestformat":"json",                                    
-            }    
-    context={} 
-    try:
-        response=requests.post(apiBase, params)
-        if response.status_code==400:
-            return render(request,'lista_cursos.html',context={"context":"Bad request",'heading': u,'pageview': t,})
-        if response:
-            r=response.json()["events"]                   
-            context={"context":r,'heading': u,'pageview': t, }  
-            for y in r:
-                timestamp = datetime.fromtimestamp(y["timestart"])                
-                y["timestart"]=timestamp.strftime('%Y-%m-%d')
-            for v in r:                
-                timestamp = datetime.fromtimestamp(v["timemodified"])                
-                v["timemodified"]=timestamp.strftime('%Y-%m-%d')
-            """ for d in r:
-                timestamp = datetime.fromtimestamp(v["timeduration"])                
-                d["timeduration"]=timestamp.strftime('%Y-%m-%d') """
-    except Exception as e:
-        print(e)
-    return render(request,'asesor/seguimiento_docente/calendar_events.html',context)
+def schedule_study_create(request):
+    if request.method=="POST":
+        form = Cronograma_Estudios(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('schedule_study')
+    else:
+        form = Cronograma_Estudios()
+    context={'form':form}
+    return render(request,'asesor/cronograma/schedule_study_create.html',context)
+
+@login_required
+def study_schedule_events(request,Id_curso,Tipo):
+    schedule=cronograma_estudios.objects.filter(nombre_curso_id=Id_curso)
+    context={'schedule':schedule, 'Tipo':Tipo}
+    return render(request,'asesor/cronograma/study_schedule_events.html',context)

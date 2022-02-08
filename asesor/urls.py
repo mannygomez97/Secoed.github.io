@@ -102,8 +102,10 @@ urlpatterns = [
     path('list_activity_module/<int:course>/<id>/', views.list_activity_module, name='list_activity_module'),
     path('add_activity_module/<int:course>/<id>/', views.add_activity_module, name='add_activity_module'),
     path('valorate_module/<fullname>/<namemod>//<name>/', views.valorate_module, name='valorate_module'),
-    path('valoration_list/', views.valoration_list, name='valoration_list'),
     path('detail_course_module/<int:course>/<id>/', views.detail_course_module, name='detail_course_module'),
     path('detail_gradeitems/<courseid>/<userid>/<int:cmid>/', views.detail_gradeitems, name='detail_gradeitems'),
-    path('calendar_events', views.calendar_events, name='calendar_events'),
+    path('schedule_course', views.schedule_course, name='schedule_course'),
+    path('schedule_study', views.schedule_study, name='schedule_study'),
+    path('schedule_study_create', views.schedule_study_create, name='schedule_study_create'),
+    path('study_schedule_events/<int:Id_curso>/<Tipo>/', views.study_schedule_events, name='study_schedule_events'),
 ]   

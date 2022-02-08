@@ -31,14 +31,14 @@
                         </button>
 
                     </div>
-                    <table class="table table-primary dt-responsive  align-middle"
+                    <table class="table table-bordered dt-responsive nowrap w-100"
                            style="text-align: center">   
                     <!-- id="datatable" si quieres ordenar por id la tabla -->
                            
                     
                         <thead class="table-light">
                         <tr>
-                            <th>ID</th>
+                            <!-- <th>ID</th> -->
                             <th>Nivel</th>
                             <th style="width:300px"> Criterio</th>
                             <th>Semáforo</th>
@@ -48,16 +48,18 @@
                         <tbody>
                         {% for men in menusview %}
                             <tr>
-                                <td>{{men.id}}</td>
+                                <!-- <td class="text-center">{{men.id}}</td> -->
 
-                                <td>{% if men.nivel == 1 %}
-                                        Nivel 1
+                                <td class="text-center">{% if men.nivel == 1 %}
+                                        <span class="badge badge-pill badge-danger">Nivel 1</span>
                                     {% elif men.nivel == 2 %}
-                                        Nivel 2
+                                        <span class="badge badge-pill badge-warning">Nivel 2</span>
                                     {% elif men.nivel == 3 %}
-                                        Nivel 3
+                                        <span class="badge badge-pill badge-secondary">Nivel 3</span>
                                     {% elif men.nivel == 4 %}
-                                        Nivel 4
+                                        <span class="badge badge-pill badge-primary">Nivel 4</span>
+                                    {% elif men.nivel == 5 %}
+                                        <span class="badge badge-pill badge-success">Nivel 5</span>
                                     {% endif %}
                                     
                                 </td>
@@ -65,7 +67,7 @@
                                 word-wrap: break-word;">{{men.criterio}}</td> 
                                 <td>
                                     {% if men.semaforo %}
-                                        <img src="{% get_static_prefix %}images/components/semaforo{{men.semaforo}}.jpg" alt="" width="200" height="120">
+                                        <img src="{% get_static_prefix %}images/components/semaforo{{men.semaforo}}.png" alt="" width="200" height="120">
                                     {% endif %}
                                 </td> 
                                 <td>

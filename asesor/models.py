@@ -1,6 +1,10 @@
+from datetime import timedelta
+from email.policy import default
+from pickle import TRUE
 from django.db import models
 from conf.models import Carrera
 from django.urls import reverse
+
 
 
 # 4
@@ -184,3 +188,19 @@ class val_activity_module(models.Model):
 
     def __str__(self):
         return self.nombre_curso
+
+class cronograma_estudios(models.Model):
+    id=models.AutoField(primary_key=True)
+    nombre_curso=models.ForeignKey('Cursos', on_delete=models.CASCADE,max_length=200)
+    descripcion=models.CharField(max_length=200)
+    cantidad_dias=models.SmallIntegerField('Cantidad de dias segun actividad', default=1)
+    fecha_inicio=models.DateField('Fecha de inicio', null=False, blank=False)
+    fecha_fin=models.DateField('Fecha de fin', auto_now=False, auto_now_add= False ,null= True, blank=True)
+    estado=models.BooleanField(default=True, verbose_name='Estado')
+
+    def __str__(self):
+        return self.nombre_curso
+
+    def save(self, *args, **kwargs):
+        self.fecha_fin = self.fecha_inicio + timedelta(days=self.cantidad_dias)
+        super().save(*args, **kwargs)
