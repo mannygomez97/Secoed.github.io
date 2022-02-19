@@ -43,6 +43,7 @@ urlpatterns = [
 
     # mis url de mi asesor
     path('asesor/', include('asesor.urls')),
+
     # Components
     path('components/', include('components.urls')),
 
