@@ -1,3 +1,4 @@
+django
 django-easy-audit
 asgiref==3.3.2
 certifi==2021.5.30
@@ -41,3 +42,4 @@ django-widget-tweaks==1.4.8
 django-xhtml2pdf
 delorean
 numpy
+reportlab==3.6.6
