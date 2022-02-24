@@ -12,7 +12,6 @@
 <link href="{% static 'libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" /> 
 {% endblock %}
 {% block contents %}
-
                         <div class="row">
                             <div class="col-12">
                                 <div class="card">
@@ -54,7 +53,6 @@
                                                     <tr>
                                                         <th>Nota final</th>
                                                         <th>Valoración</th>
-                                                                                                                                                                                                             
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -75,39 +73,12 @@
                                                                 <img class="img-fluid" src="{% get_static_prefix %}images/components/semaforos/nivel5.png" alt="" >
                                                             {% endif %}
                                                         </td>
-                                                        
+                                                        <td>
+                                                            <a href="{% url 'save_val_course' course nombre userid name_user napproved  %}" class="btn btn-success">Registrar valoración</a>
+                                                        </td>
                                                     </tr>
                                                 </tbody>
                                             </table>
-                                        </div>
-                                        <div class="container">
-                                            <form method="POST">
-                                                {% csrf_token %}
-                                                <div class="row">
-                                                    <div class="col">
-                                                        <input type="hidden" class="form-control" value="{{userid}}" name="student_id" readonly>
-
-                                                        <label for="NombreDocente">Docente:</label>
-                                                        <input type="text" class="form-control" value="{{name_user}}" name="student_name" readonly>
-                                                        <small id="NombreDocente" class="form-text text-muted">
-                                                            Nombre completo del docente.
-                                                        </small>
-
-                                                    </div>
-                                                    <div class="col">
-                                                        <input type="hidden" class="form-control" value="{{course}}" name="course_id" readonly>
-                                                        <input type="hidden" class="form-control" value="{{nombre}}" name="course_name" readonly>
-                                                        <label for="NotaCursoDocente">Docente:</label>
-                                                        <input type="text" class="form-control" value="{{napproved}}" name="score_course" readonly>
-                                                        <small id="NombreDocente" class="form-text text-muted">
-                                                            Nota final del docente.
-                                                        </small>
-                                                    </div>
-                                                </div>
-                                                <div style="padding: 1em;">
-                                                    <a href="{% url 'save_val_course' userid name_user course nombre napproved %}" class="btn btn-succes">Guardar</a>
-                                                </div>
-                                            </form>
                                         </div>
                                     </div>
                                 </div>

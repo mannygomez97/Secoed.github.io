@@ -1,12 +1,11 @@
 from multiprocessing import context
-from django.shortcuts import render, redirect, get_object_or_404
 import json
 import requests
 from django.views import View
 from secoed.settings import TOKEN_MOODLE,API_BASE
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import  Nivel_Académico, Cursos, Asesor, Docentes, Periodo, Recursos, Curso_Asesor, Cabecera_Crono, Titulos, Event, Observaciones, registro_historicos, valoration_course_student, valoration_module_estudent
+from .models import  Nivel_Académico, Cursos, Asesor, Docentes, Periodo, Recursos, Curso_Asesor, Cabecera_Crono, Titulos, Event, Observaciones, registro_historicos, valoration_course_student
 from components.models import Semaforizacion
 from .forms import  Nivel_AcadémicoForm, CursosForm, AsesorForm, DocentesForm, PeriodoForm, RecursosForm, Curso_AsesorForm, Cabecera_CronoForm, TitulosForm, Cabecera_Crono_ObForm, EventForm, historiasForm, curso_FechaForm
 from django.http import HttpResponse, JsonResponse
@@ -16,43 +15,8 @@ from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
 from rest_framework.views import APIView
-from .serializers import ValModuleStudentSerializer, ValCourseStudentSerializer
-
-
-class ValorationModuleStudent_Crud(APIView):
-    
-    ### FUNCTIONS FOR valoration_module_estudent ###
-    @api_view(['GET', 'POST'])  
-    def crudValorationModuleStudent(request):
-        if request.method == 'GET':
-            valoration_module = valoration_module_estudent.objects.all()
-            serializer = ValModuleStudentSerializer(valoration_module, many=True)
-            return Response(serializer.data)
-        elif request.method == 'POST':
-            serializer = ValModuleStudentSerializer(data=request.data)
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data, status=status.HTTP_201_CREATED)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-    
-    @api_view(['GET','PUT','DELETE'])
-    def updateValorationModuleStudent(request, pk):
-        if request.method == 'GET':
-            valoration_module = valoration_module_estudent.objects.get(id=pk)
-            serializer = ValModuleStudentSerializer(valoration_module)
-            return Response(serializer.data)
-        elif request.method=='PUT':
-            valoration_module = valoration_module_estudent.objects.get(id=pk)
-            serializer = ValModuleStudentSerializer(valoration_module, data=request.data)
-            if serializer.is_valid():
-                serializer.save()
-                return Response(serializer.data)
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-        elif request.method == 'DELETE':
-            valoration_module = valoration_module_estudent.objects.filter(id=pk).first()
-            valoration_module.delete()
-            return Response("Eliminado", status=status.HTTP_204_NO_CONTENT)
-
+from .serializers import ValCourseStudentSerializer
+from django.shortcuts import render, redirect, get_object_or_404
 
 #Calendario
 from .utils import Calendar
@@ -62,6 +26,56 @@ import calendar, locale
 from django.utils.safestring import mark_safe
 from datetime import timedelta
 
+class ValorationCourseStudent_Crud(APIView):
+    @api_view(['GET', 'POST'])  
+    def crudValorationCourseStudent(request):
+        if request.method == 'GET':
+            valoration_course = valoration_course_student.objects.all()
+            serializer = ValCourseStudentSerializer(valoration_course, many=True)
+            return Response(serializer.data)
+        elif request.method == 'POST':
+            serializer = ValCourseStudentSerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    @api_view(['GET','PUT','DELETE'])
+    def updateValorationCourseStudent(request, pk):
+        if request.method == 'GET':
+            valoration_course = valoration_course_student.objects.get(id=pk)
+            serializer = ValCourseStudentSerializer(valoration_course)
+            return Response(serializer.data)
+        elif request.method=='PUT':
+            valoration_course = valoration_course_student.objects.get(id=pk)
+            serializer = ValCourseStudentSerializer(valoration_course, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        elif request.method == 'DELETE':
+            valoration_course = valoration_course_student.objects.filter(id=pk).first()
+            valoration_course.delete()
+            return Response("Eliminado", status=status.HTTP_204_NO_CONTENT)
+
+@login_required
+def save_val_course(request, course, nombre, userid, name_user, napproved):
+    reqUrl = "http://127.0.0.1:8000/asesor/api/val_course_student/"
+    headersList = {
+        "Content-Type": "application/json" 
+        }
+    payload = json.dumps(  {
+    "course_id": course,
+    "course_name": nombre,
+    "student_id": userid,
+    "student_name": name_user,
+    "score_course": float(napproved)
+    })
+
+    response = requests.request("POST", reqUrl, data=payload, headers=headersList)
+    print(response.text.encode('utf8'))
+
+    return redirect('course_notes')    
 
 #4Tabla Nivel Academico
 @login_required
@@ -2113,14 +2127,12 @@ def actividades_user(request, id, nombre, idest):
     return render(request,'asesor/seguimiento_docente/act_pdf.html',context)
 
 @login_required
-def final_validation(request):
-    finalval = Semaforizacion.objects.all()
-    data = {
-        'finalval':finalval,
-        'heading': "Final Validation",
-        'pageview': "Final Validation",
-    }
-    return render(request, 'asesor/seguimiento_docente/act_pdf.html', data)
+def course_notes(request):
+    u="Detalle de notas"
+    t="Cursos"
+    notes = valoration_course_student.objects.all()
+    context = {'finalnotes':notes, 'heading': u,'pageview': t,}
+    return render(request, 'asesor/valorations/course_notes.html', context)
 
 #Obtener los modulos de un curso por id - tesis 2022 Orrala - Rodriguez
 @login_required
@@ -2243,7 +2255,8 @@ def users_by_module(request, course):
 
 @login_required
 def val_activities_users(request, courseid, userfullname, userid, nombre):   
-    name_user=userfullname         
+    name_user=userfullname
+    t="Cursos"
     apiBase="http://academyec.com/moodle/webservice/rest/server.php"
     params={"wstoken":TOKEN_MOODLE,
             "wsfunction":"gradereport_user_get_grade_items",
@@ -2271,7 +2284,7 @@ def val_activities_users(request, courseid, userfullname, userid, nombre):
                     nf = nf + r["graderaw"]
             napproved = nf/nf_len
             print(napproved)
-            context={"context":res_new,'name_user':name_user, 'napproved':napproved, 'heading': "Actividades del curso: ", 'pageview': "Cursos", 'course':courseid, 'userid':userid, 'nombre':nombre}
+            context={"context":res_new,'name_user':name_user, 'napproved':napproved, 'heading': "Actividades del curso: ", 'pageview': "Cursos", 'course':courseid, 'userid':userid, 'nombre':nombre, }
     except Exception as e:
         print(e)
     return render(request,'asesor/valorations/val_course_student.html',context)
@@ -2309,13 +2322,4 @@ def val_module_course(request, course, id):
         print(e)
     return render(request,'asesor/valorations/val_module_course.html', context)
 
-@login_required
-def save_val_course(request, course, nombre, userid, name_user, napproved):
-    savevalcourse=valoration_course_student()
-    savevalcourse.course_id = request.POST.get('course')
-    savevalcourse.course_name = request.POST.get('nombre')
-    savevalcourse.student_id = request.POST.get('userid')
-    savevalcourse.student_name = request.POST.get('name_user')
-    savevalcourse.score_course = request.POST.get('napproved')
-    savevalcourse.save()
-    return render(request,'asesor/valorations/val_courses.html',context={"context":"Guardado"})
+

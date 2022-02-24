@@ -106,5 +106,9 @@ urlpatterns = [
     path('create_module/<int:course>/<int:section>/', views.create_module, name='create_module'),
     path('val_activities_users/<int:courseid>/<userfullname>/<int:userid>/<nombre>/', views.val_activities_users, name='val_activities_users'),
     path('val_module_course/<int:course>/<int:id>/', views.val_module_course, name='val_module_course'),
-    path('save_val_course/<int:userid>/<name_user>/<int:course>/<nombre>/<int:napproved>/', views.save_val_course, name='save_val_course'),
+    path('save_val_course/<int:course>/<nombre>/<int:userid>/<name_user>/<napproved>/', views.save_val_course, name='save_val_course'),
+    path('course_notes', views.course_notes, name='course_notes'),
+
+    path('api/val_course_student/', views.ValorationCourseStudent_Crud.crudValorationCourseStudent),
+    path('api/val_course_student/<int:pk>/',views.ValorationCourseStudent_Crud.updateValorationCourseStudent),
 ]   
