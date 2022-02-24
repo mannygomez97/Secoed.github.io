@@ -17,7 +17,10 @@
                             <div class="col-12">
                                 <div class="card">
                                     <div class="card-body">        
-                                        <h4 class="card-title">Cursos</h4>                                         
+                                        <div>
+                                            <a href="{% url 'create_module' course section %}" class="btn btn-outline-success">Crear nueva actividad</a>
+
+                                        </div>
                                         <div class="table-responsive">
                                             <table id="curso" class="table table-bordered dt-responsive nowrap w-100">
                                                 <thead>
@@ -27,7 +30,7 @@
                                                     <th>Tipo asignación</th>  
                                                     <th>Icono</th>
                                                     <th>Estado actividad</th>
-                                                    <!-- <th>Calificar el modulo</th> -->                                                                                                                                               
+                                                    <th>Docentes</th>                                                                                                                                            
                                                 </tr>
                                                 </thead>                
                                                 <tbody>                                                   
@@ -37,24 +40,19 @@
                                                             <td>{{item.id}}</td>                               
                                                             <td>{{item.name}}</td>
                                                             <td><img src="{{item.modicon}}" alt=""></td>
-                                                            <!-- <td>{{item.completiondata.state}}</td> -->
                                                             <td>
-                                                            {% if item.completiondata.state == 0 %}
-                                                                <span class="badge badge-warning">Incompleto</span>
-                                                            {% elif item.completiondata.state == 1 %}
-                                                                <span class="badge badge-success">Completo</span>
-                                                            {% elif item.completiondata.state == 2 %}
-                                                                <span class="badge badge-primary">Parcialmente completo</span>
-                                                            {% elif item.completiondata.state == 3 %}
-                                                                <span class="badge badge-danger">Danger</span>
-                                                            {% endif %}
+                                                                {% if item.completiondata.state == 0 %}
+                                                                    <span class="badge badge-warning">Incompleto</span>
+                                                                {% elif item.completiondata.state == 1 %}
+                                                                    <span class="badge badge-success">Completo</span>
+                                                                {% elif item.completiondata.state == 2 %}
+                                                                    <span class="badge badge-primary">Parcialmente completo</span>
+                                                                {% elif item.completiondata.state == 3 %}
+                                                                    <span class="badge badge-danger">Danger</span>
+                                                                {% endif %}
+                                                            </td>
+                                                            <td><a href="{% url 'val_module_course' course item.id  %}" class="btn btn-outline-success btn-sm">Docentes</a></td>
                                                             
-                                                        </td>
-                                                            <!-- <td>
-                                                                <a href="{% url 'detail_course_module' course item.id  %}" class="btn btn-outline-info btn-md"><i class="fas fa-info"></i></a>
-                                                                <a href="{% url 'valorate_module' fullname namemod item.name %}" class="btn btn-outline-warning btn-md"><i class="fas fa-star"></i></a>
-                                                            </td> -->
-                                                        </tr>     
                                                     {% endfor %}
                                                 {% else %}                       
                                                     <div class="row">

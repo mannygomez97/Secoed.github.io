@@ -15,13 +15,13 @@
                         <div class="row">
                             <div class="col-12">
                                 <div class="card">
-                                    <div class="card-body">        
-                                        <h4 class="card-title">Listado estudiante - Curso: {{nombre}}</h4>                                    
+                                    <div class="card-body">                                           
                                         <div class="table-responsive">
                                             <table id="lista" class="table table-bordered dt-responsive nowrap w-100">
                                                 <thead>
                                                 <tr>                                                                               
-                                                    <th>Id</th>                            
+                                                    <th>CourseId</th>
+                                                    <th>DocenteId</th>                           
                                                     <th>Nombre de Estudiantes</th>
                                                     <th>Opción</th>                                                                                                                                                       
                                                 </tr>
@@ -30,12 +30,10 @@
                                                 {% if context %}
                                                     {% for item in context %}                            
                                                         <tr>                                                                                          
+                                                            <td>{{item.courseid}}</td>
                                                             <td>{{item.userid}}</td>           
                                                             <td>{{item.userfullname}}</td>
-                                                            <th>
-                                                                <button onclick="abrir_Uni_edi('{% url 'actividades_user' item.courseid item.userfullname item.userid %}')" class="btn btn-outline-info btn-sm">Actividades</button>
-                                                                <a href="{% url 'val_activities_users' item.courseid item.userfullname item.userid nombre %}" class="btn btn-outline-success btn-sm">Valorar actividades </a>
-                                                            </th>                                                                                                                                                                                     
+                                                            <td>{{item.gradeitems}}</td>
                                                         </tr>     
                                                     {% endfor %}
                                                 {% else %}                       

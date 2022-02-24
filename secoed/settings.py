@@ -33,7 +33,7 @@ BASE_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
+    'rest_framework',
 ]
 
 # Third Party App
@@ -55,7 +55,6 @@ LOCAL_APPS = [
     'asesor',
     'components',
     'easyaudit',
-    'gestor',
 ]
 
 INSTALLED_APPS = BASE_APPS + LOCAL_APPS + THIRD_APPS

@@ -31,3 +31,14 @@ class CursoAsesores(models.Model):
     id_asesor = models.IntegerField()
     estado = models.BooleanField(default = True)
 
+
+class Semaforizacion(models.Model):
+    id = models.IntegerField(primary_key=True, auto_created=True)
+    nivel = models.SmallIntegerField(default=1)
+    criterio = models.CharField(max_length = 200)
+    porcentaje_aprobacion = models.IntegerField(default=0)
+    semaforo = models.ImageField(upload_to='images/semaforos')
+    estado = models.BooleanField(default = True)
+
+    def __str__(self):
+        return self.criterio

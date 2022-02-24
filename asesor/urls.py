@@ -1,5 +1,6 @@
 from django.urls import path
 from asesor import views
+from .views import *
 
 urlpatterns = [
     #Tablas Módulos Asesor           
@@ -81,7 +82,7 @@ urlpatterns = [
     path('llamar_crono/<id>/', views.llamar_crono, name="llamar_crono"),   
     path('event/<int:event_id>/details/', views.event_details, name="event-detail"),
     path('nextM/<id>/<p>', views.nextM, name="nextM"),                      
-               
+
     #17Reporte Estadistico
     path('Reporte_estadistico',views.estadistico,name='Reporte_estadistico'),
     
@@ -95,17 +96,15 @@ urlpatterns = [
     path('cursos_api', views.api_curso, name='cursos_api'),
     path('listado_estudiante/<id>/<nombre>/', views.listado_estudiante, name='listado_estudiante'),
     path('actividades_user/<id>/<nombre>/<idest>/', views.actividades_user, name='actividades_user'),
+
     
     #URLS_EORRALA
     path('modules_by_course/<id>/<fullname>/', views.modules_by_course, name='modules_by_course'),
-    path('details_module/<int:course>/<id>/<fullname>/<name>/', views.details_module, name='details_module'),
-    path('list_activity_module/<int:course>/<id>/', views.list_activity_module, name='list_activity_module'),
-    path('add_activity_module/<int:course>/<id>/', views.add_activity_module, name='add_activity_module'),
-    path('valorate_module/<fullname>/<namemod>//<name>/', views.valorate_module, name='valorate_module'),
-    path('detail_course_module/<int:course>/<id>/', views.detail_course_module, name='detail_course_module'),
-    path('detail_gradeitems/<courseid>/<userid>/<int:cmid>/', views.detail_gradeitems, name='detail_gradeitems'),
-    path('schedule_course', views.schedule_course, name='schedule_course'),
-    path('schedule_study', views.schedule_study, name='schedule_study'),
-    path('schedule_study_create', views.schedule_study_create, name='schedule_study_create'),
-    path('study_schedule_events/<int:Id_curso>/<Tipo>/', views.study_schedule_events, name='study_schedule_events'),
+    path('details_module/<int:course>/<id>/<fullname>/<name>/<int:section>/', views.details_module, name='details_module'),
+    path('study_schedule_events/<int:id>/<fullname>/', views.study_schedule_events, name='study_schedule_events'),
+    path('cal_register/', views.cal_register, name='cal_register'),
+    path('create_module/<int:course>/<int:section>/', views.create_module, name='create_module'),
+    path('val_activities_users/<int:courseid>/<userfullname>/<int:userid>/<nombre>/', views.val_activities_users, name='val_activities_users'),
+    path('val_module_course/<int:course>/<int:id>/', views.val_module_course, name='val_module_course'),
+    path('save_val_course/<int:userid>/<name_user>/<int:course>/<nombre>/<int:napproved>/', views.save_val_course, name='save_val_course'),
 ]   

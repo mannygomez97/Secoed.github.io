@@ -3,7 +3,7 @@ from turtle import hideturtle
 from urllib.request import urlretrieve
 from django import forms
 from soupsieve import select
-from .models import Nivel_Académico, Cursos, Asesor, Docentes, Periodo, Recursos, Curso_Asesor, Cabecera_Crono, Titulos, Event, Observaciones, registro_historicos, val_activity_module, cronograma_estudios 
+from .models import Nivel_Académico, Cursos, Asesor, Docentes, Periodo, Recursos, Curso_Asesor, Cabecera_Crono, Titulos, Event, Observaciones, registro_historicos
 from django.forms import ChoiceField, HiddenInput, ModelForm, DateInput, TextInput, Textarea, Select
 
 CURSOS = Cursos.objects.order_by('Tipo')
@@ -126,52 +126,3 @@ class historiasForm(ModelForm):
     self.fields['start_time'].input_formats = ('%Y-%m-%dT%H:%M',)
     self.fields['end_time'].input_formats = ('%Y-%m-%dT%H:%M',)
   
-  # Guardar evaluacion del modulo
-class Val_activity_module(forms.ModelForm):
-  class Meta:
-    model = val_activity_module
-    fields = '__all__'
-    
-    labels = {
-            'nombre_curso': 'Curso:',
-            'nombre_modulo': 'Modulo:',
-            'nombre_actividad': 'Actividad:',
-            'comentario': 'Comentario:',
-            'valoracion': 'Valoracion:',
-        }
-    widgets = {
-            'nombre_curso': TextInput(
-              attrs={'class': 'form-control', 'placeholder': 'nombre del curso'}),
-            'nombre_modulo': TextInput(
-              attrs={'class': 'form-control', 'placeholder': 'nombre del modulo'}),
-            'nombre_actividad': TextInput(
-              attrs={'class': 'form-control', 'placeholder': 'Nombre de actividad'}),
-            'comentario': Textarea(
-              attrs={'class': 'form-control', 'placeHolder': 'Ingrese su comentario'}),
-            'valoracion': TextInput(
-              attrs={'class': 'form-control', 'placeHolder': 'Ingrese valoracion', 'type': 'number'}),
-        } 
-
-class Cronograma_Estudios(forms.ModelForm):
-  class Meta:
-    model = cronograma_estudios
-    fields = '__all__'
-
-    labels = {
-            'nombre_curso': 'Curso:',
-            'descripcion': 'Descripción:',
-            'cantidad_dias': 'Dias (#):',
-            'fecha_inicio': 'Fecha inicio:',
-    }
-    widgets = {
-            'nombre_curso': Select(
-              attrs={'class': 'form-control'}, choices=((x.Tipo, x.Tipo) for x in CURSOS)),
-            'descripcion': TextInput(
-              attrs={'class': ' form-control', 'placeholder': 'nombre del modulo'}),
-            'cantidad_dias': TextInput(
-              attrs={'class': 'form-control', 'placeholder': 'Nombre de actividad'}),
-            'fecha_inicio': DateInput(
-              attrs={'class': 'form-control','type': 'date'}, format='%Y-%m-%d'),
-            'fecha_fin': HiddenInput(),
-            'estado': HiddenInput(),
-        } 

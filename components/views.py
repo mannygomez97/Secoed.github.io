@@ -317,8 +317,6 @@ class actividades(View):
         else:
             actividad = None
 
-
- 
         greeting = {"heading":"Listado de Actividades", "pageview":"Forms"}
 
         if actividad:
@@ -379,7 +377,7 @@ class FormEvaluation(View):
     
         return render (request,'components/proyecto/components-formevaluation.html',{
             "greeting": greeting,
-            "courses": [course['shortname'] for course in coursesList]
+            "courses": [course['fullname'] for course in coursesList]
             })
 
 def historialEvaluations(request):

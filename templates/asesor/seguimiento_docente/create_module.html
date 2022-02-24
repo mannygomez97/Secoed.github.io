@@ -12,30 +12,28 @@
 <link href="{% static 'libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" /> 
 {% endblock %}
 {% block contents %}
+
                         <div class="row">
                             <div class="col-12">
                                 <div class="card">
                                     <div class="card-body">        
-                                        <h4 class="card-title">Listado estudiante - Curso: {{nombre}}</h4>                                    
+                                        <h4 class="card-title">Lista Cursos Actuales</h4>                                         
                                         <div class="table-responsive">
-                                            <table id="lista" class="table table-bordered dt-responsive nowrap w-100">
+                                            <table id="curso" class="table table-hover dt-responsive nowrap w-100 table-bordered">
                                                 <thead>
-                                                <tr>                                                                               
-                                                    <th>Id</th>                            
-                                                    <th>Nombre de Estudiantes</th>
-                                                    <th>Opción</th>                                                                                                                                                       
+                                                <tr>
+                                                    <th>Id</th>
+                                                    <th>Nombre</th>
+                                                    <th>link</th>                                                                                                                                                   
                                                 </tr>
                                                 </thead>                
-                                                <tbody>
+                                                <tbody>                                                   
                                                 {% if context %}
                                                     {% for item in context %}                            
-                                                        <tr>                                                                                          
-                                                            <td>{{item.userid}}</td>           
-                                                            <td>{{item.userfullname}}</td>
-                                                            <th>
-                                                                <button onclick="abrir_Uni_edi('{% url 'actividades_user' item.courseid item.userfullname item.userid %}')" class="btn btn-outline-info btn-sm">Actividades</button>
-                                                                <a href="{% url 'val_activities_users' item.courseid item.userfullname item.userid nombre %}" class="btn btn-outline-success btn-sm">Valorar actividades </a>
-                                                            </th>                                                                                                                                                                                     
+                                                        <tr>                              
+                                                            <td>{{item.id}}</td>                                        
+                                                            <td>{{item.name}}</td>
+                                                            <td><a target="_blank" href="{{item.link}}&section={{section}}"><i class="fa fa-link"></i></a></td>
                                                         </tr>     
                                                     {% endfor %}
                                                 {% else %}                       
@@ -59,7 +57,6 @@
                     </div> <!-- container-fluid -->
                 </div>
                 <!-- End Page-content -->             
-<div class="modal fade" id="edicion" role="dialog"></div>
 {% endblock %}
 {% block r_sidebar %}
 {% include 'partials/rightsidebar.html' %}
@@ -83,25 +80,26 @@
         <script src="{% static 'libs/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js' %}"></script>
         <script src="{% static 'libs/jszip/jszip.min.js' %}"></script>
         <script src="{% static 'libs/pdfmake/build/pdfmake.min.js' %}"></script>
-        <script src="{% static 'libs/pdfmake/build/vfs_fonts.js' %}"></script>
-        <script src="https://nightly.datatables.net/buttons/js/buttons.html5.min.js"></script>
+        <script src="{% static 'libs/pdfmake/build/vfs_fonts.js' %}"></script>        
+        <script src="{% static 'libs/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
         
         <script src="{% static 'js/pages/datatables.init.js' %}"></script>    
 
         <script src="{% static 'js/app.js' %}"></script>
          
-        <script type="text/javascript">   
-            var $ = jQuery.noConflict();
-            function abrir_Uni_edi(url){
-                $('#edicion').load(url, function (){
-                    $(this).modal('show')
-                });
-            }         
+        <script type="text/javascript">          
+            function timeToHuman() {
+                var theDate = new Date(document.u2h.timeStamp.value * 1000);
+                dateString = theDate.toGMTString();
+                document.u2h.result.value = dateString;
+            }       
             $(document).ready(function() {                
-                $('#lista').DataTable( {                    
+                $('#curso').DataTable( {
+                    
                     dom: 'Bfrtip',                    
                     buttons: []
                 } );
-            } );        
+            } );
+                        
         </script>       
 {% endblock %}

@@ -157,50 +157,28 @@ class registro_historicos(models.Model):
     def __str__(self):
         return self.title
 
-#Vaoracion de modulos del curso
-class Valoracion_Modulos(models.Model):
+class valoration_module_estudent(models.Model):
     id=models.AutoField(primary_key=True)
-    nombre_curso=models.CharField(max_length=200)
-    modulo_id=models.IntegerField()
-    nombre_modulo=models.CharField(max_length=200)
-    comentario=models.CharField(max_length=500)
-    valoracion=models.IntegerField()
+    course_id = models.IntegerField(null=False, blank=False)
+    course_name = models.CharField(max_length=200, null=True, blank=True)
+    student_id = models.IntegerField(null=False, blank=False)
+    student_name = models.CharField(max_length=200, null=True, blank=True)
+    module_id = models.IntegerField(null=False, blank=False)
+    module_name = models.CharField(max_length=200, null=True, blank=True)
+    activity_id = models.IntegerField(null=False, blank=False)
+    activity_name = models.CharField(max_length=200, null=True, blank=True)
+    score_activity = models.IntegerField(null=False, blank=False)
 
     def __str__(self):
-        return self.nombre_curso
+        return self.module_name
 
-class valoracion(models.Model):
+class valoration_course_student(models.Model):
     id=models.AutoField(primary_key=True)
-    display_value=models.CharField(max_length=200)
-    return_value=models.IntegerField()
+    course_id = models.IntegerField(null=False, blank=False)
+    course_name = models.CharField(max_length=200, null=True, blank=True)
+    student_id = models.IntegerField(null=False, blank=False)
+    student_name = models.CharField(max_length=200, null=True, blank=True)
+    score_course = models.IntegerField(null=False, blank=False)
 
     def __str__(self):
-        return self.display_value
-
-#Vaoracion de modulos del curso
-class val_activity_module(models.Model):
-    id=models.AutoField(primary_key=True)
-    nombre_curso=models.CharField(max_length=200)
-    nombre_modulo=models.CharField(max_length=200)
-    nombre_actividad=models.CharField(max_length=200)
-    comentario=models.CharField(max_length=500)
-    valoracion=models.ForeignKey('valoracion', on_delete=models.CASCADE, max_length=200)
-
-    def __str__(self):
-        return self.nombre_curso
-
-class cronograma_estudios(models.Model):
-    id=models.AutoField(primary_key=True)
-    nombre_curso=models.ForeignKey('Cursos', on_delete=models.CASCADE,max_length=200)
-    descripcion=models.CharField(max_length=200)
-    cantidad_dias=models.SmallIntegerField('Cantidad de dias segun actividad', default=1)
-    fecha_inicio=models.DateField('Fecha de inicio', null=False, blank=False)
-    fecha_fin=models.DateField('Fecha de fin', auto_now=False, auto_now_add= False ,null= True, blank=True)
-    estado=models.BooleanField(default=True, verbose_name='Estado')
-
-    def __str__(self):
-        return self.nombre_curso
-
-    def save(self, *args, **kwargs):
-        self.fecha_fin = self.fecha_inicio + timedelta(days=self.cantidad_dias)
-        super().save(*args, **kwargs)
+        return self.course_name
