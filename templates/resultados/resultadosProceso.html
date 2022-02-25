@@ -28,8 +28,8 @@
                            style="text-align: center">
                         <thead class="table-light">
                         <tr>
-                            <th>CI coevaluador</th>
-                            <th>Pregunta</th>
+                            <th>Docente</th>
+                            <th>Coevaluador</th>
                             <th>auto_result_Tic</th>
                             <th>auto_result_Did</th>
                             <th>auto_result_Ped</th>
@@ -44,8 +44,8 @@
                         <tbody>
                         {% for res in resultados %}
                             <tr>
+                                <td>{{ res.user.nombres}} {{ res.user.apellidos}}</td>
                                 <td>{{ res.coevaluator }}</td>
-                                <td>{{ res.answer }}</td>
                                 <td>{{ res.auto_result_Tic }}</td>
                                 <td>{{ res.auto_result_Did }}</td>
                                 <td>{{ res.auto_result_Ped }}</td>
