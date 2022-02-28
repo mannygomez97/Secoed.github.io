@@ -1,5 +1,8 @@
 from multiprocessing import context
 import json
+from re import template
+from typing import Sequence
+from django.conf import settings
 import requests
 from django.views import View
 from secoed.settings import TOKEN_MOODLE,API_BASE
@@ -17,6 +20,10 @@ from rest_framework.decorators import api_view
 from rest_framework.views import APIView
 from .serializers import ValCourseStudentSerializer
 from django.shortcuts import render, redirect, get_object_or_404
+
+from django.core.mail import EmailMessage, EmailMultiAlternatives
+from django.template.loader import render_to_string
+
 
 #Calendario
 from .utils import Calendar
@@ -2322,4 +2329,59 @@ def val_module_course(request, course, id):
         print(e)
     return render(request,'asesor/valorations/val_module_course.html', context)
 
+@login_required
+def gotomail(request):
+    apiBase="http://academyec.com/moodle/webservice/rest/server.php"
+    params={"wstoken":TOKEN_MOODLE,
+            "wsfunction":"core_user_get_users",
+            "moodlewsrestformat":"json",
+            "criteria[0][key]": "",
+            "criteria[0][value]": ""                               
+            }
+    context={} 
+    try:
+        response=requests.post(apiBase, params)
+        if response.status_code==400:
+            return render(request,'lista_Estudiantes.html',context={"context":"Bad request"})
+        if response:
+            r=response.json()["users"]                    
+            context={"context":r}                       
+    except Exception as e:
+        print(e)
+    return render(request,'asesor/seguimiento_docente/gotomail.html', context)
 
+@login_required
+def get_dest(request, fullname, email):
+    context={'fullname':fullname, 'email':email}
+    return render(request,'asesor/seguimiento_docente/get_dest.html', context)
+
+@login_required
+def send_mail(request):
+    if request.method == 'POST':
+        name = request.POST.get('name')
+        email = request.POST.get('email')
+        subject = request.POST.get('subject')
+        message = request.POST.get('message')
+        feedback = request.POST.get('feedback')
+        attach = request.POST.get('attach')
+        
+
+        template = render_to_string('asesor/seguimiento_docente/email_template.html', {
+            'name': name,
+            'email': email,
+            'subject': subject,
+            'message': message,
+            'feedback': feedback,
+            'attach': attach
+        })
+
+        print(template)
+
+        email = EmailMultiAlternatives(subject, template, settings.EMAIL_HOST_USER, [email])
+        email.attach('notas.pdf', feedback, 'application/pdf')
+
+        email.fail_silently = False
+        email.send()
+
+        messages.success(request, 'Correo enviado correctamente')
+    return redirect ('gotomail')

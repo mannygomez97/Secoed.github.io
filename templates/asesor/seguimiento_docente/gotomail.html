@@ -12,27 +12,39 @@
 <link href="{% static 'libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" /> 
 {% endblock %}
 {% block contents %}
+
                         <div class="row">
                             <div class="col-12">
                                 <div class="card">
-                                    <h1>{{name_user}}</h1>
                                     <div class="card-body">
+                                        {% if messages %}
+                                        {% for message in messages %}
+                                        <div class="alert alert-success" role="alert">
+                                            {{message}}
+                                        </div>
+                                        {% endfor %}
+                                        {% endif %}
+                                        <h4 class="card-title">Lista Cursos Actuales</h4>                                         
                                         <div class="table-responsive">
                                             <table id="curso" class="table table-hover dt-responsive nowrap w-100">
                                                 <thead>
                                                 <tr>
-                                                    <th>Nombre actividad</th>                                                     
-                                                    <th>Modulo ID</th>
-                                                    <th>Nota actividad</th>
+                                                    <th>Id</th>
+                                                    <th>Nombre docente</th>                                                     
+                                                    <th>Email</th>
+                                                    <th>Opción</th>                                                                                                                                                      
                                                 </tr>
                                                 </thead>                
                                                 <tbody>                                                   
                                                 {% if context %}
                                                     {% for item in context %}                            
-                                                        <tr>                                                                                                                                                             
-                                                            <td>{{item.itemname}}</td>
-                                                            <td>{{item.cmid}}</td>
-                                                            <td>{{item.graderaw}}</td>
+                                                        <tr>                              
+                                                            <td>{{item.id}}</td>                                       
+                                                            <td>{{item.fullname}}</td>                                                           
+                                                            <td>{{item.email}}</td>
+                                                            <td>
+                                                                <a title="Módulos" href="{% url 'get_dest' item.fullname item.email %}" class="btn btn-outline-info btn-md"><i class="fas fa-envelope"></i></a>
+                                                            </td>
                                                         </tr>     
                                                     {% endfor %}
                                                 {% else %}                       
@@ -47,40 +59,7 @@
                                                 {% endif %}
                                                 </tbody>
                                             </table>
-
-                                            <table class="table table-hover dt-responsive nowrap w-100">
-                                                <thead>
-                                                    <tr>
-                                                        <th>Nota final</th>
-                                                        <th class="text-center">Valoración</th>
-                                                        <th>Opción</th>
-                                                    </tr>
-                                                </thead>
-                                                <tbody>
-                                                    <tr>
-                                                        <td>{{napproved}}</td>
-                                                        <td class="text-center">
-                                                            {% if napproved == 0 %}
-                                                                <img class="img-fluid" src="{% get_static_prefix %}images/components/semaforos/nivel1.png" alt="" style="width: 20%;">
-                                                            {% elif napproved < 20 %}
-                                                                <img class="img-fluid" src="{% get_static_prefix %}images/components/semaforos/nivel1.png" alt="" style="width: 20%;">
-                                                            {% elif napproved < 40 %}
-                                                                <img class="img-fluid" src="{% get_static_prefix %}images/components/semaforos/nivel2.png" alt="" style="width: 20%;">
-                                                            {% elif napproved < 60 %}
-                                                                <img class="img-fluid" src="{% get_static_prefix %}images/components/semaforos/nivel3.png" alt="" style="width: 20%;">
-                                                            {% elif napproved < 80 %}
-                                                                <img class="img-fluid" src="{% get_static_prefix %}images/components/semaforos/nivel4.png" alt="" style="width: 20%;">
-                                                            {% elif napproved == 200 %}
-                                                                <img class="img-fluid" src="{% get_static_prefix %}images/components/semaforos/nivel5.png" alt="" style="width: 20%;">
-                                                            {% endif %}
-                                                        </td>
-                                                        <td>
-                                                            <a href="{% url 'save_val_course' course nombre userid name_user napproved  %}" class="btn btn-success btn-sm">Registrar valoración</a>
-                                                        </td>
-                                                    </tr>
-                                                </tbody>
-                                            </table>
-                                        </div>
+                                        </div>    
                                     </div>
                                 </div>
                             </div> <!-- end col -->
