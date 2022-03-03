@@ -33,7 +33,6 @@ BASE_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-
 ]
 
 # Third Party App
@@ -55,6 +54,8 @@ LOCAL_APPS = [
     'asesor',
     'components',
     'easyaudit',
+	'gestor',
+    'docentes'
 ]
 
 INSTALLED_APPS = BASE_APPS + LOCAL_APPS + THIRD_APPS
@@ -98,30 +99,13 @@ WSGI_APPLICATION = 'secoed.wsgi.application'
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-# CONEXION LOCAL --> debe regitrar su conexion si trabajara localmente
-# CONEXION_NAME = 'pg_secoed'
-# CONEXION_USER = 'secoed'
-# CONEXION_PASSWORD = 'secoed2021'
-# CONEXION_HOST = 'localhost'
-# CONEXION_PORT = '5432'
-
-# CONEXION PREPRODUCCION --> debe regitrar su conexion si trabajara con preproduccion
-
+# CONEXION DEVELOPER --> debe regitrar su conexion si trabajara con preproduccion
 
 CONEXION_NAME = 'db_secoed'
 CONEXION_USER = 'secoed'
 CONEXION_PASSWORD = 'secoed2021'
 CONEXION_HOST = 'localhost'
 CONEXION_PORT = '5434'
-
-
-"""""
-CONEXION_NAME = 'secoed'
-CONEXION_USER = 'dba'
-CONEXION_PASSWORD = 'dba2021'
-CONEXION_HOST = 'localhost'
-CONEXION_PORT = 5432
-"""""
 
 """""
 # CONEXION PRODUCCION --> debe regitrar su conexion si trabajara con produccion
@@ -209,6 +193,6 @@ DJANGO_EASY_AUDIT_ADMIN_SHOW_MODEL_EVENTS = False
 DJANGO_EASY_AUDIT_ADMIN_SHOW_AUTH_EVENTS = False
 DJANGO_EASY_AUDIT_ADMIN_SHOW_REQUEST_EVENTS = False
 
-TOKEN_MOODLE = 'cae40824ddd52a292888f736c8843929'
+TOKEN_MOODLE = '2fb3df9ba2006ef257f072651b547b3d'
 API_BASE = 'http://academyec.com/moodle/webservice/rest/server.php'
 CONTEXT_ID = 116
