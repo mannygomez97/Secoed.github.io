@@ -53,9 +53,10 @@ LOCAL_APPS = [
     'eva',
     'asesor',
     'components',
-    'easyaudit',
+    'easyaudit'
+    #,
   #  'gestor',
-    'docentes'
+  #  'docentes'
 ]
 
 INSTALLED_APPS = BASE_APPS + LOCAL_APPS + THIRD_APPS
