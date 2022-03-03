@@ -53,7 +53,9 @@ LOCAL_APPS = [
     'eva',
     'asesor',
     'components',
-    'easyaudit'
+    'easyaudit',
+    'gestor',
+    'docentes'
 ]
 
 INSTALLED_APPS = BASE_APPS + LOCAL_APPS + THIRD_APPS
@@ -102,8 +104,10 @@ WSGI_APPLICATION = 'secoed.wsgi.application'
 CONEXION_NAME = 'db_secoed'
 CONEXION_USER = 'secoed'
 CONEXION_PASSWORD = 'secoed2021'
-CONEXION_HOST = 'localhost'
-CONEXION_PORT = '5432'
+#CONEXION_HOST = '95.216.216.98'
+CONEXION_HOST = '127.0.0.1'
+
+CONEXION_PORT = '5434'
 
 """""
 # CONEXION PRODUCCION --> debe regitrar su conexion si trabajara con produccion
