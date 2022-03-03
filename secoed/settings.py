@@ -54,7 +54,6 @@ LOCAL_APPS = [
     'asesor',
     'components',
     'easyaudit',
-	'gestor',
     'docentes'
 ]
 
