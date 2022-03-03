@@ -108,7 +108,7 @@ CONEXION_PASSWORD = 'secoed2021'
 #CONEXION_HOST = '95.216.216.98'
 CONEXION_HOST = '127.0.0.1'
 
-CONEXION_PORT = '5434'
+CONEXION_PORT = '5432'
 
 """""
 # CONEXION PRODUCCION --> debe regitrar su conexion si trabajara con produccion
