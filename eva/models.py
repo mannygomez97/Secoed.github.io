@@ -205,7 +205,7 @@ class DetalleRespuesta(models.Model):
 class ResultadoProceso(models.Model):
     answer = models.ForeignKey(Respuesta, db_column='respuesta', null=False, blank=False, on_delete=models.CASCADE)
     cycle = models.IntegerField(null=False, blank=False, db_column='ciclo')
-    user = models.IntegerField(null=False, blank=False, db_column='docente')
+    user = models.ForeignKey(Usuario, null=False, blank=False, on_delete=models.CASCADE, db_column='docente')
     coevaluator = models.CharField(max_length=10, null=True, blank=True, db_column='coevaluador')
     auto_result_Tic = models.DecimalField(max_digits=9, decimal_places=2, default=0)
     auto_result_Did = models.DecimalField(max_digits=9, decimal_places=2, default=0)

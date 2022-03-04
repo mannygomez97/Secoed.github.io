@@ -3,7 +3,7 @@ from components import views
 # app_name = "components"
 urlpatterns = [    
 
-                    # Requisito
+    # Requisito
 
     #menu de requisito (tabla de criterios vista)
     path(r'requisito', views.menu, name='requisito'),

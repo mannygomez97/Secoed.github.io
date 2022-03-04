@@ -12,7 +12,7 @@ from eva.views.areas.views import *
 from eva.views.parametro.views import *
 from eva.views.parametros_generales.views import *
 from eva.views.preguntas.views import *
-
+from eva.views.resultados.views import *
 
 app_name = 'eva'
 
@@ -71,5 +71,7 @@ urlpatterns = [
     url(r'^evaluacion/reportes', login_required(ProcessResultEvaluations.as_view()), name='report-evaluation'),
     # Cursos routes
     url(r'^cursos/lista', login_required(CursosEva.as_view()), name='cursos-evaluation'),
+    #resultados
+    url(r'^proceso/resultados', login_required(Resultado.as_view()), name='resultados-procesos'),
 ]
 
