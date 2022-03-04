@@ -6,10 +6,12 @@ from conf.models import Menu, Modulo, RolMenu
 
 def load_menu(request):
     context = {}
+
     if isinstance(request.user, AnonymousUser):
         return context
     else:
         # Cargar menu si es administrador:
+        context['notifyList'] = request.user.notificaciones.all().order_by('-timestamp')[:100]
         if request.user.usuario_administrador:
             modulos = Modulo.objects.order_by('orden')
             setMenus(modulos)
@@ -18,7 +20,7 @@ def load_menu(request):
         # Cargar menu si no es administrador
         else:
             roles = Rol.objects.filter(usuario__id=request.user.id)
-            modulos = Modulo.objects.filter(menu__menu__roles__in=roles).order_by('orden').distinct()
+            modulos = Modulo.objects.filter((Q(menu__roles__in=roles)) | (Q(menu__menu__roles__in=roles))).order_by('descripcion').distinct()
             for mod in modulos:
                 mod.menus = []
                 menus = Menu.objects.filter((Q(menu__roles__in=roles) & Q(modulo_id=mod.id)) | (

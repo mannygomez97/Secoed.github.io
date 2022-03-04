@@ -21,7 +21,6 @@ class MenuContentView(View):
     # Metodo para guardar un nuevo menu
     def newMenu(request):
         if request.method == 'POST':
-            print("if")
             menuForm = MenuForm(request.POST)
             if menuForm.is_valid():
                 menuForm.save()
@@ -30,7 +29,6 @@ class MenuContentView(View):
                 messages.error(request, "No se puedo registrar", "error")
             return redirect('menu')
         else:
-            print("else")
             menuFormView = MenuForm()
             menu = Menu()
             view = False
@@ -79,7 +77,8 @@ class MenuContentView(View):
     # AJAX
     def loadMenus(request):
         modulo_id = request.GET.get('modulo_id')
-        menus = Menu.objects.filter(Q(modulo_id=modulo_id) & Q(href__isnull=True)).order_by('descripcion')
+        menus = Menu.objects.filter(Q(modulo_id=modulo_id) & (Q(href__isnull=True) | Q(href=''))).order_by(
+            'descripcion')
         return render(request, 'conf/menuList.html', {'menus': menus})
 
 
@@ -396,7 +395,8 @@ class RolUsuarioContentView(View):
     # Carga los datos iniciales del HTML
     def get(self, request):
         rolesUsuario = RolUser.objects.order_by('descripcion')
-        greeting = {'heading': "Roles de usuario del SECOED", 'pageview': "Administración", 'rolesUsuarioView': rolesUsuario}
+        greeting = {'heading': "Roles de usuario del SECOED", 'pageview': "Administración",
+                    'rolesUsuarioView': rolesUsuario}
         return render(request, 'conf/rolUsuarios.html', greeting)
 
     # Elimina un registro del rol-usuario

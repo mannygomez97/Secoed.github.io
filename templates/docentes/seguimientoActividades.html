@@ -1,0 +1,132 @@
+{% extends 'partials/base.html' %}
+{% load static %}
+
+{% load crispy_forms_tags %}
+
+{% block css %}
+{% include 'partials/css.html' %}
+{% endblock %}
+
+{% block extra_css %}
+<link href="{% static 'libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css' %}"
+      rel="stylesheet" type="text/css"/>
+<link href="{% static 'libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css' %}"
+      rel="stylesheet" type="text/css"/>
+<link href="{% static 'libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css' %}"
+      rel="stylesheet" type="text/css"/>
+{% endblock %}
+
+
+{% block contents %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                {% if cursos_actividades %}
+                <div class="button-items" style="margin-bottom: 10px">
+                    <button type="button"
+                            onclick="location.href='{% url 'reporte_actividades' %}'"
+                            class="btn btn-success waves-effect waves-light btn-rounded"
+                            data-bs-toggle="modal">
+                        <i class="mdi mdi-file-download font-size-16 align-middle me-2"></i>
+                        GENERAR REPORTE
+                    </button>
+                </div>
+                <table id="datatable"
+                       class="table table-primary table-responsive table-nowrap align-middle dt-responsive nowrap w-100">
+                    <tbody>
+                    {% for course in cursos_actividades %}
+                    <tr class="table-active">
+                        <td colspan="4" style="font-weight:bold ">CURSO: {{ course.cursos.fullname | upper}}</td>
+                    </tr>
+                    <tr class="table-primary" style="text-align: center">
+                        <td>ACTIVIDAD</td>
+                        <td>ESTADO</td>
+                        <td>TIPO</td>
+                    </tr>
+                    {% if course.actividades %}
+                    {% for actividades in course.actividades %}
+                    {% ifequal actividades.state 1 %}
+                    <tr class="table-success" style="text-align: center">
+                        <td>{{ actividades.modname | upper}}</td>
+                        <td>COMPLETADO</td>
+                        <td>
+                            {% if actividades.tracking == 0 %}
+                            NINGUNO
+                            {% elif actividades.tracking == 1 %}
+                            MANUAL
+                            {% else %}
+                            AUTOMÁTICO
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% else %}
+                    <tr class="table-warning" style="text-align: center">
+                        <td>{{ actividades.modname | upper}}</td>
+                        <td>PENDIENTE</td>
+                        <td>
+                            {% if actividades.tracking == 0 %}
+                            NINGUNO
+                            {% elif actividades.tracking == 1 %}
+                            MANUAL
+                            {% else %}
+                            AUTOMÁTICO
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% endifequal %}
+                    {% endfor %}
+                    {% else %}
+                    <tr class="table-light">
+                        <td colspan="4">NO DISPONE DE ACTIVIDADES</td>
+                    </tr>
+                    {% endif %}
+                    {% endfor %}
+                    </tbody>
+                </table>
+                {% else %}
+                <center>
+
+                    <h1>NO DISPONE DE CURSOS Y ACTIVIDADES</h1>
+                </center>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block r_sidebar %}
+{% include 'partials/rightsidebar.html' %}
+{% endblock %}
+
+
+{% block footer %}
+{% include 'partials/footer.html' %}
+{% endblock %}
+
+{% block javascript %}
+<!-- JAVASCRIPT -->
+<script src="{% static 'libs/jquery/jquery.min.js' %}"></script>
+<script src="{% static 'libs/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'libs/metismenu/metisMenu.min.js' %}"></script>
+<script src="{% static 'libs/simplebar/simplebar.min.js' %}"></script>
+<script src="{% static 'libs/node-waves/waves.min.js' %}"></script>
+
+<!-- Required datatable js -->
+<script src="{% static 'libs/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+
+<!-- Responsive examples -->
+<script src="{% static 'libs/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
+<script src="{% static 'libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js' %}"></script>
+
+<!--SWEET-ALERT -->
+<script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- Datatable init js -->
+<script src="{% static 'js/pages/datatables.init.js' %}"></script>
+
+<script src="{% static 'js/app.js' %}"></script>
+
+{% endblock %}
