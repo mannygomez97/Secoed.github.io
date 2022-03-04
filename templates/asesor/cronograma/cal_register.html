@@ -1,0 +1,103 @@
+{% extends 'partials/base.html' %}
+{% load static %}
+
+{% block css%}
+{% include 'partials/css.html' %}
+{% endblock %}
+{% block extra_css %}
+<link href="{% static 'libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" />
+<link href="{% static 'libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" />
+
+<!-- Responsive datatable examples -->
+<link href="{% static 'libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" /> 
+
+{% endblock %}
+{% block contents %}
+
+<div class="container" id="fomCalendario">
+        <div class="row" style="padding: 1em;">
+            <div class="form-group col-md-6">
+                <label for="courseid">Curso</label>
+                <select v-model="courseid" class="form-control">
+                    <option v-for="lcurso of curso" v-bind:value="lcurso.id">{$ lcurso.fullname  $}</option>
+                </select>
+            </div>
+            <div class="form-group col-md-6">
+                <label for="eventtype">Tipo de actividad</label>
+                <select v-model="eventtype" class="form-control" required>
+                    <option v-for="litem in item">{$ litem.name $}</option>
+                </select>
+            </div>
+        </div>
+        <div style="padding: 1em;">
+            <div class="form-group">
+                <label for="name">Nombre del evento</label>
+                <input type="text" class="form-control" v-model="name" required>
+            </div>
+            <div class="form-group">
+                <label for="description">Descripción del calendario</label>
+                <textarea class="form-control" v-model="description" rows="3" required></textarea>
+            </div>
+        </div>
+        <div class="row" style="padding: 1em;">
+            <div class="col">
+                <label for="inpFechaInicio">Fecha inicio</label>
+                <input type="date" class="form-control" v-model="timestart" required>
+            </div>
+            <div class="col">
+                <label for="inpFechaFinal">Fecha final</label>
+                <input type="date" class="form-control" v-model="timeend" required>
+            </div>
+        </div>
+        <button type="submit" class="btn btn-outline-primary" v-on:click="getInputCalendar()">Crear calendario</button>
+</div>
+{% endblock %}
+{% block r_sidebar %}
+{% include 'partials/rightsidebar.html' %}
+{% endblock %}
+{% block footer %}
+{% include 'partials/footer.html' %}
+
+{% endblock %}
+{% block javascript %}                
+        <!-- JAVASCRIPT -->
+        <script src="{% static 'js/calendar/vue.js' %}"></script>
+        <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+        <script src="{% static 'js/calendar/calendar.js' %}"></script>
+
+        <script src="{% static 'libs/jquery/jquery.min.js' %}"></script>
+        <script src="{% static 'libs/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+        <script src="{% static 'libs/metismenu/metisMenu.min.js' %}"></script>
+        <script src="{% static 'libs/simplebar/simplebar.min.js' %}"></script>
+        <script src="{% static 'libs/node-waves/waves.min.js' %}"></script>
+                        
+        <script src="{% static 'libs/datatables.net/js/jquery.dataTables.min.js' %}"></script>        
+        <script src="{% static 'libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+
+        <script src="{% static 'libs/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
+        <script src="{% static 'libs/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js' %}"></script>
+        <script src="{% static 'libs/jszip/jszip.min.js' %}"></script>
+        <script src="{% static 'libs/pdfmake/build/pdfmake.min.js' %}"></script>
+        <script src="{% static 'libs/pdfmake/build/vfs_fonts.js' %}"></script>        
+        <script src="{% static 'libs/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
+        
+        <script src="{% static 'js/pages/datatables.init.js' %}"></script>
+        <script src="{% static 'js/app.js' %}"></script>
+         
+        <script type="text/javascript">          
+            function timeToHuman() {
+                var theDate = new Date(document.u2h.timeStamp.value * 1000);
+                dateString = theDate.toGMTString();
+                document.u2h.result.value = dateString;
+            }       
+            $(document).ready(function() {                
+                $('#curso').DataTable( {
+                    
+                    dom: 'Bfrtip',                    
+                    buttons: []
+                } );
+            } );
+                        
+        </script>
+
+{% endblock %}

@@ -1,6 +1,10 @@
+from datetime import timedelta
+from email.policy import default
+from pickle import TRUE
 from django.db import models
 from conf.models import Carrera
 from django.urls import reverse
+
 
 
 # 4
@@ -122,7 +126,7 @@ class Event(models.Model):
 
     def __str__(self):
         return self.title
-           
+        
     def get_absolute_url(self):
         return reverse('event-detail', args=(self.id,))
     
@@ -152,3 +156,29 @@ class registro_historicos(models.Model):
 
     def __str__(self):
         return self.title
+
+class valoration_module_estudent(models.Model):
+    id=models.AutoField(primary_key=True)
+    course_id = models.IntegerField(null=False, blank=False)
+    course_name = models.CharField(max_length=200, null=True, blank=True)
+    student_id = models.IntegerField(null=False, blank=False)
+    student_name = models.CharField(max_length=200, null=True, blank=True)
+    module_id = models.IntegerField(null=False, blank=False)
+    module_name = models.CharField(max_length=200, null=True, blank=True)
+    activity_id = models.IntegerField(null=False, blank=False)
+    activity_name = models.CharField(max_length=200, null=True, blank=True)
+    score_activity = models.IntegerField(null=False, blank=False)
+
+    def __str__(self):
+        return self.module_name
+
+class valoration_course_student(models.Model):
+    id=models.AutoField(primary_key=True)
+    course_id = models.IntegerField(null=False, blank=False)
+    course_name = models.CharField(max_length=200, null=True, blank=True)
+    student_id = models.IntegerField(null=False, blank=False)
+    student_name = models.CharField(max_length=200, null=True, blank=True)
+    score_course = models.FloatField(null=False, blank=False)
+
+    def __str__(self):
+        return self.course_name

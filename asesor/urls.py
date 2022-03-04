@@ -1,5 +1,7 @@
 from django.urls import path
 from asesor import views
+from .views import *
+
 urlpatterns = [
     #Tablas Módulos Asesor           
     
@@ -80,7 +82,7 @@ urlpatterns = [
     path('llamar_crono/<id>/', views.llamar_crono, name="llamar_crono"),   
     path('event/<int:event_id>/details/', views.event_details, name="event-detail"),
     path('nextM/<id>/<p>', views.nextM, name="nextM"),                      
-               
+
     #17Reporte Estadistico
     path('Reporte_estadistico',views.estadistico,name='Reporte_estadistico'),
     
@@ -93,5 +95,23 @@ urlpatterns = [
     #19api
     path('cursos_api', views.api_curso, name='cursos_api'),
     path('listado_estudiante/<id>/<nombre>/', views.listado_estudiante, name='listado_estudiante'),
-    path('actividades_user/<id>/<nombre>/<idest>/', views.actividades_user, name='actividades_user')
+    path('actividades_user/<id>/<nombre>/<idest>/', views.actividades_user, name='actividades_user'),
+
+    
+    #URLS_EORRALA
+    path('modules_by_course/<id>/<fullname>/', views.modules_by_course, name='modules_by_course'),
+    path('details_module/<int:course>/<id>/<fullname>/<name>/<int:section>/', views.details_module, name='details_module'),
+    path('study_schedule_events/<int:id>/<fullname>/', views.study_schedule_events, name='study_schedule_events'),
+    path('cal_register/', views.cal_register, name='cal_register'),
+    path('create_module/<int:course>/<int:section>/', views.create_module, name='create_module'),
+    path('val_activities_users/<int:courseid>/<userfullname>/<int:userid>/<nombre>/', views.val_activities_users, name='val_activities_users'),
+    path('val_module_course/<int:course>/<int:id>/', views.val_module_course, name='val_module_course'),
+    path('save_val_course/<int:course>/<nombre>/<int:userid>/<name_user>/<napproved>/', views.save_val_course, name='save_val_course'),
+    path('course_notes', views.course_notes, name='course_notes'),
+    path('gotomail', views.gotomail, name='gotomail'),
+    path('get_dest/<fullname>/<email>/', views.get_dest, name='get_dest'),
+    path('send_mail', views.send_mail, name='send_mail'),
+
+    path('api/val_course_student/', views.ValorationCourseStudent_Crud.crudValorationCourseStudent),
+    path('api/val_course_student/<int:pk>/',views.ValorationCourseStudent_Crud.updateValorationCourseStudent),
 ]   

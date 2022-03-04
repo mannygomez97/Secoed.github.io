@@ -1,8 +1,12 @@
 
+from turtle import hideturtle
+from urllib.request import urlretrieve
 from django import forms
+from soupsieve import select
 from .models import Nivel_Académico, Cursos, Asesor, Docentes, Periodo, Recursos, Curso_Asesor, Cabecera_Crono, Titulos, Event, Observaciones, registro_historicos
-from django.forms import ModelForm, DateInput
+from django.forms import ChoiceField, HiddenInput, ModelForm, DateInput, TextInput, Textarea, Select
 
+CURSOS = Cursos.objects.order_by('Tipo')
 
 #5
 class Nivel_AcadémicoForm(forms.ModelForm):
@@ -121,3 +125,4 @@ class historiasForm(ModelForm):
     # input_formats to parse HTML5 datetime-local input to datetime field
     self.fields['start_time'].input_formats = ('%Y-%m-%dT%H:%M',)
     self.fields['end_time'].input_formats = ('%Y-%m-%dT%H:%M',)
+  

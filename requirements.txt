@@ -42,4 +42,7 @@ django-widget-tweaks==1.4.8
 django-xhtml2pdf
 numpy
 reportlab==3.6.6
+djangorestframework
 swapper
+markdown       # Markdown support for the browsable API.
+django-filter  # Filtering support

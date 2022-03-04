@@ -32,7 +32,10 @@
                                                         <tr>                                                                                          
                                                             <td>{{item.userid}}</td>           
                                                             <td>{{item.userfullname}}</td>
-                                                            <th><button onclick="abrir_Uni_edi('{% url 'actividades_user' item.courseid item.userfullname item.userid %}')" class="btn btn-danger btn-sm">Actividades</button></th>                                                                                                                                                                                     
+                                                            <th>
+                                                                <button onclick="abrir_Uni_edi('{% url 'actividades_user' item.courseid item.userfullname item.userid %}')" class="btn btn-outline-info btn-sm">Actividades</button>
+                                                                <a href="{% url 'val_activities_users' item.courseid item.userfullname item.userid nombre %}" class="btn btn-outline-success btn-sm">Valorar actividades </a>
+                                                            </th>                                                                                                                                                                                     
                                                         </tr>     
                                                     {% endfor %}
                                                 {% else %}                       

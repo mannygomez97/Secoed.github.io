@@ -33,6 +33,7 @@ BASE_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
 ]
 
 # Third Party App
@@ -112,12 +113,21 @@ WSGI_APPLICATION = 'secoed.wsgi.application'
 #CONEXION_PORT = '5432'
 
 
+<<<<<<< .mine
 #CONEXION PRODUCCION --> debe regitrar su conexion si trabajara con produccion
 CONEXION_NAME = 'db_secoed'
 CONEXION_USER = 'secoed'
 CONEXION_PASSWORD = 'secoed2021'
 CONEXION_HOST = 'pgdb'
 CONEXION_PORT = '5432'
+=======
+CONEXION_NAME = 'secoed_local'
+CONEXION_USER = 'postgres'
+CONEXION_PASSWORD = '3o774l4_su8'
+CONEXION_HOST = 'localhost'
+CONEXION_PORT = 5434
+
+>>>>>>> .theirs
 
 """""
 # CONEXION PRODUCCION --> debe regitrar su conexion si trabajara con produccion

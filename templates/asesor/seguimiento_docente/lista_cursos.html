@@ -19,12 +19,11 @@
                                     <div class="card-body">        
                                         <h4 class="card-title">Lista Cursos Actuales</h4>                                         
                                         <div class="table-responsive">
-                                            <table id="curso" class="table table-bordered dt-responsive nowrap w-100">
+                                            <table id="curso" class="table table-hover dt-responsive nowrap w-100">
                                                 <thead>
                                                 <tr>
                                                     <th>Id</th>
-                                                    <th>Nombre del Curso</th>
-                                                    <th>Nombre Corto</th>                                                        
+                                                    <th>Nombre del Curso</th>                                                     
                                                     <th>Fecha Inicio</th>
                                                     <th>Fecha Final</th>
                                                     <th>Opción</th>                                                                                                                                                      
@@ -34,12 +33,15 @@
                                                 {% if context %}
                                                     {% for item in context %}                            
                                                         <tr>                              
-                                                            <td>{{item.id}}</td>                                        
-                                                            <td>{{item.fullname}}</td>
-                                                            <td>{{item.shortname}}</td>                                                            
+                                                            <td>{{item.id}}</td>                                       
+                                                            <td>{{item.fullname}}</td>                                                           
                                                             <td>{{item.startdate}}</td>
-                                                            <td>{{item.enddate}}</td>                                                                                                                        
-                                                            <td><a href="{% url 'listado_estudiante' item.id item.fullname %}" class="btn btn-info btn-sm">Listado Estudiantes</a></td>
+                                                            <td>{{item.enddate}}</td>
+                                                            <td>
+                                                                <a title="Módulos" href="{% url 'modules_by_course' item.id item.fullname %}" class="btn btn-outline-info btn-md"><i class="fas fa-list"></i></a>                                                                                                                    
+                                                                <a title="Docentes" href="{% url 'listado_estudiante' item.id item.fullname %}" class="btn btn-outline-success btn-md"><i class="fas fa-users"></i></a>
+                                                                <a title="Calendarios" href="{% url 'study_schedule_events' item.id item.fullname %}" class="btn btn-outline-primary btn-md"><i class="fas fa-calendar"></i></a>
+                                                            </td>
                                                         </tr>     
                                                     {% endfor %}
                                                 {% else %}                       

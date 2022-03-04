@@ -48,6 +48,7 @@ urlpatterns = [
 
     # url de cursos
     path(r'cursos/', include('cursos.urls')),
+    
 
     # url de docentes
     path(r'docentes/', include('docentes.urls')),
