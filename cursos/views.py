@@ -33,7 +33,6 @@ class CursoView(View):
     def createEditCategoria(request):
         texto = ""
         if (request.POST['id'] == ""):
-            print(" wntro al insertar 1")
             wsfunction = "core_course_create_categories";
             params = {"wstoken": TOKEN_MOODLE,
                       "wsfunction": wsfunction,

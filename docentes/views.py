@@ -1,209 +1,116 @@
-from django.contrib import messages
-from django.shortcuts import render
 from django.views import View
 from django.shortcuts import render, redirect, get_object_or_404
 from datetime import datetime
-import numpy
+from django.http import JsonResponse
+from django.shortcuts import render, redirect
+from authentication.models import Usuario
+from secoed.settings import TOKEN_MOODLE, API_BASE
+from docentes.JSONDATA.dataJSON import *
+from django.http import HttpResponse
+import requests
+import json
+from io import BytesIO
+from reportlab.pdfgen import canvas
+from reportlab.lib.pagesizes import A4
 
-from docentes.models import *
-from docentes.forms import *
 
-class CategoriaView(View):
+def fs_cursos_actividades(moodle_user):
+    cursos_actividades = []
+    params = {"wstoken": TOKEN_MOODLE,
+              "wsfunction": "core_enrol_get_users_courses",
+              "moodlewsrestformat": "json",
+              "userid": moodle_user}
+    response = requests.post(API_BASE, params)
+    if response:
+        r = response.json()
+        d1 = json.dumps(r)
+        l1 = json.loads(d1)
+        for obj in l1:
+            aux1 = core_enrol_get_users_courses(**obj)
+            aux2 = []
+            aux3 = []
+            params2 = {"wstoken": TOKEN_MOODLE,
+                       "wsfunction": "core_completion_get_activities_completion_status",
+                       "moodlewsrestformat": "json",
+                       "userid": moodle_user,
+                       "courseid": aux1.id}
+            response2 = requests.post(API_BASE, params2)
+            if response2:
+                r2 = response2.json()
+                for obj1 in r2['statuses']:
+                    aux2.append(Statuses(**obj1))
+                for obj2 in r2['warnings']:
+                    aux3.append(Warnings(**obj2))
+            cursos_actividades.append(CursosActividades(aux1, aux2, aux3))
+    return cursos_actividades
+
+
+def getEstado(state):
+    if state == 1:
+        return 'COMPLETO'
+    else:
+        return 'INCOMPLETO'
+
+
+def getTipo(tracking):
+    if tracking == 0:
+        return 'NINGUNO'
+    elif tracking == 1:
+        return 'MANUAL'
+    else:
+        return 'AUTOMÁTICO'
+
+class SeguimientoView(View):
     def get(self, request):
-        categoriasView = Categoria.objects.order_by('categoria')
-        greeting = {'heading': 'Categoria de preguntas', 'pageview': 'Docentes', 'categoriasView': categoriasView, }
-        return render(request, 'docentes/categoriaPreguntas.html', greeting)
+        userObj = get_object_or_404(Usuario, pk=request.user.id)
+        cursos_actividades = []
+        if userObj.moodle_user:
+            cursos_actividades = fs_cursos_actividades(userObj.moodle_user)
+        greeting = {'heading': 'Seguimiento de actividades',
+                    'pageview': 'Docentes',
+                    'cursos_actividades': cursos_actividades}
+        return render(request, 'docentes/seguimientoActividades.html', greeting)
 
-    # Metodo para guardar una nueva categoria
-    def newCategoria(request):
-        if request.method == 'POST':
-            categoriaForm = CategoriaForm(request.POST)
-            if categoriaForm.is_valid():
-                categoriaForm.save()
-                messages.success(request, "Se registro correctamente", "success")
-            else:
-                messages.error(request, "No se puedo registrar", "error")
-            return redirect('categoriaPregunta')
-        else:
-            categoriaFormView = CategoriaForm()
-            categoria = Categoria()
-            view = False
-            context = {'categoriaFormView': categoriaFormView, 'categoria': categoria, 'view': view}
-        return render(request, 'docentes/categoriaForm.html', context)
+    def generarReporte(request):
+        # Create the HttpResponse hearders with PDF
+        print('entro')
+        response = HttpResponse(content_type='application/pdf')
+        response['Content-Disposition'] = 'atachment; filename = actividades.pdf'
+        # Create PDF
+        buffer = BytesIO()
+        c = canvas.Canvas(buffer, pagesize=A4)
+        # title
+        c.drawImage('static/images/secoed/logo-secoed.png', 30, 730, mask='auto', width=100, height=100)
+        c.setFont("Times-Roman", 22)
+        c.drawString(200, 760, 'REGISTRO DE ACTIVIDADES')
 
-    # Consulta el registro de una categoria por su pk
-    def viewCategoria(request, pk):
-        categoria = get_object_or_404(Categoria, pk=pk)
-        categoriaFormView = CategoriaForm(instance=categoria)
-        view = True
-        context = {'categoriaFormView': categoriaFormView, 'categoria': categoria, 'view': view}
-        return render(request, 'docentes/categoriaForm.html', context)
+        userObj = get_object_or_404(Usuario, pk=request.user.id)
+        temp = fs_cursos_actividades(userObj.moodle_user)
+        linea = 600
+        for item in temp:
+            # Cursos
+            c.setFont("Times-Roman", 14)
+            c.drawString(30, linea, item.cursos.fullname)
+            linea = linea - 10
+            c.line(30, linea, 565, linea)
+            # table head
+            linea = linea - 15
+            for item1 in item.actividades:
+                # Actividad
+                c.setFont("Times-Roman", 12)
+                c.drawString(30, linea, item1.modname)
+                c.setFont("Times-Roman", 12)
+                c.drawString(380, linea, getEstado(item1.state))
+                c.setFont("Times-Roman", 12)
+                c.drawString(490, linea, getTipo(item1.tracking))
+                linea = linea - 15
+            # table boddy
 
-    # Editar los datos de una categoria por su pk
-    def editCategoria(request, pk):
-        categoria = get_object_or_404(Categoria, pk=pk)
-        if request.method == 'POST':
-            form = CategoriaForm(request.POST, instance=categoria)
-            if form.is_valid():
-                form.save()
-                messages.success(request, "Se edito correctamente", "success")
-                return redirect('categoriaPregunta')
-        else:
-            categoriaFormView = CategoriaForm(instance=categoria)
-            view = False
-            context = {'categoriaFormView': categoriaFormView, 'categoria': categoria, 'view': view}
-        return render(request, 'docentes/categoriaForm.html', context)
+            linea = linea - 25
 
-    # Elimina una categoria
-    def deleteCategoria(request, pk):
-        categoria = get_object_or_404(Categoria, pk=pk)
-        if categoria:
-            categoria.delete()
-            messages.success(request, "Se ha eliminado correctamente", "success")
-        return redirect('categoriaPregunta')
-
-class ConfPreguntasView(View):
-
-    def get(self, request):
-        confPreguntasView = ConfPreguntas.objects.order_by('pregunta').order_by('periodo')
-        greeting = {'heading': "Preguntas de evaluación de la plataforma SECOED", 'pageview': "Docentes",
-                    'confPreguntasView': confPreguntasView, }
-        return render(request, 'docentes/configuracionPreguntas.html', greeting)
-
-    # Metodo para guardar una nueva pregunta
-    def newConfPreguntas(request):
-        if request.method == 'POST':
-            confPreguntasForm = ConfPreguntasForm(request.POST)
-            if confPreguntasForm.is_valid():
-                confPreguntasForm.save()
-                messages.success(request, "Se registro correctamente", "success")
-            else:
-                messages.error(request, "No se puedo registrar", "error")
-            return redirect('conf_preguntas')
-        else:
-            confPreguntasFormView = ConfPreguntasForm()
-            confPreguntas = ConfPreguntas()
-            view = False
-            context = {'confPreguntasFormView': confPreguntasFormView, 'confPreguntas': confPreguntas, 'view': view}
-        return render(request, 'docentes/confPreguntasForm.html', context)
-
-    # Consulta el registro de una pregunta por su pk
-    def viewConfPreguntas(request, pk):
-        confPreguntas = get_object_or_404(ConfPreguntas, pk=pk)
-        confPreguntasFormView = ConfPreguntasForm(instance=confPreguntas)
-        view = True
-        context = {'confPreguntasFormView': confPreguntasFormView, 'confPreguntas': confPreguntas, 'view': view}
-        return render(request, 'docentes/confPreguntasForm.html', context)
-
-    # Editar los datos de un menu por su pk
-    def editConfPreguntas(request, pk):
-        confPreguntas = get_object_or_404(ConfPreguntas, pk=pk)
-        if request.method == 'POST':
-            ##editarField
-            ##request.POST._mutable = True
-            ##request.POST['pregunta'] = request.POST['pregunta'].capitalize()
-            ##request.POST._mutable = False
-            ##endEditarField
-            form = ConfPreguntasForm(request.POST, instance=confPreguntas)
-            if form.is_valid():
-                form.save()
-                messages.success(request, "Se edito correctamente", "success")
-                return redirect('conf_preguntas')
-        else:
-            confPreguntasFormView = ConfPreguntasForm(instance=confPreguntas)
-            view = False
-            context = {'confPreguntasFormView': confPreguntasFormView, 'confPreguntas': confPreguntas, 'view': view}
-        return render(request, 'docentes/confPreguntasForm.html', context)
-
-    # Elimina una pregunta
-    def deleteConfPreguntas(request, pk):
-        confPreguntas = get_object_or_404(ConfPreguntas, pk=pk)
-        if confPreguntas:
-            confPreguntas.delete()
-            messages.success(request, "Se ha eliminado correctamente", "success")
-        return redirect('conf_preguntas')
-
-class EvaluacionView(View):
-    def get(self, request):
-        fecha = datetime.now()
-        periodo = fecha.year
-        username = request.session['username']
-        categoria = Categoria.objects.order_by('categoria')
-        preguntas = ConfPreguntas.objects.filter(periodo = periodo)
-        evaluacion = Evaluacion.objects.filter(usuario = username).filter(contestado = False)
-        comprobacion = True
-        value = [1,2,3,4,5]
-        val1 = numpy.size(preguntas)
-        val2 = numpy.size(evaluacion)
-        if not preguntas:
-            print('1.')
-            comprobacion = False
-        else:
-            print('2.')
-            if not evaluacion:
-                print('2.1.')
-                _evaluacion = Evaluacion.objects.filter(usuario = username).filter(contestado = True)
-                if not _evaluacion:
-                    print('2.1.1.')
-                    for i in preguntas:
-                        c = Evaluacion(pregunta = i, opcion = 1, usuario = username, contestado = False)
-                        c.save()
-                    evaluacion = Evaluacion.objects.filter(usuario = username).filter(contestado = False)
-                else:
-                    print('2.1.2.')
-                    val3 = numpy.size(_evaluacion)
-                    if val1 > val3:
-                        print('2.1.2.1.')
-                        idPregunta = []
-                        for i in _evaluacion:
-                            idPregunta.append(i.pregunta.id)
-                        temp = ConfPreguntas.objects.exclude(id__in = idPregunta)
-                        for i in temp:
-                            c = Evaluacion(pregunta = i, opcion = 1, usuario = username, contestado = False)
-                            c.save()
-                        evaluacion = Evaluacion.objects.filter(usuario = username).filter(contestado = False)
-                    else:
-                        print('2.1.2.2.')
-                        comprobacion = False
-            else:
-                print('2.2.')
-                _evaluacion = Evaluacion.objects.filter(usuario = username).filter(contestado = True)
-                if not _evaluacion:
-                    if val1 > val2 :
-                        print('2.2.1.')
-                        evaluacion.delete()
-                        for i in preguntas:
-                            c = Evaluacion(pregunta = i, opcion = 1, usuario = username, contestado = False)
-                            c.save()
-                        evaluacion = Evaluacion.objects.filter(usuario = username).filter(contestado = False)
-                else:
-                    val3 = numpy.size(_evaluacion)
-                    if val1 > val3:
-                        evaluacion.delete()
-                        idPregunta = []
-                        for i in _evaluacion:
-                            idPregunta.append(i.pregunta.id)
-                        temp = ConfPreguntas.objects.exclude(id__in = idPregunta)
-                        for i in temp:
-                            c = Evaluacion(pregunta = i, opcion = 1, usuario = username, contestado = False)
-                            c.save()
-                        evaluacion = Evaluacion.objects.filter(usuario = username).filter(contestado = False)
-                    else:
-                        print('2.2.2.2.')
-                        comprobacion = False
-        greeting = {'heading': "Evaluación de la plataforma SECOED", 'pageview':"Docentes", 'preguntas':preguntas, 'comprobacion':comprobacion, 'evaluacion':evaluacion, 'value':value, 'periodo':periodo, 'categoria':categoria}
-        return render(request, 'docentes/evaluacionPlataforma.html', greeting)
-
-    def saveEvaluacion(request):
-        if request.method == 'POST':
-            cont = 1
-            for key, values in request.POST.lists():
-                if cont > 1:
-                    print('Key: ', key,' ---> Valor: ',values[0])
-                    evaluacion = get_object_or_404(Evaluacion, pk=key)
-                    evaluacion.opcion = values[0]
-                    evaluacion.contestado = True
-                    evaluacion.save()
-                cont +=1
-        messages.success(request, "Se guardo correctamente sus respuestas", "success")
-        return redirect('evaluacion-plataforma')
+        # save
+        c.save()
+        pdf = buffer.getvalue();
+        buffer.close()
+        response.write(pdf)
+        return response

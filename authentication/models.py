@@ -3,6 +3,15 @@ from django.db import models
 
 from conf.models import Rol, RolMoodle
 
+# Utils
+from django.utils import timezone
+
+# built-in signals
+from django.db.models.signals import post_save
+
+# signals
+from notify.signals import notificar
+
 
 class UsuarioManger(BaseUserManager):
     def create_user(self, email, username, nombres, apellidos, identificacion, telefono, password=None):
@@ -82,3 +91,23 @@ class RolUser(models.Model):
 
     class Meta:
         db_table = 'conf_rol_user'
+
+
+class Post(models.Model):
+    user = models.ForeignKey(Usuario, on_delete=models.CASCADE)
+    title = models.CharField(max_length=100)
+    image = models.ImageField(upload_to='fotos/', max_length=200, blank=True, null=True, height_field=None)
+    text = models.TextField()
+    timestamp = models.DateTimeField(default=timezone.now, db_index=True)
+    url = models.TextField(blank=True, null=True, default='#')
+
+
+    def __str__(self):
+        return self.title
+
+
+def notify_post(sender, instance, created, **kwargs):
+    notificar.send(instance.user, destiny=instance.user, verb=instance.title, level='info', url=instance.url,
+                   detalle=instance.text)
+
+post_save.connect(notify_post, sender=Post)

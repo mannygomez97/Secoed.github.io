@@ -51,6 +51,9 @@ urlpatterns = [
 
     # url de docentes
     path(r'docentes/', include('docentes.urls')),
+
+    # url de notify
+    path(r'notify/', include('notify.urls')),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

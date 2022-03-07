@@ -22,10 +22,33 @@
     <div class="col-12">
         <div class="card">
             <div class="card-body">
-                <div class="button-items" style="margin-bottom: 10px">
-                    <!-- BOTONES INICIALES O DE CABECERA-->
-                </div>
-                <!--contenido-->
+                {% for notify in notify %}
+                <a href="" class="text-reset notification-item">
+                    <div class="media">
+                        <div class="avatar-xs me-3">
+                        <span class="avatar-title bg-primary rounded-circle font-size-16">
+                            <i class="bx bx-cart"></i>
+                        </span>
+                        </div>
+                        <div class="media-body">
+                            <h6 class="mt-0 mb-1" key="t-your-order">
+                                {{notify.actor}} {{notify.verbo}}
+                            </h6>
+                            <div class="font-size-12 text-muted">
+                                <p class="mb-1" key="t-grammer">
+                                    If several languages coalesce the grammar
+                                </p>
+                                <p class="mb-0">
+                                    <i class="mdi mdi-clock-outline"></i>
+                                    <span key="t-min-ago">
+                                   {{ notify.timestamp }}
+                                </span>
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </a>
+                {% endfor %}
             </div>
         </div>
     </div>
@@ -35,6 +58,7 @@
 {% block r_sidebar %}
 {% include 'partials/rightsidebar.html' %}
 {% endblock %}
+
 
 {% block footer %}
 {% include 'partials/footer.html' %}
@@ -64,57 +88,4 @@
 
 <script src="{% static 'js/app.js' %}"></script>
 
-<!-- Modal View -->
-<script type="text/javascript">
-    var $ = jQuery.noConflict();
-
-    function openModal(url, idModal) {
-        $(idModal).load(url, function () {
-            $(this).modal('show')
-        });
-    }
-
-</script>
-
-<!-- message success-->
-{% if messages %}
-{% for m in messages %}
-<script>
-    Swal.fire({
-        "title": "EXAMPLE",
-        "text": "{{m}}",
-        "icon": "{{m.extra_tags}}",
-    })
-</script>
-{% endfor %}
-{% endif %}
-
-<!-- delete -->
-<script>
-    function validaNumericos(event) {
-        if (event.charCode >= 48 && event.charCode <= 57) {
-            return true;
-        }
-        return false;
-    }
-
-    function deleteEXAMPLE(id) {
-        Swal.fire({
-            "title": "¿Esta seguro?",
-            "text": "Esta acción no se puede revertir",
-            "icon": "question",
-            "showCancelButton": true,
-            "cancelButtonText": "NO",
-            "confirmButtonText": "SI",
-            "cancelButtonColor": "#f46a6a",
-            "confirmButtonColor": "#34c38f",
-        })
-            .then(function (result) {
-                if (result.isConfirmed) {
-                    console.log(id)
-                    window.location.href = "deleteExample/" + id
-                }
-            })
-    }
-</script>
 {% endblock %}
