@@ -104,7 +104,7 @@ WSGI_APPLICATION = 'secoed.wsgi.application'
 CONEXION_NAME = 'db_tesis'
 CONEXION_USER = 'secoed'
 CONEXION_PASSWORD = 'secoed2021'
-CONEXION_HOST = 'localhost'
+CONEXION_HOST = 'pgdb'
 CONEXION_PORT = '5432'
 
 """""
