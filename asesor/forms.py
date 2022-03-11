@@ -3,10 +3,11 @@ from turtle import hideturtle
 from urllib.request import urlretrieve
 from django import forms
 from soupsieve import select
-from .models import Nivel_Académico, Cursos, Asesor, Docentes, Periodo, Recursos, Curso_Asesor, Cabecera_Crono, Titulos, Event, Observaciones, registro_historicos
-from django.forms import ChoiceField, HiddenInput, ModelForm, DateInput, TextInput, Textarea, Select
+from .models import Periodo_academico, Nivel_Académico, Cursos, Asesor, Docentes, Periodo, Recursos, Curso_Asesor, Cabecera_Crono, Titulos, Event, Observaciones, registro_historicos
+from django.forms import CheckboxInput, ChoiceField, HiddenInput, ModelForm, DateInput, TextInput, Textarea, Select
 
 CURSOS = Cursos.objects.order_by('Tipo')
+PERIODO = Periodo.objects.order_by('Tipo')
 
 #5
 class Nivel_AcadémicoForm(forms.ModelForm):
@@ -125,4 +126,28 @@ class historiasForm(ModelForm):
     # input_formats to parse HTML5 datetime-local input to datetime field
     self.fields['start_time'].input_formats = ('%Y-%m-%dT%H:%M',)
     self.fields['end_time'].input_formats = ('%Y-%m-%dT%H:%M',)
-  
+
+
+class periodoAcademicoForm(forms.ModelForm):
+  class Meta:
+    model = Periodo_academico
+    fields = '__all__'
+
+    labels = {
+            'ciclo': 'Ciclo:',
+            'periodo': 'Periodo:',
+            'fecha_inicio': 'Fecha_inicio:',
+            'fecha_fin': 'Fecha_fin:',
+            'estado': 'Estado:',
+    }
+    widgets = {
+            'ciclo': TextInput(
+                attrs={'class': 'form-control', 'placeHolder': 'Ingrese el nombre del ciclo'}),
+            'periodo': Select(
+              attrs={'class': 'form-control'}, choices=((x.Tipo, x.Tipo) for x in PERIODO)),
+            'fecha_inicio': DateInput(
+                attrs={'class': 'form-control'}),
+            'fecha_fin': DateInput(
+                attrs={'class': 'form-control'}),
+            
+        }

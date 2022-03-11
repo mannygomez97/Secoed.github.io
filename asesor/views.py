@@ -8,9 +8,9 @@ from django.views import View
 from secoed.settings import TOKEN_MOODLE,API_BASE
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import  Nivel_Académico, Cursos, Asesor, Docentes, Periodo, Recursos, Curso_Asesor, Cabecera_Crono, Titulos, Event, Observaciones, registro_historicos, valoration_course_student
+from .models import  Nivel_Académico, Cursos, Asesor, Docentes, Periodo, Recursos, Curso_Asesor, Cabecera_Crono, Titulos, Event, Observaciones, registro_historicos, valoration_course_student, Periodo_academico
 from components.models import Semaforizacion
-from .forms import  Nivel_AcadémicoForm, CursosForm, AsesorForm, DocentesForm, PeriodoForm, RecursosForm, Curso_AsesorForm, Cabecera_CronoForm, TitulosForm, Cabecera_Crono_ObForm, EventForm, historiasForm, curso_FechaForm
+from .forms import  Nivel_AcadémicoForm, CursosForm, AsesorForm, DocentesForm, PeriodoForm, RecursosForm, Curso_AsesorForm, Cabecera_CronoForm, TitulosForm, Cabecera_Crono_ObForm, EventForm, historiasForm, curso_FechaForm, periodoAcademicoForm
 from django.http import HttpResponse, JsonResponse
 import numpy as np
 
@@ -2391,3 +2391,21 @@ def send_mail(request):
 
         messages.success(request, 'Correo enviado correctamente')
     return redirect ('gotomail')
+
+@login_required
+def periodo_academico(request):
+    pacademico = Periodo_academico.objects.all()
+    context={'context':pacademico}
+    return render(request,'asesor/periodo_academico/lista_pacademico.html',context)
+
+@login_required
+def add_pacademico(request):
+    if request.method == 'POST':
+        form = periodoAcademicoForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Periodo academico agregado correctamente')
+            return redirect('periodo_academico')
+    else:
+        form = periodoAcademicoForm()
+    return render(request, 'asesor/periodo_academico/add_pacademico.html', {'form': form})

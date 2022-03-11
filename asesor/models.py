@@ -58,9 +58,9 @@ class Docentes(models.Model):
 class Periodo(models.Model):
     id_periodo=models.AutoField(primary_key=True)
     Tipo=models.CharField(max_length=25)
-
     def __str__(self):
         return self.Tipo
+
     
 # 9
 class Recursos(models.Model):
@@ -182,3 +182,15 @@ class valoration_course_student(models.Model):
 
     def __str__(self):
         return self.course_name
+
+
+class Periodo_academico(models.Model):
+    id_periodo=models.AutoField(primary_key=True)
+    ciclo=models.CharField(max_length=200)
+    periodo=models.ForeignKey('Periodo', on_delete=models.CASCADE)
+    fecha_inicio=models.DateField(null=False, blank=False)
+    fecha_fin=models.DateField(null=False, blank=False)
+    estado=models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.ciclo + " " + str(self.periodo.Tipo)

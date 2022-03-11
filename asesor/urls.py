@@ -99,6 +99,9 @@ urlpatterns = [
 
     
     #URLS_EORRALA
+    path('periodo_academico/', views.periodo_academico, name='periodo_academico'),
+    path('add_pacademico/', views.add_pacademico, name='add_pacademico'),
+
     path('modules_by_course/<id>/<fullname>/', views.modules_by_course, name='modules_by_course'),
     path('details_module/<int:course>/<id>/<fullname>/<name>/<int:section>/', views.details_module, name='details_module'),
     path('study_schedule_events/<int:id>/<fullname>/', views.study_schedule_events, name='study_schedule_events'),

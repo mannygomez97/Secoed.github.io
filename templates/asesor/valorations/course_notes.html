@@ -12,40 +12,38 @@
 <link href="{% static 'libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" /> 
 {% endblock %}
 {% block contents %}
-
-<a href="{% url 'gotomail' %}" class="btn btn-outline-success btn-sm">Enviar reportes</a>
-
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="card">
-                                    <div class="card-body">
-                                        <div class="table-responsive">
-                                            <table id="curso" class="table table-hover dt-responsive nowrap w-100">
-                                                <thead>
-                                                <tr>
-                                                    <th>Curso</th>                                                 
-                                                    <th>Docente</th>
-                                                    <th>Nota final</th>                                                                                                                                              
-                                                </tr>
-                                                </thead>               
-                                                    {% for item in finalnotes %}                            
-                                                        <tr>                              
-                                                            <td>{{item.course_name}}</td>                                       
-                                                            <td>{{item.student_name}}</td>                                                           
-                                                            <td>{{item.score_course}}</td>
-                                                        </tr>     
-                                                    {% endfor %}
-                                                </tbody>
+<div style="padding: 1em;">
+    <a href="{% url 'gotomail' %}" class="btn btn-success">Enviar mail</a>
+</div>
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="curso" class="table table-hover dt-responsive nowrap w-100">
+                        <thead>
+                            <tr>
+                                <th>Curso</th> 
+                                <th>Docente</th>
+                                <th>Nota final</th>                      
+                            </tr>
+                        </thead>               
+                            {% for item in finalnotes %}    
+                                <tr>      
+                                    <td>{{item.course_name}}</td>               
+                                    <td>{{item.student_name}}</td>           
+                                    <td>{{item.score_course}}</td>
+                                </tr>     
+                            {% endfor %}
+                        </tbody>
                                             </table>
                                         </div>    
                                     </div>
                                 </div>
                             </div> <!-- end col -->
                         </div> <!-- end row -->
-
                     </div> <!-- container-fluid -->
-                </div>
-                <!-- End Page-content -->             
+                </div>          
 {% endblock %}
 {% block r_sidebar %}
 {% include 'partials/rightsidebar.html' %}
@@ -61,7 +59,7 @@
         <script src="{% static 'libs/metismenu/metisMenu.min.js' %}"></script>
         <script src="{% static 'libs/simplebar/simplebar.min.js' %}"></script>
         <script src="{% static 'libs/node-waves/waves.min.js' %}"></script>
-                        
+
         <script src="{% static 'libs/datatables.net/js/jquery.dataTables.min.js' %}"></script>        
         <script src="{% static 'libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
 
@@ -88,6 +86,6 @@
                     buttons: ['copy', 'excel', 'pdf']
                 } );
             } );
-                        
+
         </script>       
 {% endblock %}
