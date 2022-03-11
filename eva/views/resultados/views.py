@@ -1,5 +1,5 @@
 from django.views.generic import TemplateView
-from eva.models import ResultadoProceso
+from eva.models import ResultadoProceso, ParametrosGeneral,Parametro
 
 class Resultado(TemplateView):
     model = ResultadoProceso
@@ -13,4 +13,7 @@ class Resultado(TemplateView):
         context = super().get_context_data(**kwargs)
         context['heading'] = 'Resultados'
         context['resultados'] = self.get_resultados()
+        parameter = Parametro.objects.filter(name='Indicadores').first()
+        context['parametros_Generales'] = ParametrosGeneral.objects.filter(parameter=parameter.id)
         return context
+
