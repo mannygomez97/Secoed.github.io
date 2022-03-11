@@ -5,20 +5,24 @@ from typing import Sequence
 from django.conf import settings
 import requests
 from django.views import View
-from secoed.settings import TOKEN_MOODLE,API_BASE
+from secoed.settings import TOKEN_MOODLE,API_BASE, TOKEN_WEB
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import  Nivel_Académico, Cursos, Asesor, Docentes, Periodo, Recursos, Curso_Asesor, Cabecera_Crono, Titulos, Event, Observaciones, registro_historicos, valoration_course_student, Periodo_academico
 from components.models import Semaforizacion
 from .forms import  Nivel_AcadémicoForm, CursosForm, AsesorForm, DocentesForm, PeriodoForm, RecursosForm, Curso_AsesorForm, Cabecera_CronoForm, TitulosForm, Cabecera_Crono_ObForm, EventForm, historiasForm, curso_FechaForm, periodoAcademicoForm
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, Http404
+
 import numpy as np
 
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
+from rest_framework.authtoken.models import Token
+from rest_framework.response import Response
 from rest_framework.views import APIView
 from .serializers import ValCourseStudentSerializer
+from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import render, redirect, get_object_or_404
 
 from django.core.mail import EmailMessage, EmailMultiAlternatives
@@ -34,6 +38,8 @@ from django.utils.safestring import mark_safe
 from datetime import timedelta
 
 class ValorationCourseStudent_Crud(APIView):
+    permission_classes = (IsAuthenticated,)
+
     @api_view(['GET', 'POST'])  
     def crudValorationCourseStudent(request):
         if request.method == 'GET':
@@ -65,18 +71,22 @@ class ValorationCourseStudent_Crud(APIView):
             valoration_course.delete()
             return Response("Eliminado", status=status.HTTP_204_NO_CONTENT)
 
+
+
 @login_required
-def save_val_course(request, course, nombre, userid, name_user, napproved):
+def save_val_course(request, course, nombre, userid, name_user, napproved,ciclo):
     reqUrl = "http://127.0.0.1:8000/asesor/api/val_course_student/"
     headersList = {
-        "Content-Type": "application/json" 
+        "Content-Type": "application/json",
+        "Authorization": "Token " + TOKEN_WEB
         }
     payload = json.dumps(  {
     "course_id": course,
     "course_name": nombre,
     "student_id": userid,
     "student_name": name_user,
-    "score_course": float(napproved)
+    "score_course": float(napproved),
+    "academic_period": ciclo
     })
 
     response = requests.request("POST", reqUrl, data=payload, headers=headersList)
@@ -2065,7 +2075,7 @@ def api_curso(request):
             "wsfunction":"core_course_get_courses",
             "moodlewsrestformat":"json",                                    
             }    
-    context={} 
+    context={}
     try:
         response=requests.post(apiBase, params)
         if response.status_code==400:
@@ -2084,18 +2094,23 @@ def api_curso(request):
                 y["startdate"]=timestamp.strftime('%Y-%m-%d')
             for v in res_new:                
                 timestamp = datetime.fromtimestamp(v["enddate"])                
-                v["enddate"]=timestamp.strftime('%Y-%m-%d') 
-
-            #lista [] se accede a elementos con indice numerico(0,1,2)
-            #diccionario {} se accede con cadena de texto como palabra clave "courses"
-
+                v["enddate"]=timestamp.strftime('%Y-%m-%d')
     except Exception as e:
         print(e)
+    
     return render(request,'asesor/seguimiento_docente/lista_cursos.html',context)
 
 @login_required
-def listado_estudiante(request, id, nombre):   
-    nombre_curso=nombre         
+def listado_estudiante(request, id, nombre, startdate, enddate):   
+    nombre_curso=nombre
+    dt_startdate = (datetime.strptime(startdate, '%Y-%m-%d')).date()
+    dt_enddate = (datetime.strptime(enddate, '%Y-%m-%d')).date()
+
+    pacad = Periodo_academico.objects.all()            
+    for pac in pacad:
+        if dt_startdate >= pac.fecha_inicio and dt_enddate <= pac.fecha_fin:
+            ciclo = pac.ciclo+' C'+ str(pac.periodo_id)
+
     apiBase="http://academyec.com/moodle/webservice/rest/server.php"
     params={"wstoken":TOKEN_MOODLE,
             "wsfunction":"gradereport_user_get_grade_items",
@@ -2109,10 +2124,8 @@ def listado_estudiante(request, id, nombre):
             return render(request,'lista_Estudiantes.html',context={"context":"Bad request"})
         if response:
             r=response.json()["usergrades"]                       
-            context={"context":r,'nombre':nombre_curso}                        
+            context={"context":r,'nombre':nombre_curso, 'ciclo':ciclo}                        
 
-            #lista [] se accede a elementos con indice numerico(0,1,2)
-            #diccionario {} se accede con cadena de texto como palabra clave "courses"
     except Exception as e:
         print(e)
     return render(request,'asesor/seguimiento_docente/lista_Estudiantes.html',context)
@@ -2267,7 +2280,7 @@ def users_by_module(request, course):
     return render(request,'asesor/seguimiento_docente/users_by_module.html',context)
 
 @login_required
-def val_activities_users(request, courseid, userfullname, userid, nombre):   
+def val_activities_users(request, courseid, userfullname, userid, nombre, ciclo):   
     name_user=userfullname
     t="Cursos"
     apiBase="http://academyec.com/moodle/webservice/rest/server.php"
@@ -2299,7 +2312,7 @@ def val_activities_users(request, courseid, userfullname, userid, nombre):
                 if r["graderaw"] :
                     nf = nf + r["graderaw"]
             napproved = nf/nf_len
-            context={"context":res_new,'name_user':name_user, 'napproved':napproved, 'heading': "Actividades del curso: ", 'pageview': "Cursos", 'course':courseid, 'userid':userid, 'nombre':nombre, 'val_note':val_note}
+            context={"context":res_new,'name_user':name_user, 'napproved':napproved, 'heading': "Actividades del curso: ", 'pageview': "Cursos", 'course':courseid, 'userid':userid, 'nombre':nombre, 'val_note':val_note, 'ciclo':ciclo}
     except Exception as e:
         print(e)
     return render(request,'asesor/valorations/val_course_student.html',context)

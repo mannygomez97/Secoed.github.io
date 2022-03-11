@@ -1,6 +1,7 @@
 from django.contrib.auth.decorators import login_required
 from django.urls import path
 from conf import views
+from .views import *
 
 urlpatterns = [
      # menu
@@ -58,5 +59,6 @@ urlpatterns = [
      path(r'viewRolMoodle/<int:pk>', login_required(views.RolMoodleContentView.viewRolMoodle), name='viewRolMoodle'),
      path(r'deleteRolMoodle/<int:pk>', login_required(views.RolMoodleContentView.deleteRolMoodle),name='deleteRolMoodle'),
 
-
+     path('api/users', Usuario_APIView.as_view()),
+     path('login', login),
 ]

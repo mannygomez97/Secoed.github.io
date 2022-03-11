@@ -15,7 +15,7 @@
                         <div class="row">
                             <div class="col-12">
                                 <div class="card">
-                                    <h1>{{name_user}}</h1>
+                                    <h5>{{name_user}} - {{ciclo}}</h5>
                                     <div class="card-body">
                                         <div class="table-responsive">
                                             <table id="curso" class="table table-hover dt-responsive nowrap w-100">
@@ -78,7 +78,7 @@
                                                             {% if val_note == 1 %}
                                                                 <span class="badge badge-success">Docente ya evaluado</span>
                                                             {% else %}
-                                                                <a href="{% url 'save_val_course' course nombre userid name_user napproved  %}" class="btn btn-success btn-sm">Registrar valoración</a>
+                                                                <a href="{% url 'save_val_course' course nombre userid name_user napproved ciclo%}" class="btn btn-success btn-sm">Registrar valoración</a>
                                                             {% endif %}
                                                         </td>
                                                     </tr>

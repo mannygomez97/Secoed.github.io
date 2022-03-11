@@ -94,7 +94,7 @@ urlpatterns = [
 
     #19api
     path('cursos_api', views.api_curso, name='cursos_api'),
-    path('listado_estudiante/<id>/<nombre>/', views.listado_estudiante, name='listado_estudiante'),
+    path('listado_estudiante/<id>/<nombre>/<startdate>/<enddate>/', views.listado_estudiante, name='listado_estudiante'),
     path('actividades_user/<id>/<nombre>/<idest>/', views.actividades_user, name='actividades_user'),
 
     
@@ -107,9 +107,9 @@ urlpatterns = [
     path('study_schedule_events/<int:id>/<fullname>/', views.study_schedule_events, name='study_schedule_events'),
     path('cal_register/', views.cal_register, name='cal_register'),
     path('create_module/<int:course>/<int:section>/', views.create_module, name='create_module'),
-    path('val_activities_users/<int:courseid>/<userfullname>/<int:userid>/<nombre>/', views.val_activities_users, name='val_activities_users'),
+    path('val_activities_users/<int:courseid>/<userfullname>/<int:userid>/<nombre>/<ciclo>/', views.val_activities_users, name='val_activities_users'),
     path('val_module_course/<int:course>/<int:id>/', views.val_module_course, name='val_module_course'),
-    path('save_val_course/<int:course>/<nombre>/<int:userid>/<name_user>/<napproved>/', views.save_val_course, name='save_val_course'),
+    path('save_val_course/<int:course>/<nombre>/<int:userid>/<name_user>/<napproved>/<ciclo>/', views.save_val_course, name='save_val_course'),
     path('course_notes', views.course_notes, name='course_notes'),
     path('gotomail', views.gotomail, name='gotomail'),
     path('get_dest/<fullname>/<email>/', views.get_dest, name='get_dest'),

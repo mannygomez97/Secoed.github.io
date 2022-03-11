@@ -38,8 +38,8 @@
                                                             <td>{{item.enddate}}</td>
                                                             <td>
                                                                 <a title="Módulos" href="{% url 'modules_by_course' item.id item.fullname %}" class="btn btn-outline-info btn-md"><i class="fas fa-list"></i></a>                                                                                                                    
-                                                                <a title="Docentes" href="{% url 'listado_estudiante' item.id item.fullname %}" class="btn btn-outline-success btn-md"><i class="fas fa-users"></i></a>
-                                                                <a title="Calendarios" href="{% url 'study_schedule_events' item.id item.fullname %}" class="btn btn-outline-primary btn-md"><i class="fas fa-calendar"></i></a>
+                                                                <a title="Docentes" href="{% url 'listado_estudiante' item.id item.fullname item.startdate item.enddate%}" class="btn btn-outline-success btn-md"><i class="fas fa-users"></i></a>
+                                                                <a title="Calendarios" href="{% url 'study_schedule_events' item.id item.fullname  %}" class="btn btn-outline-primary btn-md"><i class="fas fa-calendar"></i></a>
                                                             </td>
                                                         </tr>     
                                                     {% endfor %}

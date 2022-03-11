@@ -25,13 +25,15 @@
                             <tr>
                                 <th>Curso</th> 
                                 <th>Docente</th>
+                                <th>ciclo</th>
                                 <th>Nota final</th>                      
                             </tr>
                         </thead>               
                             {% for item in finalnotes %}    
                                 <tr>      
                                     <td>{{item.course_name}}</td>               
-                                    <td>{{item.student_name}}</td>           
+                                    <td>{{item.student_name}}</td>
+                                    <td>{{item.academic_period}}</td>          
                                     <td>{{item.score_course}}</td>
                                 </tr>     
                             {% endfor %}

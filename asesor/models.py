@@ -178,6 +178,7 @@ class valoration_course_student(models.Model):
     course_name = models.CharField(max_length=200, null=True, blank=True)
     student_id = models.IntegerField(null=False, blank=False)
     student_name = models.CharField(max_length=200, null=True, blank=True)
+    academic_period = models.CharField(max_length=200, null=True, blank=True)
     score_course = models.FloatField(null=False, blank=False)
 
     def __str__(self):
