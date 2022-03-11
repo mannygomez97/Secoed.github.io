@@ -2071,12 +2071,18 @@ def api_curso(request):
         if response.status_code==400:
             return render(request,'lista_cursos.html',context={"context":"Bad request",'heading': u,'pageview': t,})
         if response:
-            r=response.json()                       
-            context={"context":r,'heading': u,'pageview': t, }  
-            for y in r:
+            res_new = []
+            res=response.json()
+
+            for r in res:
+                if r["fullname"] != "Entorno Virtual de Aprendizaje":
+                    res_new.append(r)
+            context={"context":res_new,'heading': u,'pageview': t, } 
+            
+            for y in res_new:
                 timestamp = datetime.fromtimestamp(y["startdate"])                
                 y["startdate"]=timestamp.strftime('%Y-%m-%d')
-            for v in r:                
+            for v in res_new:                
                 timestamp = datetime.fromtimestamp(v["enddate"])                
                 v["enddate"]=timestamp.strftime('%Y-%m-%d') 
 
@@ -2271,7 +2277,11 @@ def val_activities_users(request, courseid, userfullname, userid, nombre):
             "courseid":courseid,
             "userid":userid            
             }
-    context={} 
+    context={}
+
+    notes = valoration_course_student.objects.filter(student_id=userid, course_id=courseid)
+    val_note = notes.count()
+
     try:
         response=requests.post(apiBase, params)
         if response.status_code==400:
@@ -2282,16 +2292,14 @@ def val_activities_users(request, courseid, userfullname, userid, nombre):
             for r in res:
                 if r["itemtype"] != "course":
                     res_new.append(r)
-            
             nf_len = len(res_new)
             nf = 0
             napproved = 0
             for r in res_new:
-                if r["graderaw"] != "":
+                if r["graderaw"] :
                     nf = nf + r["graderaw"]
             napproved = nf/nf_len
-            print(napproved)
-            context={"context":res_new,'name_user':name_user, 'napproved':napproved, 'heading': "Actividades del curso: ", 'pageview': "Cursos", 'course':courseid, 'userid':userid, 'nombre':nombre, }
+            context={"context":res_new,'name_user':name_user, 'napproved':napproved, 'heading': "Actividades del curso: ", 'pageview': "Cursos", 'course':courseid, 'userid':userid, 'nombre':nombre, 'val_note':val_note}
     except Exception as e:
         print(e)
     return render(request,'asesor/valorations/val_course_student.html',context)
@@ -2374,8 +2382,6 @@ def send_mail(request):
             'feedback': feedback,
             'attach': attach
         })
-
-        print(template)
 
         email = EmailMultiAlternatives(subject, template, settings.EMAIL_HOST_USER, [email])
         email.attach('notas.pdf', feedback, 'application/pdf')

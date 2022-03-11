@@ -79,7 +79,7 @@ new Vue({
             formdata.append("events[0][courseid]", this.courseid);
             formdata.append("events[0][groupid]", "0");
             formdata.append("events[0][repeats]", "0");
-            formdata.append("events[0][eventtype]", this.eventtype);
+            formdata.append("events[0][eventtype]", "course");
             formdata.append("events[0][timestart]", ttiTimeStart);
             formdata.append("events[0][timeduration]", ttiDuration);
             formdata.append("events[0][visible]", "1");
@@ -93,7 +93,7 @@ new Vue({
             data: bodyContent,
             }
             
-            if(this.name == null || this.description == null || this.courseid == null || this.eventtype == null || this.timestart == null || this.timeend == null){
+            if(this.name == null || this.description == null || this.courseid == null || this.timestart == null || this.timeend == null){
                 alert("Por favor, complete todos los campos");
             } else {
                 axios.request(reqOptions)

@@ -66,7 +66,7 @@
                     events: [
                             {% for calend in context %}
                                 {
-                                    title: '{{calend.name}}',
+                                    title: '{{calend.name}}'+ ' > '+ '{{calend.description}}',
                                     start: new Date ('{{calend.timestart}}' * 1000 ),
                                     end: new Date (((parseInt('{{calend.timestart}}')) + (parseInt('{{calend.timeduration}}'))) * 1000)
                                 },

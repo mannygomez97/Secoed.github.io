@@ -70,12 +70,16 @@
                                                                 <img class="img-fluid" src="{% get_static_prefix %}images/components/semaforos/nivel3.png" alt="" style="width: 20%;">
                                                             {% elif napproved < 80 %}
                                                                 <img class="img-fluid" src="{% get_static_prefix %}images/components/semaforos/nivel4.png" alt="" style="width: 20%;">
-                                                            {% elif napproved == 200 %}
+                                                            {% elif napproved == 100 %}
                                                                 <img class="img-fluid" src="{% get_static_prefix %}images/components/semaforos/nivel5.png" alt="" style="width: 20%;">
                                                             {% endif %}
                                                         </td>
                                                         <td>
-                                                            <a href="{% url 'save_val_course' course nombre userid name_user napproved  %}" class="btn btn-success btn-sm">Registrar valoración</a>
+                                                            {% if val_note == 1 %}
+                                                                <span class="badge badge-success">Docente ya evaluado</span>
+                                                            {% else %}
+                                                                <a href="{% url 'save_val_course' course nombre userid name_user napproved  %}" class="btn btn-success btn-sm">Registrar valoración</a>
+                                                            {% endif %}
                                                         </td>
                                                     </tr>
                                                 </tbody>
