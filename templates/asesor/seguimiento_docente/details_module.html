@@ -28,9 +28,7 @@
                                                     <!-- <th>Id</th> -->
                                                     <th>Nombre</th>
                                                     <th>Tipo asignación</th>  
-                                                    <th>Icono</th>
-                                                    <th>Estado actividad</th>
-                                                    <th>Docentes</th>                                                                                                                                            
+                                                    <th>Redirección</th>                                                                                                                                          
                                                 </tr>
                                                 </thead>                
                                                 <tbody>                                                   
@@ -39,8 +37,8 @@
                                                         <tr>                              
                                                             <td>{{item.id}}</td>                               
                                                             <td>{{item.name}}</td>
-                                                            <td><img src="{{item.modicon}}" alt=""></td>
-                                                            <td>
+                                                            <td><a class="btn btn-outline-success btn-sm" href="{{item.url}}"><img src="{{item.modicon}}" alt=""> </a></td>
+                                                            <!-- <td>
                                                                 {% if item.completiondata.state == 0 %}
                                                                     <span class="badge badge-warning">Incompleto</span>
                                                                 {% elif item.completiondata.state == 1 %}
@@ -50,9 +48,7 @@
                                                                 {% elif item.completiondata.state == 3 %}
                                                                     <span class="badge badge-danger">Danger</span>
                                                                 {% endif %}
-                                                            </td>
-                                                            <td><a href="{% url 'val_module_course' course item.id  %}" class="btn btn-outline-success btn-sm">Docentes</a></td>
-                                                            
+                                                            </td> -->
                                                     {% endfor %}
                                                 {% else %}                       
                                                     <div class="row">
