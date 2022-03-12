@@ -106,10 +106,10 @@ ASGI_APPLICATION = 'secoed.asgi.application'
 
 # CONEXION DEVELOPER --> debe regitrar su conexion si trabajara con preproduccion
 
-CONEXION_NAME = 'db_tesis'
+CONEXION_NAME = 'db_secoed'
 CONEXION_USER = 'secoed'
 CONEXION_PASSWORD = 'secoed2021'
-CONEXION_HOST = 'localhost'
+CONEXION_HOST = 'pgdb'
 CONEXION_PORT = '5432'
 
 """""
