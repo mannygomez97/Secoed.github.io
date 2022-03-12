@@ -74,7 +74,7 @@ class ValorationCourseStudent_Crud(APIView):
 
 
 @login_required
-def save_val_course(request, course, nombre, userid, name_user, napproved,ciclo):
+def save_val_course(request, course, nombre, userid, name_user, napproved, ciclo):
     reqUrl = "http://127.0.0.1:8000/asesor/api/val_course_student/"
     headersList = {
         "Content-Type": "application/json",
