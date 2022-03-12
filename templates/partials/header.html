@@ -48,7 +48,7 @@
                         id="page-header-notifications-dropdown" data-bs-toggle="dropdown" aria-haspopup="true"
                         aria-expanded="false">
                     <i class="bx bx-bell bx-tada"></i>
-                    <span class="badge bg-danger rounded-pill">{{notify}}</span>
+                    <span class="badge bg-danger rounded-pill" id="notification-badge">{{notify}}</span>
                 </button>
                 <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end p-0"
                      aria-labelledby="page-header-notifications-dropdown">
@@ -59,7 +59,7 @@
                             </div>
                         </div>
                     </div>
-                    <div data-simplebar style="max-height: 230px;">
+                    <div data-simplebar style="max-height: 230px;" id="notifications-dropdown">
                         {% for notify in notifyList %}
                         <a href="{% url 'readTrue' notify.id %}" class="text-reset notification-item">
                             <div class="media">
@@ -140,9 +140,8 @@
                     {% endif %}
                 </div>
             </div>
-
-
         </div>
     </div>
 </header>
+
 {% endblock %}

@@ -33,6 +33,9 @@ BASE_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'channels',
+    'django_celery_beat',
+    'django_celery_results',
 ]
 
 # Third Party App
@@ -88,13 +91,15 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'secoed.initialize.load_menu'
+                'secoed.initialize.load_menu',
+                'secoed.custom_context_processors.notifications'
             ],
         },
     },
 ]
 
 WSGI_APPLICATION = 'secoed.wsgi.application'
+ASGI_APPLICATION = 'secoed.asgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
@@ -196,3 +201,22 @@ DJANGO_EASY_AUDIT_ADMIN_SHOW_REQUEST_EVENTS = False
 TOKEN_MOODLE = 'cae40824ddd52a292888f736c8843929'
 API_BASE = 'http://academyec.com/moodle/webservice/rest/server.php'
 CONTEXT_ID = 116
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
+
+#CELERY SETTINGS
+CELERY_BROKER_URL = 'redis://127.0.0.1:6379'
+CELERY_RESULT_BACKEND = 'django-db'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TASK_SELERLIZER = 'json'
+CELERY_TIMEZONE = 'America/Guayaquil'
+
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'

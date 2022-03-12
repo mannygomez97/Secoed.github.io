@@ -114,3 +114,13 @@ class SeguimientoView(View):
         buffer.close()
         response.write(pdf)
         return response
+
+class Notasiew(View):
+    def get(self, request):
+        notas_autoevaluacion = fs_cursos_actividades(userObj.moodle_user)
+        notas_coevaluacion = fs_cursos_actividades(userObj.moodle_user)
+        greeting = {'heading': 'Notas de ls evaluaciones',
+                    'pageview': 'Docentes',
+                    'notas_autoevaluacion': notas_autoevaluacion,
+                    'notas_coevaluacion': notas_coevaluacion}
+        return render(request, 'docentes/seguimientoActividades.html', greeting)
