@@ -316,14 +316,9 @@ class actividades(View):
             print(actividad)
         else:
             actividad = None
-
-
- 
         greeting = {"heading":"Listado de Actividades", "pageview":"Forms"}
-
         if actividad:
             actividades = [dato for dato in actividad[0]["gradeitems"]]
-        
             cont = 0
             suma = 0
             nota = 0
@@ -333,15 +328,12 @@ class actividades(View):
                     if i["graderaw"]:
                         nota = (i["graderaw"]*100)/i["grademax"]
                         suma = nota + suma
-                        cont = cont + 1                
-
+                        cont = cont + 1
                 if suma == 0:
                     semaforo = 0
                 else:
                     semaforo = suma / cont
-
-                    greeting.update(semaforo = self.semaforo(semaforo))       
-
+                    greeting.update(semaforo = self.semaforo(semaforo))
         return render (request,'components/proyecto/modalActividades.html', greeting)
     
         

@@ -42,6 +42,19 @@ def fs_cursos_actividades(moodle_user):
                 for obj2 in r2['warnings']:
                     aux3.append(Warnings(**obj2))
             cursos_actividades.append(CursosActividades(aux1, aux2, aux3))
+            params3 = {"wstoken": TOKEN_MOODLE,
+                      "wsfunction": "gradereport_user_get_grade_items",
+                      "moodlewsrestformat": "json",
+                      "courseid": aux1.id,
+                      "userid": moodle_user
+                      }
+            response3 = requests.post(API_BASE, params3)
+            if response3.json().get("usergrades"):
+                actividad = [actividades for actividades in response3.json()["usergrades"] if actividades["userid"] == int(moodle_user)]
+                if actividad:
+                    actividades = [dato for dato in actividad[0]["gradeitems"]]
+                    if actividades:
+                        actividades2 = actividades[0]["itemnumber"]
     return cursos_actividades
 
 
