@@ -12,6 +12,8 @@ import json
 from io import BytesIO
 from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import A4
+from asesor.models import valoration_course_student
+from eva.models import ResultadoProceso
 
 
 def fs_cursos_actividades(moodle_user):
@@ -59,6 +61,7 @@ def getTipo(tracking):
         return 'MANUAL'
     else:
         return 'AUTOMÁTICO'
+
 
 class SeguimientoView(View):
     def get(self, request):
@@ -114,3 +117,15 @@ class SeguimientoView(View):
         buffer.close()
         response.write(pdf)
         return response
+
+
+class Notasiew(View):
+    def get(self, request):
+        notas_cursos = valoration_course_student.objects.order_by('course_name').filter(student_id=request.user.id)
+        notas_evaluacion = ResultadoProceso.objects.order_by('-cycle').filter(user=request.user.id)
+        print(notas_evaluacion)
+        greeting = {'heading': 'Notas de las evaluaciones',
+                    'pageview': 'Docentes',
+                    'notas_cursos': notas_cursos,
+                    'notas_evaluacion': notas_evaluacion}
+        return render(request, 'docentes/notaEvaluacion.html', greeting)

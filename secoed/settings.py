@@ -105,19 +105,19 @@ WSGI_APPLICATION = 'secoed.wsgi.application'
 
 # CONEXION DEVELOPER --> debe regitrar su conexion si trabajara con preproduccion
 
-#CONEXION_NAME = 'db_secoed'
-#CONEXION_USER = 'secoed'
-#CONEXION_PASSWORD = 'secoed2021'
-#CONEXION_HOST = '95.216.216.98'
-#CONEXION_HOST = 'localhost'
-#CONEXION_PORT = '5432'
-
-
 CONEXION_NAME = 'db_secoed'
 CONEXION_USER = 'secoed'
 CONEXION_PASSWORD = 'secoed2021'
-CONEXION_HOST = 'pgdb'
-CONEXION_PORT = 5432
+CONEXION_HOST = '95.216.216.98'
+CONEXION_HOST = 'localhost'
+CONEXION_PORT = '5432'
+
+
+#CONEXION_NAME = 'db_secoed'
+#CONEXION_USER = 'secoed'
+#CONEXION_PASSWORD = 'secoed2021'
+#CONEXION_HOST = 'pgdb'
+#CONEXION_PORT = 5432
 
 
 
