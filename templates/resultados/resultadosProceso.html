@@ -34,6 +34,7 @@
                         <thead class="table-light">
                         <tr>
                             <th>Estadistica</th>
+                            <th>Semaforo</th>
                             <th>Docente</th>
                             <th>Coevaluador</th>
                             <th>auto_result_Tic</th>
@@ -50,8 +51,9 @@
                         </thead>
                         <tbody>
                         {% for res in resultados %}
-                            <tr>
-                                <td><button type="button" class="btn btn-primary btnestadistica"><i class="fas fa-chart-pie"></i></button></td>
+                            <tr id="tr{{res.user.username}}">
+                                <td><button type="button" class="btn btn-primary btnestadistica" onclick="individual('{{res.user.username}}')"><i class="fas fa-chart-pie"></i></button></td>
+                                <td><div id="semaforo{{res.user.username}}"></div></td>
                                 <td>{{ res.user.nombres}} {{ res.user.apellidos}}</td>
                                 <td>{{ res.coevaluator }}</td>
                                 <td>{{ res.auto_result_Tic }}</td>
@@ -84,7 +86,7 @@
               <div class="row" id="Semaforos">
                   <div class = "col-12">
                       <div>Indicador semaforo: </div>
-                      <div id="semaforo"></div>
+                      <div id="semaforoglobal"></div>
                   </div>
               </div>
             <div class="row" id="Graficas">
@@ -144,6 +146,21 @@
     <script src="{% static 'js/app.js' %}"></script>
     <script src="{% static 'js/resultados/resultados.js' %}"></script>
     <script type="text/javascript">
+        $(document).ready(function() {
+
+            $('#datatable').DataTable();
+
+
+            var id = "";
+            var total = 0;
+            {% for res in resultados %}
+                id = "{{res.user.username}}";
+                total = {{res.Total_Proceso}};
+                mostrarsemaforo(total,id);
+            {% endfor %}
+
+
+        } );
         function global(){
 
             var auto_pedagodia = 0;
@@ -191,11 +208,11 @@
                    ["Didáctica",coe_didactica]
                ];
 
-            mostrarsemaforo(total_promedio);
+            mostrarsemaforo(total_promedio,"global");
 
             graph_auto_evaluation(total_auto_promedio,autoglobal);
             graph_co_evaluation(total_coe_promedio,coeglobal);
-
+            $("#nombreestadistica").html("");
             $("#ModalGrafico").modal("show");
         }
 
