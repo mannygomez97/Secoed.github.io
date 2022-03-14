@@ -12,33 +12,62 @@
 <link href="{% static 'libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" /> 
 {% endblock %}
 {% block contents %}
+
+{% if messages %}
+<div class="alert alert-primary" role="alert">
+    {% for message in messages %}
+    <p>
+        {{ message }}
+    </p>
+    {% endfor %}
+</div>
+{% endif %}
+
                         <div class="row">
                             <div class="col-12">
                                 <div class="card">
-                                    <div class="card-body">        
-                                        <div>
-                                            <a href="{% url 'create_module' course section %}" class="btn btn-outline-success">Crear nueva actividad</a>
-                                        </div>
+                                    <div class="card-body">                                               
                                         <div class="table-responsive">
-                                            <table id="curso" class="table table-bordered dt-responsive nowrap w-100">
+                                            <table id="curso" class="table table-hover dt-responsive nowrap w-100 text-center">
                                                 <thead>
                                                 <tr>
                                                     <!-- <th>Id</th> -->
-                                                    <th>Nombre</th>
-                                                    <th>Tipo asignación</th>  
-                                                    <th>Redirección</th>                                                                                                                                          
+                                                    <th>Nombre del docente</th>                                                     
+                                                    <th>Calificación</th>
+                                                    <th>Valoracion</th>
+                                                    <th>Cominucar docente</th>
                                                 </tr>
                                                 </thead>                
                                                 <tbody>                                                   
                                                 {% if context %}
                                                     {% for item in context %}                            
                                                         <tr>                              
-                                                            <td>{{item.id}}</td>                               
-                                                            <td>{{item.name}}</td>
-                                                            <td>
-                                                                <a class="btn btn-outline-success btn-sm" href="{{item.url}}"><img src="{{item.modicon}}" alt=""> </a>
-                                                                <a href="{% url 'val_activities_module_users' course moduleid namemod fullname item.id item.name %}" class="btn btn-info btn-sm">Calificar</a>
+                                                            <!-- <td>{{item.id}}</td> -->                                       
+                                                            <td>{{item.teachername}}</td>                                                           
+                                                            <td>{{item.actividad.graderaw}}</td>
+                                                            <td >
+                                                                {% if item.actividad.graderaw == None %}
+                                                                    <img class="img-fluid" src="{% get_static_prefix %}images/components/semaforos/nivel1.png" alt="" style="width: 10%;">
+                                                                    <a  class="btn btn-outline-danger btn-sm">Emitir alarma</a>
+                                                                {% elif item.actividad.graderaw < 20 %}
+                                                                    <img class="img-fluid" src="{% get_static_prefix %}images/components/semaforos/nivel1.png" alt="" style="width: 10%;">
+                                                                    <a  class="btn btn-outline-warning btn-sm">Emitir alarma</a>
+                                                                {% elif item.actividad.graderaw < 40 %}
+                                                                    <img class="img-fluid" src="{% get_static_prefix %}images/components/semaforos/nivel2.png" alt="" style="width: 10%;">
+                                                                    <a  class="btn btn-outline-secondary btn-sm">Emitir alarma</a>
+                                                                {% elif item.actividad.graderaw < 60 %}
+                                                                    <img class="img-fluid" src="{% get_static_prefix %}images/components/semaforos/nivel3.png" alt="" style="width: 10%;">
+                                                                    <a  class="btn btn-outline-primary btn-sm">Emitir alarma</a>
+                                                                {% elif item.actividad.graderaw < 80 %}
+                                                                    <img class="img-fluid" src="{% get_static_prefix %}images/components/semaforos/nivel4.png" alt="" style="width: 10%;">
+                                                                    <a  class="btn btn-outline-info btn-sm">Emitir alarma</a>
+                                                                {% elif item.actividad.graderaw == 100 %}
+                                                                    <img class="img-fluid" src="{% get_static_prefix %}images/components/semaforos/nivel5.png" alt="" style="width: 10%;">
+                                                                    <a  class="btn btn-outline-success btn-sm">Emitir alarma</a>
+                                                                {% endif %}
                                                             </td>
+                                                            <td><a href="{% url 'save_activities_module_users' course namecourse item.teacherid item.teachername moduleid modulename actid actname item.actividad.graderaw %}" class="btn btn-outline-success btn-sm">Guardar</a></td>
+                                                        </tr>     
                                                     {% endfor %}
                                                 {% else %}                       
                                                     <div class="row">

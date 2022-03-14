@@ -157,7 +157,7 @@ class registro_historicos(models.Model):
     def __str__(self):
         return self.title
 
-class valoration_module_estudent(models.Model):
+class valoration_module_student_activities(models.Model):
     id=models.AutoField(primary_key=True)
     course_id = models.IntegerField(null=False, blank=False)
     course_name = models.CharField(max_length=200, null=True, blank=True)
@@ -168,6 +168,7 @@ class valoration_module_estudent(models.Model):
     activity_id = models.IntegerField(null=False, blank=False)
     activity_name = models.CharField(max_length=200, null=True, blank=True)
     score_activity = models.IntegerField(null=False, blank=False)
+    created_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.module_name

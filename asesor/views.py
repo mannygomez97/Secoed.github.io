@@ -8,7 +8,7 @@ from django.views import View
 from secoed.settings import TOKEN_MOODLE,API_BASE, TOKEN_WEB
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import  Nivel_Académico, Cursos, Asesor, Docentes, Periodo, Recursos, Curso_Asesor, Cabecera_Crono, Titulos, Event, Observaciones, registro_historicos, valoration_course_student, Periodo_academico
+from .models import  Nivel_Académico, Cursos, Asesor, Docentes, Periodo, Recursos, Curso_Asesor, Cabecera_Crono, Titulos, Event, Observaciones, registro_historicos, valoration_course_student, Periodo_academico, valoration_module_student_activities
 from components.models import Semaforizacion
 from .forms import  Nivel_AcadémicoForm, CursosForm, AsesorForm, DocentesForm, PeriodoForm, RecursosForm, Curso_AsesorForm, Cabecera_CronoForm, TitulosForm, Cabecera_Crono_ObForm, EventForm, historiasForm, curso_FechaForm, periodoAcademicoForm
 from django.http import HttpResponse, JsonResponse, Http404
@@ -21,12 +21,13 @@ from rest_framework.decorators import api_view
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
 from rest_framework.views import APIView
-from .serializers import ValCourseStudentSerializer
+from .serializers import ValCourseStudentSerializer, ValModuleStudentActivitiesSerializer
 from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import render, redirect, get_object_or_404
 
 from django.core.mail import EmailMessage, EmailMultiAlternatives
 from django.template.loader import render_to_string
+from django.contrib import messages
 
 
 #Calendario
@@ -72,6 +73,41 @@ class ValorationCourseStudent_Crud(APIView):
             return Response("Eliminado", status=status.HTTP_204_NO_CONTENT)
 
 
+class ValorationModuleStudentActivities_Crud(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    @api_view(['GET', 'POST'])  
+    def crudValorationModuleStudentActivities(request):
+        if request.method == 'GET':
+            valoration_activities = valoration_module_student_activities.objects.all()
+            serializer = ValModuleStudentActivitiesSerializer(valoration_activities, many=True)
+            return Response(serializer.data)
+        elif request.method == 'POST':
+            serializer = ValModuleStudentActivitiesSerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    @api_view(['GET','PUT','DELETE'])
+    def updateValorationModuleStudentActivities(request, pk):
+        if request.method == 'GET':
+            valoration_activities = valoration_module_student_activities.objects.get(id=pk)
+            serializer = ValModuleStudentActivitiesSerializer(valoration_activities)
+            return Response(serializer.data)
+        elif request.method=='PUT':
+            valoration_activities = valoration_module_student_activities.objects.get(id=pk)
+            serializer = ValModuleStudentActivitiesSerializer(valoration_activities, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        elif request.method == 'DELETE':
+            valoration_activities = valoration_module_student_activities.objects.filter(id=pk).first()
+            valoration_activities.delete()
+            return Response("Eliminado", status=status.HTTP_204_NO_CONTENT)
+
+
 
 @login_required
 def save_val_course(request, course, nombre, userid, name_user, napproved, ciclo):
@@ -92,7 +128,48 @@ def save_val_course(request, course, nombre, userid, name_user, napproved, ciclo
     response = requests.request("POST", reqUrl, data=payload, headers=headersList)
     print(response.text.encode('utf8'))
 
-    return redirect('course_notes')    
+    return redirect('course_notes')
+
+@login_required
+def save_activities_module_users(request, course, namecourse, teacherid, teachername, moduleid, modulename, actid, actname, graderaw ):
+    scAcrFormat = 0
+
+    notes = valoration_module_student_activities.objects.filter(student_id=teacherid, activity_id = actid)
+    val_note = notes.count()
+
+    if graderaw == 'None':
+        scAcrFormat = 0
+    else:
+        scAcrFormat = float(graderaw)
+
+    if val_note == 0:
+        reqUrl = "http://127.0.0.1:8000/asesor/api/val_module_student_activities/"
+        headersList = {
+            "Content-Type": "application/json",
+            "Authorization": "Token " + TOKEN_WEB
+            }
+        payload = json.dumps(  {
+        "course_id": course,
+        "course_name": namecourse,
+        "student_id": teacherid,
+        "student_name": teachername,
+        "module_id": moduleid,
+        "module_name": modulename,
+        "activity_id": actid,
+        "activity_name": actname,
+        "score_activity": scAcrFormat
+        })
+        
+        response = requests.request("POST", reqUrl, data=payload, headers=headersList)
+        print(response.text.encode('utf8'))
+        messages.success(request, 'Se ha guardado la nota de la actividad')
+        return redirect('course_notes_activities')
+    
+    else:
+        messages.error(request, "Ya existe el registro")
+        return redirect('course_notes_activities')
+
+
 
 #4Tabla Nivel Academico
 @login_required
@@ -2123,7 +2200,7 @@ def listado_estudiante(request, id, nombre, startdate, enddate):
         if response.status_code==400:
             return render(request,'lista_Estudiantes.html',context={"context":"Bad request"})
         if response:
-            r=response.json()["usergrades"]                       
+            r=response.json()["usergrades"]                
             context={"context":r,'nombre':nombre_curso, 'ciclo':ciclo}                        
 
     except Exception as e:
@@ -2160,6 +2237,14 @@ def course_notes(request):
     context = {'finalnotes':notes, 'heading': u,'pageview': t,}
     return render(request, 'asesor/valorations/course_notes.html', context)
 
+@login_required
+def course_notes_activities(request):
+    u="Detalle de actividades"
+    t="Cursos"
+    notes = valoration_module_student_activities.objects.all()
+    context = {'activitynotes':notes, 'heading': u,'pageview': t,}
+    return render(request, 'asesor/valorations/course_notes_activities.html', context)
+
 #Obtener los modulos de un curso por id - tesis 2022 Orrala - Rodriguez
 @login_required
 def modules_by_course(request,id, fullname):
@@ -2184,9 +2269,7 @@ def modules_by_course(request,id, fullname):
     return render(request,'asesor/seguimiento_docente/modules_course.html',context)
 
 @login_required
-def details_module(request,course, id,fullname, name, section):
-    u="Detalle modulo"
-    t="Cursos" 
+def details_module(request,course, id,fullname, name, section): 
     apiBase="http://academyec.com/moodle/webservice/rest/server.php"
     params={"wstoken":TOKEN_MOODLE,
             "wsfunction":"core_course_get_contents",
@@ -2202,7 +2285,7 @@ def details_module(request,course, id,fullname, name, section):
             res=response.json()
             for r in res:
                 if r["id"]==int(id):
-                    context={"context":r["modules"], 'heading': u,'pageview': t, 'course':course, 'fullname':fullname, 'namemod':name, 'section':section}
+                    context={"context":r["modules"], 'heading': name,'pageview': fullname, 'course':course, 'moduleid': id,'fullname':fullname, 'namemod':name, 'section':section}
     except Exception as e:
         print(e)
     return render(request,'asesor/seguimiento_docente/details_module.html',context)
@@ -2316,6 +2399,43 @@ def val_activities_users(request, courseid, userfullname, userid, nombre, ciclo)
     except Exception as e:
         print(e)
     return render(request,'asesor/valorations/val_course_student.html',context)
+
+@login_required
+def val_activities_module_users(request, course, moduleid, namemod, fullname, id, name ):
+    apiBase="http://academyec.com/moodle/webservice/rest/server.php"
+    params={"wstoken":TOKEN_MOODLE,
+            "wsfunction":"gradereport_user_get_grade_items",
+            "moodlewsrestformat":"json",
+            "courseid":course           
+            }
+    context={}
+
+    try:
+        response=requests.post(apiBase, params)
+        if response.status_code==400:
+            return render(request,'act_pdf.html',context={"context":"Bad request"})
+        if response:
+            res_new = []
+
+            res_ug = response.json()["usergrades"]
+            lres_ug = len(res_ug)
+
+            for i in range(lres_ug):
+                res_name = res_ug[i]["userfullname"]
+                res_id = res_ug[i]["userid"]
+
+                res=response.json()["usergrades"][i]["gradeitems"]
+                
+                for r in res:
+                    if  r["itemname"] == name and r["cmid"] == id:
+                        dicc = {'teachername' : res_name, 'teacherid' : res_id, 'actividad': r }
+                        res_new.append(dicc)
+
+            context={"context":res_new,'heading': name, 'pageview': fullname, 'course':course, 'moduleid':moduleid, 'namecourse': namemod, 'modulename':  fullname, 'actname':name, 'actid':id,  }
+    except Exception as e:
+        print(e)
+    return render(request,'asesor/valorations/val_activities_module_users.html',context)
+
 
 @login_required
 def semaf(request):

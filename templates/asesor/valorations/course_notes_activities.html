@@ -21,15 +21,23 @@
                                             <table id="curso" class="table table-hover dt-responsive nowrap w-100">
                                                 <thead>
                                                 <tr>
-                                                    <th>Docente</th>
-                                                    <th>Modulo</th>                                                    
+                                                    <th>Curso</th>
+                                                    <th>Docente</th>                                                    
+                                                    <th>Modulo</th>
                                                     <th>Actividad</th>
-                                                    <th>Nota</th>
-                                                    <th>Opción</th>                                                                                                                                                      
+                                                    <th>Nota</th>                                                                                                                                                      
                                                 </tr>
                                                 </thead>                
-                                                <tbody>                                                   
-                                                
+                                                <tbody>             
+                                                    {% for item in activitynotes %}    
+                                                        <tr>      
+                                                            <td>{{item.course_name}}</td>               
+                                                            <td>{{item.student_name}}</td>
+                                                            <td>{{item.module_name}}</td>
+                                                            <td>{{item.activity_name}}</td>
+                                                            <td>{{item.score_activity}}</td>
+                                                        </tr>     
+                                                    {% endfor %}
                                                 </tbody>
                                             </table>
                                         </div>    

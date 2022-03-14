@@ -110,11 +110,19 @@ urlpatterns = [
     path('val_activities_users/<int:courseid>/<userfullname>/<int:userid>/<nombre>/<ciclo>/', views.val_activities_users, name='val_activities_users'),
     path('val_module_course/<int:course>/<int:id>/', views.val_module_course, name='val_module_course'),
     path('save_val_course/<int:course>/<nombre>/<int:userid>/<name_user>/<napproved>/<ciclo>/', views.save_val_course, name='save_val_course'),
+    path('val_activities_module_users/<int:course>/<int:moduleid>/<fullname>/<namemod>/<int:id>/<name>/', views.val_activities_module_users, name='val_activities_module_users'),
+    path('save_activities_module_users/<int:course>/<namecourse>/<int:teacherid>/<teachername>/<int:moduleid>/<modulename>/<int:actid>/<actname>/<graderaw>/', views.save_activities_module_users, name='save_activities_module_users'),
+
     path('course_notes', views.course_notes, name='course_notes'),
+    path('course_notes_activities', views.course_notes_activities, name='course_notes_activities'),
     path('gotomail', views.gotomail, name='gotomail'),
     path('get_dest/<fullname>/<email>/', views.get_dest, name='get_dest'),
     path('send_mail', views.send_mail, name='send_mail'),
 
     path('api/val_course_student/', views.ValorationCourseStudent_Crud.crudValorationCourseStudent),
     path('api/val_course_student/<int:pk>/',views.ValorationCourseStudent_Crud.updateValorationCourseStudent),
+
+    path('api/val_module_student_activities/', views.ValorationModuleStudentActivities_Crud.crudValorationModuleStudentActivities),
+    path('api/val_module_student_activities/<int:pk>/',views.ValorationModuleStudentActivities_Crud.updateValorationModuleStudentActivities),
+
 ]   
