@@ -55,7 +55,11 @@
                                 <td><button type="button" class="btn btn-primary btnestadistica" onclick="individual('{{res.user.username}}')"><i class="fas fa-chart-pie"></i></button></td>
                                 <td><div id="semaforo{{res.user.username}}"></div></td>
                                 <td>{{ res.user.nombres}} {{ res.user.apellidos}}</td>
-                                <td>{{ res.coevaluator }}</td>
+                                {% if res.coevaluator != null %}
+                                    <td>{{ res.coevaluator }}</td>
+                                {% else %}
+                                    <td>-</td>
+                                {% endif %}
                                 <td>{{ res.auto_result_Tic }}</td>
                                 <td>{{ res.auto_result_Did }}</td>
                                 <td>{{ res.auto_result_Ped }}</td>
@@ -157,6 +161,20 @@
         $(document).ready(function() {
 
             $('#datatable').DataTable( {
+                language: {
+                    lengthMenu: "Mostrando _MENU_ resultados por pagina",
+                    zeroRecords: "No se encontraron resultados",
+                    info: "Página _PAGE_ de _PAGES_",
+                    infoEmpty: "o se encontraron resultados",
+                    lengthMenu:     "Mostrar _MENU_ resultados por pagina",
+                    paginate: {
+                        first:      "Primero",
+                        last:       "Ultimo",
+                        next:       "Siguiente",
+                        previous:   "Anterior"
+                    },
+                    search:         "Buscar:",
+                },
                 dom: 'Bfrtip',
                 buttons: {
                     dom: {
