@@ -16,32 +16,23 @@
                         <div class="row">
                             <div class="col-12">
                                 <div class="card">
-                                    <div class="card-body">
-                                        {% if messages %}
-                                        {% for message in messages %}
-                                        <div class="alert alert-success" role="alert">
-                                            {{message}}
-                                        </div>
-                                        {% endfor %}
-                                        {% endif %}                                       
+                                    <div class="card-body">                                               
                                         <div class="table-responsive">
                                             <table id="curso" class="table table-hover dt-responsive nowrap w-100">
                                                 <thead>
                                                 <tr>
-                                                    <th>Nombre docente</th>                                                     
-                                                    <th>Email</th>
-                                                    <th>Opción</th>                                                                                                                                                      
+                                                    <th>Nombre del evento</th>                                                    
+                                                    <th>Fecha Inicio</th>
+                                                    <th>Opciones</th>                                                                                                                                                   
                                                 </tr>
                                                 </thead>                
                                                 <tbody>                                                   
                                                 {% if context %}
                                                     {% for item in context %}                            
-                                                        <tr>
-                                                            <td>{{item.fullname}}</td>                                                           
-                                                            <td>{{item.email}}</td>
-                                                            <td>
-                                                                <a title="Correo" href="{% url 'get_dest' item.fullname item.email %}" class="btn btn-outline-info btn-md"><i class="fas fa-envelope"></i></a>
-                                                            </td>
+                                                        <tr>                                    
+                                                            <td>{{item.name}}</td>
+                                                            <td>{{item.timestart}}</td>
+                                                            <td><a href="{% url 'del_schedule_event' courseid item.id item.repeatid %}" class="btn btn-outline-danger btn-sm">Eliminar</a></td>
                                                         </tr>     
                                                     {% endfor %}
                                                 {% else %}                       
@@ -105,7 +96,7 @@
                 $('#curso').DataTable( {
                     
                     dom: 'Bfrtip',                    
-                    buttons: []
+                    buttons: ['excel', 'pdf']
                 } );
             } );
                         

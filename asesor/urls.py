@@ -2,8 +2,7 @@ from django.urls import path
 from asesor import views
 from .views import *
 
-urlpatterns = [
-    #Tablas Módulos Asesor           
+urlpatterns = [          
     
     #4Tabla Nivel Academico
     path('tablas_N_Ac/', views.Tablas_N_Ac, name='T-Nivel-Aca'),
@@ -104,7 +103,11 @@ urlpatterns = [
 
     path('modules_by_course/<id>/<fullname>/', views.modules_by_course, name='modules_by_course'),
     path('details_module/<int:course>/<id>/<fullname>/<name>/<int:section>/', views.details_module, name='details_module'),
+
     path('study_schedule_events/<int:id>/<fullname>/', views.study_schedule_events, name='study_schedule_events'),
+    path('detail_schedule_events_course/<int:id>/', views.detail_schedule_events_course, name='detail_schedule_events_course'),
+    path('del_schedule_event/<int:courseid>/<int:id>/<repeatid>/', views.del_schedule_event, name='del_schedule_event'),
+
     path('cal_register/', views.cal_register, name='cal_register'),
     path('create_module/<int:course>/<int:section>/', views.create_module, name='create_module'),
     path('val_activities_users/<int:courseid>/<userfullname>/<int:userid>/<nombre>/<ciclo>/', views.val_activities_users, name='val_activities_users'),

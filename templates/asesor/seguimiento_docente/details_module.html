@@ -36,7 +36,7 @@
                                                             <td>{{item.id}}</td>                               
                                                             <td>{{item.name}}</td>
                                                             <td>
-                                                                <a class="btn btn-outline-success btn-sm" href="{{item.url}}"><img src="{{item.modicon}}" alt=""> </a>
+                                                                <a class="btn btn-outline-success btn-sm" target="_blank" href="{{item.url}}"><img src="{{item.modicon}}" alt=""> </a>
                                                                 <a href="{% url 'val_activities_module_users' course moduleid namemod fullname item.id item.name %}" class="btn btn-info btn-sm">Calificar</a>
                                                             </td>
                                                     {% endfor %}

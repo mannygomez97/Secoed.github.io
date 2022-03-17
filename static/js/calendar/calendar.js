@@ -98,7 +98,7 @@ new Vue({
             } else {
                 axios.request(reqOptions)
                 .then(function (response) {
-                    alert('Evento creado exitosamente')
+                    alert('Evento ' + this.name + ' creado con éxito');
                     location.reload()
                     })
                 .catch(function (error) {

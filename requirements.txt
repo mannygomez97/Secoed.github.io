@@ -42,5 +42,5 @@ django-widget-tweaks==1.4.8
 django-xhtml2pdf
 delorean
 djangorestframework
-markdown       # Markdown support for the browsable API.
-django-filter  # Filtering support
+markdown
+django-filter

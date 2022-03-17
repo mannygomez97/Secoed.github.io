@@ -2307,11 +2307,66 @@ def study_schedule_events(request,id,fullname):
             return render(request,'lista_cursos.html',context={"context":"Bad request",'heading': u,'pageview': t,})
         if response:
             r=response.json()["events"]
-            context={"context":r,'heading': u,'pageview': t, 'fullname':fullname}
+            context={"context":r,'heading': u,'pageview': t, 'fullname':fullname, 'courseid':id}
             type(r["timestart"])
     except Exception as e:
         print(e)
     return render(request,'asesor/cronograma/study_schedule_events.html',context)
+
+@login_required
+def detail_schedule_events_course(request, id):
+    u="Detalle de eventos"
+    t="Cursos"
+    apiBase="http://academyec.com/moodle/webservice/rest/server.php"
+    params={"wstoken":TOKEN_MOODLE,
+            "wsfunction":"core_calendar_get_calendar_events",
+            "moodlewsrestformat":"json",
+            "events[courseids][0]":id
+            }    
+    context={} 
+    try:
+        response=requests.post(apiBase, params)
+        if response.status_code==400:
+            return render(request,'lista_cursos.html',context={"context":"Bad request",'heading': u,'pageview': t,})
+        if response:
+            r=response.json()["events"]
+            context={"context":r,'heading': u,'pageview': t, 'courseid':id}
+
+        for y in r:
+            timestamp = datetime.fromtimestamp(y["timestart"])                
+            y["timestart"]=timestamp.strftime('%Y-%m-%d')
+            
+    except Exception as e:
+        print(e)
+    return render(request,'asesor/cronograma/detail_schedule_events_course.html',context)
+
+@login_required
+def del_schedule_event(request,courseid, id, repeatid):
+    nrepeat = 0
+
+    if repeatid == 'None':
+        nrepeat = 0
+    else:
+        nrepeat = int(repeatid)
+
+    apiBase="http://academyec.com/moodle/webservice/rest/server.php"
+    params={"wstoken":TOKEN_MOODLE,
+            "wsfunction":"core_calendar_delete_calendar_events",
+            "moodlewsrestformat":"json",
+            "events[0][eventid]":id,
+            "events[0][repeat]": nrepeat
+            }    
+    context={} 
+    try:
+        response=requests.post(apiBase, params)
+        if response.status_code==400:
+            return render(request,'lista_cursos.html',context={"context":"Bad request",})
+        if response:
+            r=response.json()
+            context={"context":r}
+    except Exception as e:
+        print(e)
+    return redirect('/asesor/detail_schedule_events_course/'+str(courseid)+'/')
 
 @login_required
 def cal_register(request):

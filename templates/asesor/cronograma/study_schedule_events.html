@@ -14,11 +14,15 @@
 {% endblock %}
 {% block contents %}
 
+<div>
+    
+</div>
+
 <div class="card">
     <div class="card-header">
         <div class="row">
-            <div class="col-md-8">
-                <h3>{{fullname}}</h3>
+            <div class="col">
+                <h3>{{fullname}}</h3> <a href="{% url 'detail_schedule_events_course' courseid %}" class="btn btn-outline-warning">Eliminar eventos</a>
             </div>
         </div>
     </div>
