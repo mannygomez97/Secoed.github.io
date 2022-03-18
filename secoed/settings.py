@@ -108,8 +108,7 @@ WSGI_APPLICATION = 'secoed.wsgi.application'
 CONEXION_NAME = 'db_secoed'
 CONEXION_USER = 'secoed'
 CONEXION_PASSWORD = 'secoed2021'
-CONEXION_HOST = '95.216.216.98'
-CONEXION_HOST = 'localhost'
+CONEXION_HOST = 'pgdb'
 CONEXION_PORT = '5432'
 
 
