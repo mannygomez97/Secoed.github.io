@@ -25,6 +25,7 @@ urlpatterns = [
 
     # Dashboards View
     path(r'', views.DashboardView.as_view(), name='dashboard'),
+    path('test/', views.test, name="home"),
 
     # Accounts
     path('accounts/login/', views.DashboardView.as_view(), name='dashboard'),

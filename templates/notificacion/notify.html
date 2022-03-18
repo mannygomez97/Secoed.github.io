@@ -44,9 +44,9 @@
                         </td>
                         <td>
                             <div class="media-body">
-                                <h6 class="mt-0 mb-1" key="t-your-order">
-                                    {{notify.actor}}
-                                </h6>
+                                 <a href="{% url 'readTrue' notify.id %}" class="text-reset notification-item">
+                                        <h6>{{notify.actor}}</h6>
+                                    </a>
                                 <div class="font-size-12 text-muted">
                                     <p class="mb-1" key="t-grammer">
                                         {{notify.verbo}}

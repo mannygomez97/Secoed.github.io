@@ -12,6 +12,8 @@ from django.db.models.signals import post_save
 # signals
 from notify.signals import notificar
 
+from django_celery_beat.models import MINUTES, PeriodicTask, CrontabSchedule, PeriodicTasks
+import json
 
 class UsuarioManger(BaseUserManager):
     def create_user(self, email, username, nombres, apellidos, identificacion, telefono, password=None):
@@ -107,6 +109,12 @@ class Post(models.Model):
 
 
 def notify_post(sender, instance, created, **kwargs):
+    print('notify_post',created)
+    schedule, created = CrontabSchedule.objects.get_or_create(hour=instance.timestamp.hour,
+                                                              minute=instance.timestamp.minute,
+                                                              day_of_month=instance.timestamp.day,
+                                                              month_of_year=instance.timestamp.month)
+    task = PeriodicTask.objects.create(crontab=schedule, name="post_notification-"+str(instance.id), task="notify.tasks.broadcast_notification", args=json.dumps((instance.id,)))
     notificar.send(instance.user, destiny=instance.user, verb=instance.title, level='info', url=instance.url,
                    detalle=instance.text)
 
