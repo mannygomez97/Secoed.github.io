@@ -7,37 +7,41 @@ from authentication.models import RolUser
 from conf.forms import *
 from conf.models import *
 
+
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view
 from rest_framework.authtoken.models import Token
 from rest_framework.response import Response
-from django.contrib.auth.models import User
 from django.contrib.auth.hashers import check_password
 from rest_framework.response import Response
 from .serializers import UsuarioSerializer
 from rest_framework import status
 from django.http import Http404
 from rest_framework.permissions import IsAuthenticated
+from rest_framework import permissions
+
 from authentication.models import Usuario
 from django.shortcuts import render, redirect
 
+class LoginUser(APIView):
+    permission_classes = [permissions.AllowAny]
+    def post(self, request, format=None):
 
-@api_view(['POST'])
-def login(request):
-    username = request.POST.get('username')
-    password = request.POST.get('password')
+        username = request.POST.get('username')
+        password = request.POST.get('password')
 
-    try:
-        user = Usuario.objects.get(username=username)
-    except Usuario.DoesNotExist:
-        return Response(status=status.HTTP_404_NOT_FOUND)
-    
-    if check_password(password, user.password):
-        token = Token.objects.get_or_create(user=user)
-        return Response(status=status.HTTP_200_OK)
-    else:
-        return Response(status=status.HTTP_400_BAD_REQUEST)
+        try:
+            user = Usuario.objects.get(username=username)
+        except Usuario.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
+        if check_password(password, user.password):
+            token = Token.objects.get_or_create(user=user)
+            print(token)
+            return Response(status=status.HTTP_200_OK)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
 
 class Usuario_APIView(APIView):
     permission_classes = [IsAuthenticated]

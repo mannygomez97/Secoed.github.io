@@ -111,7 +111,7 @@ class ValorationModuleStudentActivities_Crud(APIView):
 
 @login_required
 def save_val_course(request, course, nombre, userid, name_user, napproved, ciclo):
-    reqUrl = "http://127.0.0.1:8000/asesor/api/val_course_student/"
+    reqUrl = "http://95.216.216.98:8086/asesor/api/val_course_student/"
     headersList = {
         "Content-Type": "application/json",
         "Authorization": "Token " + TOKEN_WEB
@@ -143,7 +143,7 @@ def save_activities_module_users(request, course, namecourse, teacherid, teacher
         scAcrFormat = float(graderaw)
 
     if val_note == 0:
-        reqUrl = "http://127.0.0.1:8000/asesor/api/val_module_student_activities/"
+        reqUrl = "http://95.216.216.98:8086/asesor/api/val_module_student_activities/"
         headersList = {
             "Content-Type": "application/json",
             "Authorization": "Token " + TOKEN_WEB

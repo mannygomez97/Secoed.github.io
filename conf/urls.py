@@ -60,5 +60,5 @@ urlpatterns = [
      path(r'deleteRolMoodle/<int:pk>', login_required(views.RolMoodleContentView.deleteRolMoodle),name='deleteRolMoodle'),
 
      path('api/users', Usuario_APIView.as_view()),
-     path('login', login),
+     path('login', LoginUser.as_view()),
 ]
