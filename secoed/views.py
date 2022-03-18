@@ -6,6 +6,27 @@ from django.views.generic import TemplateView
 
 from secoed import settings
 
+from django.shortcuts import render, HttpResponse
+from channels.layers import get_channel_layer
+import json
+# Create your views here.
+from django.template import RequestContext
+
+
+from asgiref.sync import async_to_sync
+
+
+def test(request):
+    channel_layer = get_channel_layer()
+    async_to_sync(channel_layer.group_send)(
+        "post_notification",
+        {
+            'type': 'send_notification',
+            'message': json.dumps("Notification")
+        }
+    )
+    return HttpResponse("Done")
+
 
 class DashboardView(View):
     def get(self, request):
@@ -14,7 +35,6 @@ class DashboardView(View):
             return render(request, 'dashboard/dashboard.html', greeting)
         else:
             return redirect('pages-login')
-
 
 class AjaxEvent(View):
     def jsnCountLogin(request):

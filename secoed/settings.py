@@ -34,6 +34,9 @@ BASE_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'channels',
+    'django_celery_beat',
+    'django_celery_results',
 ]
 
 # Third Party App
@@ -92,23 +95,25 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'secoed.initialize.load_menu'
+                'secoed.initialize.load_menu',
+                'secoed.custom_context_processors.notifications'
             ],
         },
     },
 ]
 
 WSGI_APPLICATION = 'secoed.wsgi.application'
+ASGI_APPLICATION = 'secoed.asgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
 # CONEXION DEVELOPER --> debe regitrar su conexion si trabajara con preproduccion
 
-CONEXION_NAME = 'db_secoed'
+CONEXION_NAME = 'db_tesis'
 CONEXION_USER = 'secoed'
 CONEXION_PASSWORD = 'secoed2021'
-CONEXION_HOST = 'pgdb'
+CONEXION_HOST = 'localhost'
 CONEXION_PORT = '5432'
 
 
@@ -209,3 +214,22 @@ DJANGO_EASY_AUDIT_ADMIN_SHOW_REQUEST_EVENTS = False
 TOKEN_MOODLE = '2fb3df9ba2006ef257f072651b547b3d'
 API_BASE = 'http://academyec.com/moodle/webservice/rest/server.php'
 CONTEXT_ID = 116
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
+
+#CELERY SETTINGS
+CELERY_BROKER_URL = 'redis://127.0.0.1:6379'
+CELERY_RESULT_BACKEND = 'django-db'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TASK_SELERLIZER = 'json'
+CELERY_TIMEZONE = 'America/Guayaquil'
+
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'

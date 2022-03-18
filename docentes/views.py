@@ -44,6 +44,19 @@ def fs_cursos_actividades(moodle_user):
                 for obj2 in r2['warnings']:
                     aux3.append(Warnings(**obj2))
             cursos_actividades.append(CursosActividades(aux1, aux2, aux3))
+            params3 = {"wstoken": TOKEN_MOODLE,
+                      "wsfunction": "gradereport_user_get_grade_items",
+                      "moodlewsrestformat": "json",
+                      "courseid": aux1.id,
+                      "userid": moodle_user
+                      }
+            response3 = requests.post(API_BASE, params3)
+            if response3.json().get("usergrades"):
+                actividad = [actividades for actividades in response3.json()["usergrades"] if actividades["userid"] == int(moodle_user)]
+                if actividad:
+                    actividades = [dato for dato in actividad[0]["gradeitems"]]
+                    if actividades:
+                        actividades2 = actividades[0]["itemnumber"]
     return cursos_actividades
 
 
@@ -118,14 +131,12 @@ class SeguimientoView(View):
         response.write(pdf)
         return response
 
-
 class Notasiew(View):
     def get(self, request):
-        notas_cursos = valoration_course_student.objects.order_by('course_name').filter(student_id=request.user.id)
-        notas_evaluacion = ResultadoProceso.objects.order_by('-cycle').filter(user=request.user.id)
-        print(notas_evaluacion)
-        greeting = {'heading': 'Notas de las evaluaciones',
+        notas_autoevaluacion = fs_cursos_actividades(userObj.moodle_user)
+        notas_coevaluacion = fs_cursos_actividades(userObj.moodle_user)
+        greeting = {'heading': 'Notas de ls evaluaciones',
                     'pageview': 'Docentes',
-                    'notas_cursos': notas_cursos,
-                    'notas_evaluacion': notas_evaluacion}
-        return render(request, 'docentes/notaEvaluacion.html', greeting)
+                    'notas_autoevaluacion': notas_autoevaluacion,
+                    'notas_coevaluacion': notas_coevaluacion}
+        return render(request, 'docentes/seguimientoActividades.html', greeting)

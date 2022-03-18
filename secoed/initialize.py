@@ -10,8 +10,8 @@ def load_menu(request):
     if isinstance(request.user, AnonymousUser):
         return context
     else:
-        # Cargar menu si es administrador:
-        context['notifyList'] = request.user.notificaciones.all().order_by('-timestamp')[:100]
+        # Cargar menu si es administrador
+        context['room_name'] = "broadcast"
         if request.user.usuario_administrador:
             modulos = Modulo.objects.order_by('orden')
             setMenus(modulos)
