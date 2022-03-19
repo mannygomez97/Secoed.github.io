@@ -22,18 +22,12 @@
                     <option v-for="lcurso of curso" v-bind:value="lcurso.id">{$ lcurso.fullname  $}</option>
                 </select>
             </div>
+
             <div class="form-group col-md-6">
-                <label for="eventtype">Tipo de actividad</label>
-                <select v-model="eventtype" class="form-control" required>
-                    <option v-for="litem in item">{$ litem.name $}</option>
-                </select>
-            </div>
-        </div>
-        <div style="padding: 1em;">
-            <div class="form-group">
                 <label for="name">Nombre del evento</label>
                 <input type="text" class="form-control" v-model="name" required>
             </div>
+
             <div class="form-group">
                 <label for="description">Descripción del calendario</label>
                 <textarea class="form-control" v-model="description" rows="3" required></textarea>
@@ -49,7 +43,9 @@
                 <input type="date" class="form-control" v-model="timeend" required>
             </div>
         </div>
-        <button type="submit" class="btn btn-outline-primary" v-on:click="getInputCalendar()">Crear calendario</button>
+        <div style="text-align: center;">
+            <button type="submit" class="btn btn-outline-success" v-on:click="getInputCalendar()">Crear evento</button>
+        </div>
 </div>
 {% endblock %}
 {% block r_sidebar %}

@@ -12,14 +12,12 @@
 <link href="{% static 'libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" /> 
 {% endblock %}
 {% block contents %}
-
                         <div class="row">
                             <div class="col-12">
                                 <div class="card">
                                     <div class="card-body">        
                                         <div>
                                             <a href="{% url 'create_module' course section %}" class="btn btn-outline-success">Crear nueva actividad</a>
-
                                         </div>
                                         <div class="table-responsive">
                                             <table id="curso" class="table table-bordered dt-responsive nowrap w-100">
@@ -28,9 +26,7 @@
                                                     <!-- <th>Id</th> -->
                                                     <th>Nombre</th>
                                                     <th>Tipo asignación</th>  
-                                                    <th>Icono</th>
-                                                    <th>Estado actividad</th>
-                                                    <th>Docentes</th>                                                                                                                                            
+                                                    <th>Redirección</th>                                                                                                                                          
                                                 </tr>
                                                 </thead>                
                                                 <tbody>                                                   
@@ -39,20 +35,10 @@
                                                         <tr>                              
                                                             <td>{{item.id}}</td>                               
                                                             <td>{{item.name}}</td>
-                                                            <td><img src="{{item.modicon}}" alt=""></td>
                                                             <td>
-                                                                {% if item.completiondata.state == 0 %}
-                                                                    <span class="badge badge-warning">Incompleto</span>
-                                                                {% elif item.completiondata.state == 1 %}
-                                                                    <span class="badge badge-success">Completo</span>
-                                                                {% elif item.completiondata.state == 2 %}
-                                                                    <span class="badge badge-primary">Parcialmente completo</span>
-                                                                {% elif item.completiondata.state == 3 %}
-                                                                    <span class="badge badge-danger">Danger</span>
-                                                                {% endif %}
+                                                                <a class="btn btn-outline-success btn-sm" target="_blank" href="{{item.url}}"><img src="{{item.modicon}}" alt=""> </a>
+                                                                <a href="{% url 'val_activities_module_users' course moduleid namemod fullname item.id item.name %}" class="btn btn-info btn-sm">Calificar</a>
                                                             </td>
-                                                            <td><a href="{% url 'val_module_course' course item.id  %}" class="btn btn-outline-success btn-sm">Docentes</a></td>
-                                                            
                                                     {% endfor %}
                                                 {% else %}                       
                                                     <div class="row">

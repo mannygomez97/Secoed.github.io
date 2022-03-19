@@ -4,29 +4,20 @@
 {% include 'partials/css.html' %}
 {% endblock %}
 {% block extra_css %}
+<link href="{% static 'libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" />
+<link href="{% static 'libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" />
+
+<!-- Responsive datatable examples -->
+<link href="{% static 'libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" /> 
 {% endblock %}
 {% block contents %}
                         <div class="row">
                             <div class="col-12">
                                 <div class="card">
-                                    <div class="card-body">        
-                                        <h4 class="card-title">Tabla Nivel Académico</h4>                                        
-                                        <form class="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0" action="{% url 'buscar_N_Ac' %}" method="GET">    
-                                            <div class="input-group">
-                                                <input name="prd" class="form-control" type="text" placeholder="Buscar" aria-label="Search" aria-describedby="basic-addon2" />     
-                                                <select name="opcion">
-                                                    <option>Id</option>                                
-                                                    <option>Nivel</option>                                
-                                                    <option>Detalle</option>    
-                                                </select>                                        
-                                                <div class="input-group-append">
-                                                    <button class="btn btn-primary" type="submit"><i class="fas fa-search"></i></button>                                                    
-                                                    <button type="button" onclick="abrir_Uni_crea('{% url 'agregar_producto_N_Ac' %}')" class="btn btn-secondary"><i class="fas fa-folder-plus"></i></button>
-                                                </div> 
-                                            </div>                                        
-                                        </form>                                             
+                                    <div class="card-body">             
+                                    <button type="button" onclick="abrir_Uni_crea('{% url 'agregar_producto_N_Ac' %}')" class="btn btn-success"><i class="fas fa-folder-plus"></i> Agregar nuevo</button>
                                         <div class="table-responsive">
-                                            <table class="table table-editable table-nowrap align-middle table-edits">                                                
+                                            <table id="nivelAcademico" class="table table-editable table-nowrap align-middle table-edits">                                                
                                                 <thead>
                                                     <tr>                                                       
                                                         <th>Id</th>
@@ -93,7 +84,10 @@
         <script src="{% static 'libs/bootstrap/js/bootstrap.bundle.min.js' %}"></script>        
         <script src="{% static 'libs/metismenu/metisMenu.min.js' %}"></script>
         <script src="{% static 'libs/simplebar/simplebar.min.js' %}"></script>
-        <script src="{% static 'libs/node-waves/waves.min.js' %}"></script>    
+        <script src="{% static 'libs/node-waves/waves.min.js' %}"></script>
+        
+        <script src="{% static 'libs/datatables.net/js/jquery.dataTables.min.js' %}"></script>        
+        <script src="{% static 'libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
 
          <!-- Table Editable plugin -->
         <script src="{% static 'libs/table-edits/build/table-edits.min.js' %}"></script>
@@ -114,6 +108,13 @@
                     $(this).modal('show')
                 });
             }
+            $(document).ready(function() {                
+                $('#nivelAcademico').DataTable( {
+                    
+                    dom: 'Bfrtip',                    
+                    buttons: []
+                } );
+            });
         </script>
         
 {% endblock %}

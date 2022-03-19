@@ -5,7 +5,11 @@
 {% include 'partials/css.html' %}
 {% endblock %}
 {% block extra_css %}
+<link href="{% static 'libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" />
+<link href="{% static 'libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" />
 
+<!-- Responsive datatable examples -->
+<link href="{% static 'libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" /> 
 {% endblock %}
 {% block contents %}
 
@@ -23,20 +27,17 @@
                     <p class="card-title-desc">Table Edits is a lightweight jQuery plugin for making table rows editable.</p> -->
 
                     <div class="table-responsive">
-                        <table class="table table-hover align-middle"
-                        style="text-align: center" id = "datatable" >
-                        <thead class="table-light">
+                        <table id="asCurso"class="table table-hover align-middle" style="text-align: center" id = "datatable" >
+                        <thead >
                                 <tr>
-                                    <th>ID</th>
                                     <th>Curso</th>
                                     <th>Asesor</th>
-                                    <th>Quitar Asignaciòn</th>
+                                    <th>Acciones</th>
                                 </tr>
                             </thead>
                             <tbody id="tb">
                                 {% for asesor in cursos %}
                                 <tr>
-                                    <th>{{asesor.id}}</th>
                                     <th>{{asesor.curso}}</th>
                                     <th>{{asesor.asesor}}</th> 
                                     <th>
@@ -82,6 +83,9 @@
         <script src="{% static 'libs/metismenu/metisMenu.min.js' %}"></script>
         <script src="{% static 'libs/simplebar/simplebar.min.js' %}"></script>
         <script src="{% static 'libs/node-waves/waves.min.js' %}"></script>
+
+        <script src="{% static 'libs/datatables.net/js/jquery.dataTables.min.js' %}"></script>        
+        <script src="{% static 'libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
 
         <!--tinymce js-->
         <script src="{% static 'libs/tinymce/tinymce.min.js' %}"></script>
@@ -130,6 +134,13 @@
                         }
                     })
             }
+            $(document).ready(function() {                
+                $('#asCurso').DataTable( {
+                    
+                    dom: 'Bfrtip',                    
+                    buttons: []
+                } );
+            });
         </script>
 {% endblock %}
 
