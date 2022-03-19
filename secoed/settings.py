@@ -20,7 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'd!m50t)w$$&ff(*pn7%oqw-1yxo+eub*xcxd^8pzo=*2)ynq=w'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['95.216.216.98', '127.0.0.1', 'localhost']
 
@@ -110,11 +110,11 @@ ASGI_APPLICATION = 'secoed.asgi.application'
 
 # CONEXION DEVELOPER --> debe regitrar su conexion si trabajara con preproduccion
 
-CONEXION_NAME = 'db_tesis'
+CONEXION_NAME = 'db_secoed'
 CONEXION_USER = 'secoed'
 CONEXION_PASSWORD = 'secoed2021'
-CONEXION_HOST = 'localhost'
-CONEXION_PORT = '5432'
+CONEXION_HOST = '95.216.216.98'
+CONEXION_PORT = '5434'
 
 
 #CONEXION_NAME = 'db_secoed'
