@@ -131,12 +131,13 @@ class SeguimientoView(View):
         response.write(pdf)
         return response
 
-class Notasiew(View):
+class NotasView(View):
     def get(self, request):
-        notas_autoevaluacion = fs_cursos_actividades(userObj.moodle_user)
-        notas_coevaluacion = fs_cursos_actividades(userObj.moodle_user)
-        greeting = {'heading': 'Notas de ls evaluaciones',
+        notas_cursos = valoration_course_student.objects.order_by('course_name').filter(student_id=request.user.id)
+        notas_evaluacion = ResultadoProceso.objects.order_by('-cycle').filter(user=request.user.id)
+        print(notas_evaluacion)
+        greeting = {'heading': 'Notas de las evaluaciones',
                     'pageview': 'Docentes',
-                    'notas_autoevaluacion': notas_autoevaluacion,
-                    'notas_coevaluacion': notas_coevaluacion}
-        return render(request, 'docentes/seguimientoActividades.html', greeting)
+                    'notas_cursos': notas_cursos,
+                    'notas_evaluacion': notas_evaluacion}
+        return render(request, 'docentes/notaEvaluacion.html', greeting)
