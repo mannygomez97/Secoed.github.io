@@ -5,24 +5,29 @@ from typing import Sequence
 from django.conf import settings
 import requests
 from django.views import View
-from secoed.settings import TOKEN_MOODLE,API_BASE
+from secoed.settings import TOKEN_MOODLE,API_BASE, TOKEN_WEB
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .models import  Nivel_Académico, Cursos, Asesor, Docentes, Periodo, Recursos, Curso_Asesor, Cabecera_Crono, Titulos, Event, Observaciones, registro_historicos, valoration_course_student
+from .models import  Nivel_Académico, Cursos, Asesor, Docentes, Periodo, Recursos, Curso_Asesor, Cabecera_Crono, Titulos, Event, Observaciones, registro_historicos, valoration_course_student, Periodo_academico, valoration_module_student_activities
 from components.models import Semaforizacion
-from .forms import  Nivel_AcadémicoForm, CursosForm, AsesorForm, DocentesForm, PeriodoForm, RecursosForm, Curso_AsesorForm, Cabecera_CronoForm, TitulosForm, Cabecera_Crono_ObForm, EventForm, historiasForm, curso_FechaForm
-from django.http import HttpResponse, JsonResponse
+from .forms import  Nivel_AcadémicoForm, CursosForm, AsesorForm, DocentesForm, PeriodoForm, RecursosForm, Curso_AsesorForm, Cabecera_CronoForm, TitulosForm, Cabecera_Crono_ObForm, EventForm, historiasForm, curso_FechaForm, periodoAcademicoForm
+from django.http import HttpResponse, JsonResponse, Http404
+
 import numpy as np
 
 from rest_framework import status
 from rest_framework.response import Response
 from rest_framework.decorators import api_view
+from rest_framework.authtoken.models import Token
+from rest_framework.response import Response
 from rest_framework.views import APIView
-from .serializers import ValCourseStudentSerializer
+from .serializers import ValCourseStudentSerializer, ValModuleStudentActivitiesSerializer
+from rest_framework.permissions import IsAuthenticated
 from django.shortcuts import render, redirect, get_object_or_404
 
 from django.core.mail import EmailMessage, EmailMultiAlternatives
 from django.template.loader import render_to_string
+from django.contrib import messages
 
 
 #Calendario
@@ -34,6 +39,8 @@ from django.utils.safestring import mark_safe
 from datetime import timedelta
 
 class ValorationCourseStudent_Crud(APIView):
+    permission_classes = (IsAuthenticated,)
+
     @api_view(['GET', 'POST'])  
     def crudValorationCourseStudent(request):
         if request.method == 'GET':
@@ -65,24 +72,104 @@ class ValorationCourseStudent_Crud(APIView):
             valoration_course.delete()
             return Response("Eliminado", status=status.HTTP_204_NO_CONTENT)
 
+
+class ValorationModuleStudentActivities_Crud(APIView):
+    permission_classes = (IsAuthenticated,)
+
+    @api_view(['GET', 'POST'])  
+    def crudValorationModuleStudentActivities(request):
+        if request.method == 'GET':
+            valoration_activities = valoration_module_student_activities.objects.all()
+            serializer = ValModuleStudentActivitiesSerializer(valoration_activities, many=True)
+            return Response(serializer.data)
+        elif request.method == 'POST':
+            serializer = ValModuleStudentActivitiesSerializer(data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_201_CREATED)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+    
+    @api_view(['GET','PUT','DELETE'])
+    def updateValorationModuleStudentActivities(request, pk):
+        if request.method == 'GET':
+            valoration_activities = valoration_module_student_activities.objects.get(id=pk)
+            serializer = ValModuleStudentActivitiesSerializer(valoration_activities)
+            return Response(serializer.data)
+        elif request.method=='PUT':
+            valoration_activities = valoration_module_student_activities.objects.get(id=pk)
+            serializer = ValModuleStudentActivitiesSerializer(valoration_activities, data=request.data)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        elif request.method == 'DELETE':
+            valoration_activities = valoration_module_student_activities.objects.filter(id=pk).first()
+            valoration_activities.delete()
+            return Response("Eliminado", status=status.HTTP_204_NO_CONTENT)
+
+
+
 @login_required
-def save_val_course(request, course, nombre, userid, name_user, napproved):
-    reqUrl = "http://127.0.0.1:8000/asesor/api/val_course_student/"
+def save_val_course(request, course, nombre, userid, name_user, napproved, ciclo):
+    reqUrl = "http://95.216.216.98:8086/asesor/api/val_course_student/"
     headersList = {
-        "Content-Type": "application/json" 
+        "Content-Type": "application/json",
+        "Authorization": "Token " + TOKEN_WEB
         }
     payload = json.dumps(  {
     "course_id": course,
     "course_name": nombre,
     "student_id": userid,
     "student_name": name_user,
-    "score_course": float(napproved)
+    "score_course": float(napproved),
+    "academic_period": ciclo
     })
 
     response = requests.request("POST", reqUrl, data=payload, headers=headersList)
     print(response.text.encode('utf8'))
 
-    return redirect('course_notes')    
+    return redirect('course_notes')
+
+@login_required
+def save_activities_module_users(request, course, namecourse, teacherid, teachername, moduleid, modulename, actid, actname, graderaw ):
+    scAcrFormat = 0
+
+    notes = valoration_module_student_activities.objects.filter(student_id=teacherid, activity_id = actid)
+    val_note = notes.count()
+
+    if graderaw == 'None':
+        scAcrFormat = 0
+    else:
+        scAcrFormat = float(graderaw)
+
+    if val_note == 0:
+        reqUrl = "http://95.216.216.98:8086/asesor/api/val_module_student_activities/"
+        headersList = {
+            "Content-Type": "application/json",
+            "Authorization": "Token " + TOKEN_WEB
+            }
+        payload = json.dumps(  {
+        "course_id": course,
+        "course_name": namecourse,
+        "student_id": teacherid,
+        "student_name": teachername,
+        "module_id": moduleid,
+        "module_name": modulename,
+        "activity_id": actid,
+        "activity_name": actname,
+        "score_activity": scAcrFormat
+        })
+        
+        response = requests.request("POST", reqUrl, data=payload, headers=headersList)
+        print(response.text.encode('utf8'))
+        messages.success(request, 'Se ha guardado la nota de la actividad')
+        return redirect('course_notes_activities')
+    
+    else:
+        messages.error(request, "Ya existe el registro")
+        return redirect('course_notes_activities')
+
+
 
 #4Tabla Nivel Academico
 @login_required
@@ -2065,31 +2152,42 @@ def api_curso(request):
             "wsfunction":"core_course_get_courses",
             "moodlewsrestformat":"json",                                    
             }    
-    context={} 
+    context={}
     try:
         response=requests.post(apiBase, params)
         if response.status_code==400:
             return render(request,'lista_cursos.html',context={"context":"Bad request",'heading': u,'pageview': t,})
         if response:
-            r=response.json()                       
-            context={"context":r,'heading': u,'pageview': t, }  
-            for y in r:
+            res_new = []
+            res=response.json()
+
+            for r in res:
+                if r["fullname"] != "Entorno Virtual de Aprendizaje":
+                    res_new.append(r)
+            context={"context":res_new,'heading': u,'pageview': t, } 
+            
+            for y in res_new:
                 timestamp = datetime.fromtimestamp(y["startdate"])                
                 y["startdate"]=timestamp.strftime('%Y-%m-%d')
-            for v in r:                
+            for v in res_new:                
                 timestamp = datetime.fromtimestamp(v["enddate"])                
-                v["enddate"]=timestamp.strftime('%Y-%m-%d') 
-
-            #lista [] se accede a elementos con indice numerico(0,1,2)
-            #diccionario {} se accede con cadena de texto como palabra clave "courses"
-
+                v["enddate"]=timestamp.strftime('%Y-%m-%d')
     except Exception as e:
         print(e)
+    
     return render(request,'asesor/seguimiento_docente/lista_cursos.html',context)
 
 @login_required
-def listado_estudiante(request, id, nombre):   
-    nombre_curso=nombre         
+def listado_estudiante(request, id, nombre, startdate, enddate):   
+    nombre_curso=nombre
+    dt_startdate = (datetime.strptime(startdate, '%Y-%m-%d')).date()
+    dt_enddate = (datetime.strptime(enddate, '%Y-%m-%d')).date()
+
+    pacad = Periodo_academico.objects.all()            
+    for pac in pacad:
+        if dt_startdate >= pac.fecha_inicio and dt_enddate <= pac.fecha_fin:
+            ciclo = pac.ciclo+' C'+ str(pac.periodo_id)
+
     apiBase="http://academyec.com/moodle/webservice/rest/server.php"
     params={"wstoken":TOKEN_MOODLE,
             "wsfunction":"gradereport_user_get_grade_items",
@@ -2102,11 +2200,9 @@ def listado_estudiante(request, id, nombre):
         if response.status_code==400:
             return render(request,'lista_Estudiantes.html',context={"context":"Bad request"})
         if response:
-            r=response.json()["usergrades"]                       
-            context={"context":r,'nombre':nombre_curso}                        
+            r=response.json()["usergrades"]                
+            context={"context":r,'nombre':nombre_curso, 'ciclo':ciclo}                        
 
-            #lista [] se accede a elementos con indice numerico(0,1,2)
-            #diccionario {} se accede con cadena de texto como palabra clave "courses"
     except Exception as e:
         print(e)
     return render(request,'asesor/seguimiento_docente/lista_Estudiantes.html',context)
@@ -2141,6 +2237,14 @@ def course_notes(request):
     context = {'finalnotes':notes, 'heading': u,'pageview': t,}
     return render(request, 'asesor/valorations/course_notes.html', context)
 
+@login_required
+def course_notes_activities(request):
+    u="Detalle de actividades"
+    t="Cursos"
+    notes = valoration_module_student_activities.objects.all()
+    context = {'activitynotes':notes, 'heading': u,'pageview': t,}
+    return render(request, 'asesor/valorations/course_notes_activities.html', context)
+
 #Obtener los modulos de un curso por id - tesis 2022 Orrala - Rodriguez
 @login_required
 def modules_by_course(request,id, fullname):
@@ -2165,9 +2269,7 @@ def modules_by_course(request,id, fullname):
     return render(request,'asesor/seguimiento_docente/modules_course.html',context)
 
 @login_required
-def details_module(request,course, id,fullname, name, section):
-    u="Detalle modulo"
-    t="Cursos" 
+def details_module(request,course, id,fullname, name, section): 
     apiBase="http://academyec.com/moodle/webservice/rest/server.php"
     params={"wstoken":TOKEN_MOODLE,
             "wsfunction":"core_course_get_contents",
@@ -2183,7 +2285,7 @@ def details_module(request,course, id,fullname, name, section):
             res=response.json()
             for r in res:
                 if r["id"]==int(id):
-                    context={"context":r["modules"], 'heading': u,'pageview': t, 'course':course, 'fullname':fullname, 'namemod':name, 'section':section}
+                    context={"context":r["modules"], 'heading': name,'pageview': fullname, 'course':course, 'moduleid': id,'fullname':fullname, 'namemod':name, 'section':section}
     except Exception as e:
         print(e)
     return render(request,'asesor/seguimiento_docente/details_module.html',context)
@@ -2205,11 +2307,66 @@ def study_schedule_events(request,id,fullname):
             return render(request,'lista_cursos.html',context={"context":"Bad request",'heading': u,'pageview': t,})
         if response:
             r=response.json()["events"]
-            context={"context":r,'heading': u,'pageview': t, 'fullname':fullname}
+            context={"context":r,'heading': u,'pageview': t, 'fullname':fullname, 'courseid':id}
             type(r["timestart"])
     except Exception as e:
         print(e)
     return render(request,'asesor/cronograma/study_schedule_events.html',context)
+
+@login_required
+def detail_schedule_events_course(request, id):
+    u="Detalle de eventos"
+    t="Cursos"
+    apiBase="http://academyec.com/moodle/webservice/rest/server.php"
+    params={"wstoken":TOKEN_MOODLE,
+            "wsfunction":"core_calendar_get_calendar_events",
+            "moodlewsrestformat":"json",
+            "events[courseids][0]":id
+            }    
+    context={} 
+    try:
+        response=requests.post(apiBase, params)
+        if response.status_code==400:
+            return render(request,'lista_cursos.html',context={"context":"Bad request",'heading': u,'pageview': t,})
+        if response:
+            r=response.json()["events"]
+            context={"context":r,'heading': u,'pageview': t, 'courseid':id}
+
+        for y in r:
+            timestamp = datetime.fromtimestamp(y["timestart"])                
+            y["timestart"]=timestamp.strftime('%Y-%m-%d')
+            
+    except Exception as e:
+        print(e)
+    return render(request,'asesor/cronograma/detail_schedule_events_course.html',context)
+
+@login_required
+def del_schedule_event(request,courseid, id, repeatid):
+    nrepeat = 0
+
+    if repeatid == 'None':
+        nrepeat = 0
+    else:
+        nrepeat = int(repeatid)
+
+    apiBase="http://academyec.com/moodle/webservice/rest/server.php"
+    params={"wstoken":TOKEN_MOODLE,
+            "wsfunction":"core_calendar_delete_calendar_events",
+            "moodlewsrestformat":"json",
+            "events[0][eventid]":id,
+            "events[0][repeat]": nrepeat
+            }    
+    context={} 
+    try:
+        response=requests.post(apiBase, params)
+        if response.status_code==400:
+            return render(request,'lista_cursos.html',context={"context":"Bad request",})
+        if response:
+            r=response.json()
+            context={"context":r}
+    except Exception as e:
+        print(e)
+    return redirect('/asesor/detail_schedule_events_course/'+str(courseid)+'/')
 
 @login_required
 def cal_register(request):
@@ -2261,7 +2418,7 @@ def users_by_module(request, course):
     return render(request,'asesor/seguimiento_docente/users_by_module.html',context)
 
 @login_required
-def val_activities_users(request, courseid, userfullname, userid, nombre):   
+def val_activities_users(request, courseid, userfullname, userid, nombre, ciclo):   
     name_user=userfullname
     t="Cursos"
     apiBase="http://academyec.com/moodle/webservice/rest/server.php"
@@ -2271,7 +2428,11 @@ def val_activities_users(request, courseid, userfullname, userid, nombre):
             "courseid":courseid,
             "userid":userid            
             }
-    context={} 
+    context={}
+
+    notes = valoration_course_student.objects.filter(student_id=userid, course_id=courseid)
+    val_note = notes.count()
+
     try:
         response=requests.post(apiBase, params)
         if response.status_code==400:
@@ -2282,19 +2443,54 @@ def val_activities_users(request, courseid, userfullname, userid, nombre):
             for r in res:
                 if r["itemtype"] != "course":
                     res_new.append(r)
-            
             nf_len = len(res_new)
             nf = 0
             napproved = 0
             for r in res_new:
-                if r["graderaw"] != "":
+                if r["graderaw"] :
                     nf = nf + r["graderaw"]
             napproved = nf/nf_len
-            print(napproved)
-            context={"context":res_new,'name_user':name_user, 'napproved':napproved, 'heading': "Actividades del curso: ", 'pageview': "Cursos", 'course':courseid, 'userid':userid, 'nombre':nombre, }
+            context={"context":res_new,'name_user':name_user, 'napproved':napproved, 'heading': "Actividades del curso: ", 'pageview': "Cursos", 'course':courseid, 'userid':userid, 'nombre':nombre, 'val_note':val_note, 'ciclo':ciclo}
     except Exception as e:
         print(e)
     return render(request,'asesor/valorations/val_course_student.html',context)
+
+@login_required
+def val_activities_module_users(request, course, moduleid, namemod, fullname, id, name ):
+    apiBase="http://academyec.com/moodle/webservice/rest/server.php"
+    params={"wstoken":TOKEN_MOODLE,
+            "wsfunction":"gradereport_user_get_grade_items",
+            "moodlewsrestformat":"json",
+            "courseid":course           
+            }
+    context={}
+
+    try:
+        response=requests.post(apiBase, params)
+        if response.status_code==400:
+            return render(request,'act_pdf.html',context={"context":"Bad request"})
+        if response:
+            res_new = []
+
+            res_ug = response.json()["usergrades"]
+            lres_ug = len(res_ug)
+
+            for i in range(lres_ug):
+                res_name = res_ug[i]["userfullname"]
+                res_id = res_ug[i]["userid"]
+
+                res=response.json()["usergrades"][i]["gradeitems"]
+                
+                for r in res:
+                    if  r["itemname"] == name and r["cmid"] == id:
+                        dicc = {'teachername' : res_name, 'teacherid' : res_id, 'actividad': r }
+                        res_new.append(dicc)
+
+            context={"context":res_new,'heading': name, 'pageview': fullname, 'course':course, 'moduleid':moduleid, 'namecourse': namemod, 'modulename':  fullname, 'actname':name, 'actid':id,  }
+    except Exception as e:
+        print(e)
+    return render(request,'asesor/valorations/val_activities_module_users.html',context)
+
 
 @login_required
 def semaf(request):
@@ -2375,8 +2571,6 @@ def send_mail(request):
             'attach': attach
         })
 
-        print(template)
-
         email = EmailMultiAlternatives(subject, template, settings.EMAIL_HOST_USER, [email])
         email.attach('notas.pdf', feedback, 'application/pdf')
 
@@ -2385,3 +2579,21 @@ def send_mail(request):
 
         messages.success(request, 'Correo enviado correctamente')
     return redirect ('gotomail')
+
+@login_required
+def periodo_academico(request):
+    pacademico = Periodo_academico.objects.all()
+    context={'context':pacademico}
+    return render(request,'asesor/periodo_academico/lista_pacademico.html',context)
+
+@login_required
+def add_pacademico(request):
+    if request.method == 'POST':
+        form = periodoAcademicoForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Periodo academico agregado correctamente')
+            return redirect('periodo_academico')
+    else:
+        form = periodoAcademicoForm()
+    return render(request, 'asesor/periodo_academico/add_pacademico.html', {'form': form})

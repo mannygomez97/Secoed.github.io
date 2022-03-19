@@ -37,6 +37,7 @@ BASE_APPS = [
     'channels',
     'django_celery_beat',
     'django_celery_results',
+    'rest_framework.authtoken',
 ]
 
 # Third Party App
@@ -102,6 +103,13 @@ TEMPLATES = [
     },
 ]
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES':
+        ('rest_framework.authentication.TokenAuthentication',),
+    'DEFAULT_PERMISSION_CLASSES':
+        ('rest_framework.permissions.IsAuthenticated',),
+}
+
 WSGI_APPLICATION = 'secoed.wsgi.application'
 ASGI_APPLICATION = 'secoed.asgi.application'
 
@@ -113,8 +121,8 @@ ASGI_APPLICATION = 'secoed.asgi.application'
 CONEXION_NAME = 'db_secoed'
 CONEXION_USER = 'secoed'
 CONEXION_PASSWORD = 'secoed2021'
-CONEXION_HOST = '95.216.216.98'
-CONEXION_PORT = '5434'
+CONEXION_HOST = 'pgdb'
+CONEXION_PORT = '5432'
 
 
 #CONEXION_NAME = 'db_secoed'
@@ -212,6 +220,7 @@ DJANGO_EASY_AUDIT_ADMIN_SHOW_AUTH_EVENTS = False
 DJANGO_EASY_AUDIT_ADMIN_SHOW_REQUEST_EVENTS = False
 
 TOKEN_MOODLE = '2fb3df9ba2006ef257f072651b547b3d'
+TOKEN_WEB = 'bb5320c76ea68ff0654f38a3db14d6bb25142830'
 API_BASE = 'http://academyec.com/moodle/webservice/rest/server.php'
 CONTEXT_ID = 116
 

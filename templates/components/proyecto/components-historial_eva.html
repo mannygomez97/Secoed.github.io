@@ -5,33 +5,35 @@
 {% include 'partials/css.html' %}
 {% endblock %}
 {% block extra_css %}
+<link href="{% static 'libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" />
+<link href="{% static 'libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" />
 
+<!-- Responsive datatable examples -->
+<link href="{% static 'libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" /> 
 {% endblock %}
 {% block contents %}
 {% if evaluations %}
 
-<table class="table">
+<table id="evaluacion" class="table">
     <thead>
         <tr>
-            <th scope="col">ID</th>
             <th scope="col">Course</th>
             <th scope="col">Fecha</th>
-            <th scope="col">Ver PDF</th>
+            <th scope="col">PDF</th>
         </tr>
     </thead>
     <tbody>
         {%for evaluation in evaluations %}
         <tr>
-            <th>{{evaluation.id}}</th>
             <th>{{evaluation.course}}</th>
             <th>{{evaluation.create_at}}</th>
-            <th><a href="{%url 'historialEvaluation' id=evaluation.id%}" class="btn btn-primary"><i class="fa fa-file-pdf-o"></i></a></th>
+            <th><a href="{%url 'historialEvaluation' id=evaluation.id%}" class="btn btn-outline-danger"><i class="fa fa-file-pdf-o"></i></a></th>
         </tr>
         {%endfor%}
     </tbody>
 </table>
 {% else %}
-    <p>No hay Evaluaciones registradas :(</p>
+    <p>No hay Evaluaciones registradas</p>
 {% endif%}
 
 
@@ -50,6 +52,10 @@
         <script src="{% static 'libs/simplebar/simplebar.min.js' %}"></script>
         <script src="{% static 'libs/node-waves/waves.min.js' %}"></script>
         <script src="{% static 'libs/sweetalert2/sweetalert2.all.min.js' %}"></script>
+
+        <script src="{% static 'libs/datatables.net/js/jquery.dataTables.min.js' %}"></script>        
+        <script src="{% static 'libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+
         <!-- form repeater js -->
         <script src="{% static 'libs/jquery.repeater/jquery.repeater.min.js' %}"></script>
 
@@ -57,5 +63,14 @@
 
         <script src="{% static 'js/app.js' %}"></script>
         <script src="{% static 'js/evaluation/evaluation.js' %}"></script>
+
+        <script type="text/javascript">
+            $(document).ready(function() {                
+                $('#evaluacion').DataTable( {
+                    dom: 'Bfrtip',                    
+                    buttons: ['copy', 'excel', 'pdf']
+                } );
+            });
+        </script>
         
 {% endblock %}

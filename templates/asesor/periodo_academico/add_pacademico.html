@@ -7,7 +7,6 @@
 {% block extra_css %}
 <link href="{% static 'libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" />
 <link href="{% static 'libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" />
-<link href="{% static 'css/fullcalendar/main.css' %}" rel="stylesheet" type="text/css" />
 
 <!-- Responsive datatable examples -->
 <link href="{% static 'libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" /> 
@@ -15,22 +14,15 @@
 {% block contents %}
 
 <div>
-    
-</div>
-
-<div class="card">
-    <div class="card-header">
-        <div class="row">
-            <div class="col">
-                <h3>{{fullname}}</h3> <a href="{% url 'detail_schedule_events_course' courseid %}" class="btn btn-outline-warning">Eliminar eventos</a>
-            </div>
+    <form method="post">
+        {% csrf_token %}
+        {{ form }}
+        <div style="text-align: center;padding: 1em;">
+            <button class="btn btn-info" type="submit">Guardar</button>
+            <a href="{% url 'periodo_academico' %}" class="btn btn-danger" type="reset">Cancelar</a>
         </div>
-    </div>
-    <div id="calendar" class="card" style="padding: 10px;"></div>
+    </form>
 </div>
-
-
-
 
 {% endblock %}
 {% block r_sidebar %}
@@ -58,26 +50,15 @@
         <script src="{% static 'libs/pdfmake/build/vfs_fonts.js' %}"></script>        
         <script src="{% static 'libs/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
         
-        <script src="{% static 'js/fullcalendar/main.js' %}"></script>
-        <script src="{% static 'js/pages/datatables.init.js' %}"></script>
+        <script src="{% static 'js/pages/datatables.init.js' %}"></script>    
 
         <script src="{% static 'js/app.js' %}"></script>
-                
-        <script type="text/javascript">
-            document.addEventListener('DOMContentLoaded', function (){
-                var calendarUI = document.getElementById('calendar')
-                var calendar = new FullCalendar.Calendar(calendarUI,{
-                    events: [
-                            {% for calend in context %}
-                                {
-                                    title: '{{calend.name}}'+ ' > '+ '{{calend.description}}',
-                                    start: new Date ('{{calend.timestart}}' * 1000 ),
-                                    end: new Date (((parseInt('{{calend.timestart}}')) + (parseInt('{{calend.timeduration}}'))) * 1000)
-                                },
-                            {% endfor %}
-                    ]
-                })
-                calendar.render()
-            })
-        </script>    
+         
+        <script type="text/javascript">          
+            function timeToHuman() {
+                var theDate = new Date(document.u2h.timeStamp.value * 1000);
+                dateString = theDate.toGMTString();
+                document.u2h.result.value = dateString;
+            }       
+        </script>       
 {% endblock %}

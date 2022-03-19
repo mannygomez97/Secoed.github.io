@@ -23,13 +23,11 @@
                                             {{message}}
                                         </div>
                                         {% endfor %}
-                                        {% endif %}
-                                        <h4 class="card-title">Lista Cursos Actuales</h4>                                         
+                                        {% endif %}                                       
                                         <div class="table-responsive">
                                             <table id="curso" class="table table-hover dt-responsive nowrap w-100">
                                                 <thead>
                                                 <tr>
-                                                    <th>Id</th>
                                                     <th>Nombre docente</th>                                                     
                                                     <th>Email</th>
                                                     <th>Opción</th>                                                                                                                                                      
@@ -38,12 +36,11 @@
                                                 <tbody>                                                   
                                                 {% if context %}
                                                     {% for item in context %}                            
-                                                        <tr>                              
-                                                            <td>{{item.id}}</td>                                       
+                                                        <tr>
                                                             <td>{{item.fullname}}</td>                                                           
                                                             <td>{{item.email}}</td>
                                                             <td>
-                                                                <a title="Módulos" href="{% url 'get_dest' item.fullname item.email %}" class="btn btn-outline-info btn-md"><i class="fas fa-envelope"></i></a>
+                                                                <a title="Correo" href="{% url 'get_dest' item.fullname item.email %}" class="btn btn-outline-info btn-md"><i class="fas fa-envelope"></i></a>
                                                             </td>
                                                         </tr>     
                                                     {% endfor %}

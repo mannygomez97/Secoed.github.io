@@ -58,9 +58,9 @@ class Docentes(models.Model):
 class Periodo(models.Model):
     id_periodo=models.AutoField(primary_key=True)
     Tipo=models.CharField(max_length=25)
-
     def __str__(self):
         return self.Tipo
+
     
 # 9
 class Recursos(models.Model):
@@ -157,7 +157,7 @@ class registro_historicos(models.Model):
     def __str__(self):
         return self.title
 
-class valoration_module_estudent(models.Model):
+class valoration_module_student_activities(models.Model):
     id=models.AutoField(primary_key=True)
     course_id = models.IntegerField(null=False, blank=False)
     course_name = models.CharField(max_length=200, null=True, blank=True)
@@ -168,6 +168,7 @@ class valoration_module_estudent(models.Model):
     activity_id = models.IntegerField(null=False, blank=False)
     activity_name = models.CharField(max_length=200, null=True, blank=True)
     score_activity = models.IntegerField(null=False, blank=False)
+    created_date = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.module_name
@@ -178,7 +179,20 @@ class valoration_course_student(models.Model):
     course_name = models.CharField(max_length=200, null=True, blank=True)
     student_id = models.IntegerField(null=False, blank=False)
     student_name = models.CharField(max_length=200, null=True, blank=True)
+    academic_period = models.CharField(max_length=200, null=True, blank=True)
     score_course = models.FloatField(null=False, blank=False)
 
     def __str__(self):
         return self.course_name
+
+
+class Periodo_academico(models.Model):
+    id_periodo=models.AutoField(primary_key=True)
+    ciclo=models.CharField(max_length=200)
+    periodo=models.ForeignKey('Periodo', on_delete=models.CASCADE)
+    fecha_inicio=models.DateField(null=False, blank=False)
+    fecha_fin=models.DateField(null=False, blank=False)
+    estado=models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.ciclo + " " + str(self.periodo.Tipo)
