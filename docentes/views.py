@@ -14,6 +14,7 @@ from reportlab.pdfgen import canvas
 from reportlab.lib.pagesizes import A4
 from asesor.models import valoration_course_student
 from eva.models import ResultadoProceso
+from decimal import Decimal
 
 
 def fs_cursos_actividades(moodle_user):
@@ -22,41 +23,35 @@ def fs_cursos_actividades(moodle_user):
               "wsfunction": "core_enrol_get_users_courses",
               "moodlewsrestformat": "json",
               "userid": moodle_user}
-    response = requests.post(API_BASE, params)
-    if response:
-        r = response.json()
-        d1 = json.dumps(r)
+    course_response = requests.post(API_BASE, params)
+    if course_response:
+        r1 = course_response.json()
+        d1 = json.dumps(r1)
         l1 = json.loads(d1)
         for obj in l1:
             aux1 = core_enrol_get_users_courses(**obj)
-            aux2 = []
-            aux3 = []
-            params2 = {"wstoken": TOKEN_MOODLE,
-                       "wsfunction": "core_completion_get_activities_completion_status",
-                       "moodlewsrestformat": "json",
-                       "userid": moodle_user,
-                       "courseid": aux1.id}
-            response2 = requests.post(API_BASE, params2)
-            if response2:
-                r2 = response2.json()
-                for obj1 in r2['statuses']:
-                    aux2.append(Statuses(**obj1))
-                for obj2 in r2['warnings']:
-                    aux3.append(Warnings(**obj2))
-            cursos_actividades.append(CursosActividades(aux1, aux2, aux3))
             params3 = {"wstoken": TOKEN_MOODLE,
                       "wsfunction": "gradereport_user_get_grade_items",
                       "moodlewsrestformat": "json",
                       "courseid": aux1.id,
                       "userid": moodle_user
                       }
-            response3 = requests.post(API_BASE, params3)
-            if response3.json().get("usergrades"):
-                actividad = [actividades for actividades in response3.json()["usergrades"] if actividades["userid"] == int(moodle_user)]
-                if actividad:
-                    actividades = [dato for dato in actividad[0]["gradeitems"]]
-                    if actividades:
-                        actividades2 = actividades[0]["itemnumber"]
+            activiti_response = requests.post(API_BASE, params3)
+            actividades = []
+            if activiti_response:
+                r2 = activiti_response.json().get("usergrades")
+                d2 = json.dumps(r2)
+                l2 = json.loads(d2)
+                for obj in l2:
+                    aux2 = gradereport_user_get_grade_items(**obj)
+                    d3 = json.dumps(aux2.gradeitems)
+                    l3 = json.loads(d3)
+                    for obj in l3:
+                        aux3 = gradeitems(**obj)
+                        actividades.append(aux3)
+            temp = course_activities(aux1, actividades)
+            cursos_actividades.append(temp)
+    print(cursos_actividades)
     return cursos_actividades
 
 
@@ -99,31 +94,30 @@ class SeguimientoView(View):
         c.drawImage('static/images/secoed/logo-secoed.png', 30, 730, mask='auto', width=100, height=100)
         c.setFont("Times-Roman", 22)
         c.drawString(200, 760, 'REGISTRO DE ACTIVIDADES')
-
         userObj = get_object_or_404(Usuario, pk=request.user.id)
+        c.setFont("Times-Roman", 15)
+        c.drawString(30, 700, 'NOMBRES: ' + userObj.nombres)
+        c.drawString(30, 680, 'APELLIDOS: ' + userObj.apellidos)
+        c.drawString(30, 660, 'IDENTIFICACIÓN: ' + userObj.identificacion)
         temp = fs_cursos_actividades(userObj.moodle_user)
-        linea = 600
+        linea = 620
         for item in temp:
             # Cursos
             c.setFont("Times-Roman", 14)
-            c.drawString(30, linea, item.cursos.fullname)
+            c.drawString(30, linea, item.curso.fullname)
             linea = linea - 10
             c.line(30, linea, 565, linea)
             # table head
             linea = linea - 15
             for item1 in item.actividades:
-                # Actividad
-                c.setFont("Times-Roman", 12)
-                c.drawString(30, linea, item1.modname)
-                c.setFont("Times-Roman", 12)
-                c.drawString(380, linea, getEstado(item1.state))
-                c.setFont("Times-Roman", 12)
-                c.drawString(490, linea, getTipo(item1.tracking))
-                linea = linea - 15
-            # table boddy
-
+                if item1.itemname :
+                    # Actividad
+                    c.setFont("Times-Roman", 12)
+                    c.drawString(30, linea, item1.itemname or "")
+                    c.setFont("Times-Roman", 12)
+                    c.drawString(490, linea, str(item1.nota))
+                    linea = linea - 15
             linea = linea - 25
-
         # save
         c.save()
         pdf = buffer.getvalue();

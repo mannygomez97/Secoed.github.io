@@ -20,6 +20,14 @@ from django.shortcuts import render, redirect, get_object_or_404
 Notificacion = load_model('notify', 'Notification')
 
 
+def emitirNotificacionRetroalimentacion(user_id, actividad):
+    post = Post()
+    post.url = '#'
+    post.title = "Retroalimentación"
+    post.text = "Comuniquese con el evaluador para su respectiva retroalimentacion de la actividad: " + actividad
+    post.user = get_object_or_404(Usuario, pk=user_id)
+    post.save()
+
 class NotificacionView(View):
 
     def readTrue(request, pk):
@@ -30,22 +38,6 @@ class NotificacionView(View):
             return redirect('notify')
         else:
             return redirect(notificacion.url)
-
-    def createNotificacion(request, numActividades, totalActividades, pk):
-        maxPorcentaje = 40
-        porcentaje = (numActividades * totalActividades) / 100
-        if (porcentaje <= maxPorcentaje):
-            post = Post()
-            post.url = '#'
-            post.title = "Retroalimentación"
-            post.text = "La cantidad de actividades realizada no completa el porcentaje para aprobar el curso"
-            post.user = get_object_or_404(Usuario, pk=pk)
-            post.save()
-            response = JsonResponse({'code': '1', 'success': 'Notificacion creada correctamente'})
-        else:
-            response = JsonResponse({'code': '0', 'success': 'No se creo una notificación'})
-        response.status_code = 200
-        return response
 
 
 class NotificationList(ListView):

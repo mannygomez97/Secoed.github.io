@@ -28,6 +28,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.core.mail import EmailMessage, EmailMultiAlternatives
 from django.template.loader import render_to_string
 from django.contrib import messages
+from notify.views import emitirNotificacionRetroalimentacion
 
 
 #Calendario
@@ -159,7 +160,8 @@ def save_activities_module_users(request, course, namecourse, teacherid, teacher
         "activity_name": actname,
         "score_activity": scAcrFormat
         })
-        
+        if graderaw < 40:
+            emitirNotificacionRetroalimentacion(teacherid, actname);
         response = requests.request("POST", reqUrl, data=payload, headers=headersList)
         print(response.text.encode('utf8'))
         messages.success(request, 'Se ha guardado la nota de la actividad')

@@ -42,12 +42,14 @@ class core_enrol_get_users_courses:
         return f'<Curso: {self.fullname}>'
 
 
-class Warnings:
-    def __init__(self, item, itemid, warningcode, message):
-        self.item = item
-        self.itemid = itemid
-        self.warningcode = warningcode
-        self.message = message
+class gradereport_user_get_grade_items:
+    def __init__(self, courseid, userid, userfullname, useridnumber, maxdepth, gradeitems):
+        self.courseid = courseid
+        self.userid = userid
+        self.userfullname = userfullname
+        self.useridnumber = useridnumber
+        self.maxdepth = maxdepth
+        self.gradeitems = gradeitems
 
     @classmethod
     def from_json(cls, json_string):
@@ -55,19 +57,48 @@ class Warnings:
         return cls(**json_dict)
 
     def __repr__(self):
-        return f'<message : {self.message}>'
+        return f'<usergrades: {self.courseid}>'
 
 
-class Statuses:
-    def __init__(self, cmid, modname, instance, state, timecompleted, tracking, overrideby, valueused):
-        self.cmid = cmid
-        self.modname = modname
-        self.instance = instance
-        self.state = state
-        self.timecompleted = timecompleted
-        self.tracking = tracking
-        self.overrideby = overrideby
-        self.valueused = valueused
+class gradeitems:
+    def __init__(self, id, itemname, itemtype, itemmodule, iteminstance, itemnumber, idnumber, categoryid, outcomeid,
+                 scaleid, locked, graderaw, gradedatesubmitted, gradedategraded, gradehiddenbydate, gradeneedsupdate,
+                 gradeishidden, gradeislocked, gradeisoverridden, gradeformatted, grademin,
+                 grademax, rangeformatted, percentageformatted, feedback, feedbackformat, cmid = None, weightraw = None,
+                 status = None, weightformatted = None):
+        self.id = id
+        self.itemname = itemname
+        self.itemtype = itemtype
+        self.itemmodule = itemmodule
+        self.iteminstance = iteminstance
+        self.itemnumber = itemnumber
+        self.idnumber = idnumber
+        self.categoryid = categoryid
+        self.outcomeid = outcomeid
+        self.scaleid = scaleid
+        self.locked = locked
+        self.graderaw = graderaw
+        self.gradedatesubmitted = gradedatesubmitted
+        self.gradedategraded = gradedategraded
+        self.gradehiddenbydate = gradehiddenbydate
+        self.gradeneedsupdate = gradeneedsupdate
+        self.gradeishidden = gradeishidden
+        self.gradeislocked = gradeislocked
+        self.gradeisoverridden = gradeisoverridden
+        self.gradeformatted = gradeformatted
+        self.grademin = grademin
+        self.grademax = grademax
+        self.rangeformatted = rangeformatted
+        self.percentageformatted = percentageformatted
+        self.feedback = feedback
+        self.feedbackformat = feedbackformat
+        self.weightraw = weightraw
+        self.weightformatted = weightformatted
+        self.status = status
+        if graderaw is not None:
+            self.nota = (graderaw * 100)/grademax
+        else:
+            self.nota = 0.00
 
     @classmethod
     def from_json(cls, json_string):
@@ -75,11 +106,12 @@ class Statuses:
         return cls(**json_dict)
 
     def __repr__(self):
-        return f'<statuses : {self.modname}>'
+        return f'<gradeitems: {self.itemname}>'
 
-
-class CursosActividades:
-    def __init__(self, cursos, actividades, avisos):
-        self.cursos = cursos
+class course_activities:
+    def __init__(self, curso, actividades):
+        self.curso = curso
         self.actividades = actividades
-        self.avisos = avisos
+
+    def __repr__(self):
+        return f'<curso: {self.curso}>'

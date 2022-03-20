@@ -37,42 +37,26 @@
                     <tbody>
                     {% for course in cursos_actividades %}
                     <tr class="table-active">
-                        <td colspan="4" style="font-weight:bold ">CURSO: {{ course.cursos.fullname | upper}}</td>
+                        <td colspan="4" style="font-weight:bold ">CURSO: {{ course.curso.fullname | upper}}</td>
                     </tr>
                     <tr class="table-primary" style="text-align: center">
                         <td>ACTIVIDAD</td>
                         <td>ESTADO</td>
-                        <td>TIPO</td>
+                        <td>NOTA</td>
                     </tr>
                     {% if course.actividades %}
                     {% for actividades in course.actividades %}
-                    {% ifequal actividades.state 1 %}
+                    {% ifequal actividades.nota 0.00 %}
                     <tr class="table-success" style="text-align: center">
-                        <td>{{ actividades.modname | upper}}</td>
-                        <td>COMPLETADO</td>
-                        <td>
-                            {% if actividades.tracking == 0 %}
-                            NINGUNO
-                            {% elif actividades.tracking == 1 %}
-                            MANUAL
-                            {% else %}
-                            AUTOMÁTICO
-                            {% endif %}
-                        </td>
+                        <td>{{ actividades.itemname | upper}}</td>
+                        <td>NO EVALUADO</td>
+                        <td> {{ actividades.nota }}</td>
                     </tr>
                     {% else %}
                     <tr class="table-warning" style="text-align: center">
-                        <td>{{ actividades.modname | upper}}</td>
-                        <td>PENDIENTE</td>
-                        <td>
-                            {% if actividades.tracking == 0 %}
-                            NINGUNO
-                            {% elif actividades.tracking == 1 %}
-                            MANUAL
-                            {% else %}
-                            AUTOMÁTICO
-                            {% endif %}
-                        </td>
+                        <td>{{ actividades.itemname | upper}}</td>
+                        <td>EVALUADO</td>
+                        <td> {{ actividades.nota }}</td>
                     </tr>
                     {% endifequal %}
                     {% endfor %}
