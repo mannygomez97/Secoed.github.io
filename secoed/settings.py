@@ -33,11 +33,9 @@ BASE_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'rest_framework',
     'channels',
     'django_celery_beat',
     'django_celery_results',
-    'rest_framework.authtoken',
 ]
 
 # Third Party App
@@ -59,9 +57,6 @@ LOCAL_APPS = [
     'asesor',
     'components',
     'easyaudit',
-
- #'gestor',
-  #  'docentes'
     'docentes',
     'notify'
 ]
@@ -103,13 +98,6 @@ TEMPLATES = [
     },
 ]
 
-REST_FRAMEWORK = {
-    'DEFAULT_AUTHENTICATION_CLASSES':
-        ('rest_framework.authentication.TokenAuthentication',),
-    'DEFAULT_PERMISSION_CLASSES':
-        ('rest_framework.permissions.IsAuthenticated',),
-}
-
 WSGI_APPLICATION = 'secoed.wsgi.application'
 ASGI_APPLICATION = 'secoed.asgi.application'
 
@@ -118,20 +106,11 @@ ASGI_APPLICATION = 'secoed.asgi.application'
 
 # CONEXION DEVELOPER --> debe regitrar su conexion si trabajara con preproduccion
 
-CONEXION_NAME = 'db_secoed'
+CONEXION_NAME = 'db_tesis'
 CONEXION_USER = 'secoed'
 CONEXION_PASSWORD = 'secoed2021'
-CONEXION_HOST = 'pgdb'
+CONEXION_HOST = 'localhost'
 CONEXION_PORT = '5432'
-
-
-#CONEXION_NAME = 'db_secoed'
-#CONEXION_USER = 'secoed'
-#CONEXION_PASSWORD = 'secoed2021'
-#CONEXION_HOST = 'pgdb'
-#CONEXION_PORT = 5432
-
-
 
 """""
 # CONEXION PRODUCCION --> debe regitrar su conexion si trabajara con produccion
@@ -219,8 +198,7 @@ DJANGO_EASY_AUDIT_ADMIN_SHOW_MODEL_EVENTS = False
 DJANGO_EASY_AUDIT_ADMIN_SHOW_AUTH_EVENTS = False
 DJANGO_EASY_AUDIT_ADMIN_SHOW_REQUEST_EVENTS = False
 
-TOKEN_MOODLE = '2fb3df9ba2006ef257f072651b547b3d'
-TOKEN_WEB = 'bb5320c76ea68ff0654f38a3db14d6bb25142830'
+TOKEN_MOODLE = 'cae40824ddd52a292888f736c8843929'
 API_BASE = 'http://academyec.com/moodle/webservice/rest/server.php'
 CONTEXT_ID = 116
 
