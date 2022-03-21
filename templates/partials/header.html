@@ -1,93 +1,147 @@
 {% load static %}
-{% block header %}
-    <header id="page-topbar">
-        <div class="navbar-header">
-            <div class="d-flex">
-                <!-- LOGO -->
-                <div class="navbar-brand-box">
-                    <a href="{% url 'dashboard' %}" class="logo logo-dark">
+{% load notificaciones_tags %}
+{% notificaciones as notify %}
+{% block header%}
+<header id="page-topbar">
+
+    <div class="navbar-header">
+
+        <div class="d-flex">
+            <!-- LOGO -->
+            <div class="navbar-brand-box">
+                <a href="{% url 'dashboard' %}" class="logo logo-dark">
                     <span class="logo-sm">
                         <img src="{% static 'images/secoed/logo-secoed-light-sm.png' %}" alt="" height="22">
                     </span>
-                        <span class="logo-lg">
+                    <span class="logo-lg">
                         <img src="{% static 'images/secoed/logo-secoed-light-lg.png' %}" alt="" height="17">
                     </span>
-                    </a>
+                </a>
 
-                    <a href="{% url 'dashboard' %}" class="logo logo-light">
+                <a href="{% url 'dashboard' %}" class="logo logo-light">
                     <span class="logo-sm">
                         <img src="{% static 'images/secoed/logo-secoed-light-sm.png' %}" alt="" height="22">
                     </span>
-                        <span class="logo-lg">
+                    <span class="logo-lg">
                         <img src="{% static 'images/secoed/logo-secoed-light-lg.png' %}" alt="" height="19">
                     </span>
-                    </a>
-                </div>
-
-                <button type="button" class="btn btn-sm px-3 font-size-16 header-item waves-effect"
-                        id="vertical-menu-btn">
-                    <i class="fa fa-fw fa-bars"></i>
-                </button>
-
+                </a>
             </div>
 
-            <div class="d-flex">
-                <div class="dropdown d-inline-block d-lg-none ms-2">
-                    <button type="button" class="btn header-item noti-icon waves-effect"
-                            id="page-header-search-dropdown"
-                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        <i class="mdi mdi-magnify"></i>
-                    </button>
-                    <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end p-0"
-                         aria-labelledby="page-header-search-dropdown">
+            <button type="button" class="btn btn-sm px-3 font-size-16 header-item waves-effect"
+                    id="vertical-menu-btn">
+                <i class="fa fa-fw fa-bars"></i>
+            </button>
 
-                        <form class="p-3">
-                            <div class="form-group m-0">
-                                <div class="input-group">
-                                    <input type="text" class="form-control" placeholder="Search ..."
-                                           aria-label="Recipient's username">
-                                    <div class="input-group-append">
-                                        <button class="btn btn-primary" type="submit"><i
-                                                class="mdi mdi-magnify"></i></button>
+        </div>
+
+        <div class="d-flex">
+
+            <div class="dropdown d-none d-lg-inline-block ms-1">
+                <button type="button" class="btn header-item noti-icon waves-effect" data-toggle="fullscreen">
+                    <i class="bx bx-fullscreen"></i>
+                </button>
+            </div>
+
+            <div class="dropdown d-inline-block">
+                <button type="button" class="btn header-item noti-icon waves-effect"
+                        id="page-header-notifications-dropdown" data-bs-toggle="dropdown" aria-haspopup="true"
+                        aria-expanded="false">
+                    <i class="bx bx-bell bx-tada"></i>
+                    <span class="badge bg-danger rounded-pill" id="notification-badge">{{notify}}</span>
+                </button>
+                <div class="dropdown-menu dropdown-menu-lg dropdown-menu-end p-0"
+                     aria-labelledby="page-header-notifications-dropdown">
+                    <div class="p-3">
+                        <div class="row align-items-center">
+                            <div class="col">
+                                <h6 class="m-0" key="t-notifications"> Notificaciones </h6>
+                            </div>
+                        </div>
+                    </div>
+                    <div data-simplebar style="max-height: 230px;" id="notifications-dropdown">
+                        {% for notify in notifyList %}
+                        <a href="{% url 'readTrue' notify.id %}" class="text-reset notification-item">
+                            <div class="media">
+                                <div class="avatar-xs me-3">
+                                   <span class="avatar-title rounded-circle font-size-16"
+                                         style="background:
+                                           {% if notify.read %}
+                                           #50a5f1
+                                           {% else %}
+                                           #34c38f
+                                           {% endif %}
+                                           ">
+                                        <i class="mdi mdi-alarm"></i>
+                                    </span>
+                                </div>
+                                <div class="media-body">
+                                    <h6 class="mt-0 mb-1" key="t-your-order">
+                                        {{notify.verbo}}
+                                    </h6>
+                                    <div class="font-size-12 text-muted">
+                                        <p class="mb-1" key="t-grammer">
+                                            {{notify.detalle}}
+                                        </p>
+                                        <p class="mb-0">
+                                            <i class="mdi mdi-clock-outline"></i>
+                                            <span key="t-min-ago">
+                                                 {{ notify.timestamp }}
+                                            </span>
+                                        </p>
+                                        <p class="mb-1" key="t-grammer">
+                                            {% if notify.read %}
+                                            Leído
+                                            {% else %}
+                                            No leído
+                                            {% endif %}
+                                        </p>
                                     </div>
                                 </div>
                             </div>
-                        </form>
+                        </a>
+                        {% endfor %}
+                    </div>
+                    <div class="p-2 border-top d-grid">
+                        <a class="btn btn-sm btn-link font-size-14 text-center" href="{% url 'notify' %}">
+                            <i class="mdi mdi-arrow-right-circle me-1"></i> <span key="t-view-more">Ver todas las notificaciones</span>
+                        </a>
                     </div>
                 </div>
+            </div>
 
-                <div class="dropdown d-inline-block">
-                    <button type="button" class="btn header-item waves-effect" id="page-header-user-dropdown"
-                            data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                        {% if user.imagen %}
-                            <img class="rounded-circle header-profile-user"
-                                 src="{% get_media_prefix %}{{ user.imagen }}"
-                                 alt="Avatar">
-                        {% endif %}
-                        <span class="d-none d-xl-inline-block ms-1"
-                              key="t-henry">{{ user.nombres }} {{ user.apellidos }}</span>
-                        <i class="mdi mdi-chevron-down d-none d-xl-inline-block"></i>
-                    </button>
-                    <div class="dropdown-menu dropdown-menu-end">
-                        <!-- item-->
-                        {% if user.is_authenticated %}
-                            <a class="dropdown-item" href="{% url 'user' %}"><i
-                                    class="bx bx-user-circle font-size-16 align-middle me-1"></i>Perfil</a>
-                        {% endif %}
-                        <div class="dropdown-divider"></div>
-                        {% if user.is_authenticated %}
-                            <a class="dropdown-item" href="{% url 'password_change' %}"><i
-                                    class="bx bx-key font-size-16 align-middle me-1"></i>Cambiar Contraseña</a>
-                            <a class="dropdown-item text-danger" href="{% url 'pages-logout' %}"><i
-                                    class="bx bx-log-out font-size-16 align-middle me-1 text-danger"></i>Log Out</a>
-                        {% else %}
-                            <a class="dropdown-item " href="{% url 'pages-login' %}"><i
-                                    class="bx bx-log-in font-size-16 align-middle me-1 "></i> Log In</a>
-                        {% endif %}
-                    </div>
+            <div class="dropdown d-inline-block">
+                <button type="button" class="btn header-item waves-effect" id="page-header-user-dropdown"
+                        data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                    {% if user.imagen %}
+                    <img class="rounded-circle header-profile-user"
+                         src="{% get_media_prefix %}{{ user.imagen }}"
+                         alt="Avatar">
+                    {% endif %}
+                    <span class="d-none d-xl-inline-block ms-1"
+                          key="t-henry">{{ user.nombres }} {{ user.apellidos }}</span>
+                    <i class="mdi mdi-chevron-down d-none d-xl-inline-block"></i>
+                </button>
+                <div class="dropdown-menu dropdown-menu-end">
+                    <!-- item-->
+                    {% if user.is_authenticated %}
+                    <a class="dropdown-item" href="{% url 'user' %}"><i
+                            class="bx bx-user-circle font-size-16 align-middle me-1"></i>Perfil</a>
+                    {% endif %}
+                    <div class="dropdown-divider"></div>
+                    {% if user.is_authenticated %}
+                    <a class="dropdown-item" href="{% url 'password_change' %}"><i
+                            class="bx bx-key font-size-16 align-middle me-1"></i>Cambiar Contraseña</a>
+                    <a class="dropdown-item text-danger" href="{% url 'pages-logout' %}"><i
+                            class="bx bx-log-out font-size-16 align-middle me-1 text-danger"></i>Log Out</a>
+                    {% else %}
+                    <a class="dropdown-item " href="{% url 'pages-login' %}"><i
+                            class="bx bx-log-in font-size-16 align-middle me-1 "></i> Log In</a>
+                    {% endif %}
                 </div>
-
             </div>
         </div>
-    </header>
+    </div>
+</header>
+
 {% endblock %}

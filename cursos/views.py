@@ -33,7 +33,6 @@ class CursoView(View):
     def createEditCategoria(request):
         texto = ""
         if (request.POST['id'] == ""):
-            print(" wntro al insertar 1")
             wsfunction = "core_course_create_categories";
             params = {"wstoken": TOKEN_MOODLE,
                       "wsfunction": wsfunction,
@@ -92,9 +91,9 @@ class CursoView(View):
 
     def get(self, request):
         params = {"wstoken": TOKEN_MOODLE,
-                  "wsfunction": "core_course_get_courses_by_field ",
-                  "moodlewsrestformat": "json",
-                  }
+        "wsfunction": "core_course_get_courses_by_field ",
+        "moodlewsrestformat": "json",
+        }
         cursos = {}
         try:
             response = requests.post(API_BASE, params)
@@ -108,9 +107,9 @@ class CursoView(View):
 
     def allCategorias(request):
         params = {"wstoken": TOKEN_MOODLE,
-                  "wsfunction": "core_course_get_categories",
-                  "moodlewsrestformat": "json",
-                  }
+        "wsfunction": "core_course_get_categories",
+        "moodlewsrestformat": "json",
+        }
         context = {}
         try:
             response = requests.post(API_BASE, params)

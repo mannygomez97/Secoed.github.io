@@ -20,7 +20,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'd!m50t)w$$&ff(*pn7%oqw-1yxo+eub*xcxd^8pzo=*2)ynq=w'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False
+DEBUG = True
 
 ALLOWED_HOSTS = ['95.216.216.98', '127.0.0.1', 'localhost']
 
@@ -33,6 +33,11 @@ BASE_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'rest_framework',
+    'channels',
+    'django_celery_beat',
+    'django_celery_results',
+    'rest_framework.authtoken',
 ]
 
 # Third Party App
@@ -53,10 +58,12 @@ LOCAL_APPS = [
     'eva',
     'asesor',
     'components',
-    'easyaudit'
-    #,
-  #  'gestor',
+    'easyaudit',
+
+ #'gestor',
   #  'docentes'
+    'docentes',
+    'notify'
 ]
 
 INSTALLED_APPS = BASE_APPS + LOCAL_APPS + THIRD_APPS
@@ -89,34 +96,51 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'secoed.initialize.load_menu'
+                'secoed.initialize.load_menu',
+                'secoed.custom_context_processors.notifications'
             ],
         },
     },
 ]
 
+REST_FRAMEWORK = {
+    'DEFAULT_AUTHENTICATION_CLASSES':
+        ('rest_framework.authentication.TokenAuthentication',),
+    'DEFAULT_PERMISSION_CLASSES':
+        ('rest_framework.permissions.IsAuthenticated',),
+}
+
 WSGI_APPLICATION = 'secoed.wsgi.application'
+ASGI_APPLICATION = 'secoed.asgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
 # CONEXION DEVELOPER --> debe regitrar su conexion si trabajara con preproduccion
 
-#CONEXION_NAME = 'db_secoed'
-#CONEXION_USER = 'secoed'
-#CONEXION_PASSWORD = 'secoed2021'
-#CONEXION_HOST = '95.216.216.98'
-#CONEXION_HOST = 'localhost'
-#CONEXION_PORT = '5432'
-
-
-#CONEXION PRODUCCION --> debe regitrar su conexion si trabajara con produccion
 CONEXION_NAME = 'db_secoed'
 CONEXION_USER = 'secoed'
 CONEXION_PASSWORD = 'secoed2021'
 CONEXION_HOST = 'pgdb'
-CONEXION_PORT = 5432
+CONEXION_PORT = '5432'
 
+
+#CONEXION_NAME = 'db_secoed'
+#CONEXION_USER = 'secoed'
+#CONEXION_PASSWORD = 'secoed2021'
+#CONEXION_HOST = 'pgdb'
+#CONEXION_PORT = 5432
+
+
+
+"""""
+# CONEXION PRODUCCION --> debe regitrar su conexion si trabajara con produccion
+# CONEXION_NAME = 'db_pro_secoed'
+# CONEXION_USER = 'secoed'
+# CONEXION_PASSWORD = 'secoed2021'
+# CONEXION_HOST = 'pgdb'
+# CONEXION_PORT = 5432
+"""""
 
 DATABASES = {
     'default': {
@@ -196,5 +220,25 @@ DJANGO_EASY_AUDIT_ADMIN_SHOW_AUTH_EVENTS = False
 DJANGO_EASY_AUDIT_ADMIN_SHOW_REQUEST_EVENTS = False
 
 TOKEN_MOODLE = '2fb3df9ba2006ef257f072651b547b3d'
+TOKEN_WEB = 'bb5320c76ea68ff0654f38a3db14d6bb25142830'
 API_BASE = 'http://academyec.com/moodle/webservice/rest/server.php'
 CONTEXT_ID = 116
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels_redis.core.RedisChannelLayer',
+        'CONFIG': {
+            "hosts": [('127.0.0.1', 6379)],
+        },
+    },
+}
+
+#CELERY SETTINGS
+CELERY_BROKER_URL = 'redis://127.0.0.1:6379'
+CELERY_RESULT_BACKEND = 'django-db'
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TASK_SELERLIZER = 'json'
+CELERY_TIMEZONE = 'America/Guayaquil'
+
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'

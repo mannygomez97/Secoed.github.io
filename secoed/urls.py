@@ -25,6 +25,7 @@ urlpatterns = [
 
     # Dashboards View
     path(r'', views.DashboardView.as_view(), name='dashboard'),
+    path('test/', views.test, name="home"),
 
     # Accounts
     path('accounts/login/', views.DashboardView.as_view(), name='dashboard'),
@@ -43,12 +44,19 @@ urlpatterns = [
 
     # mis url de mi asesor
     path('asesor/', include('asesor.urls')),
+
     # Components
     path('components/', include('components.urls')),
 
     # url de cursos
     path(r'cursos/', include('cursos.urls')),
+    
 
+    # url de docentes
+    path(r'docentes/', include('docentes.urls')),
+
+    # url de notify
+    path(r'notify/', include('notify.urls')),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

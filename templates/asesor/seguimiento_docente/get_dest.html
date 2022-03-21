@@ -1,0 +1,99 @@
+{% extends 'partials/base.html' %}
+{% load static %}
+
+{% block css%}
+{% include 'partials/css.html' %}
+{% endblock %}
+{% block extra_css %}
+<link href="{% static 'libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" />
+<link href="{% static 'libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" />
+
+<!-- Responsive datatable examples -->
+<link href="{% static 'libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" /> 
+{% endblock %}
+{% block contents %}
+
+<form method="POST" action="{% url 'send_mail' %}" enctype="multipart/form-data"> 
+  {% csrf_token %}
+  <div class="row">
+    <div class="col">
+      <div class="form-group">
+        <label for="exampleInputEmail1">Email: </label>
+        <input type="email" class="form-control" name="email" aria-describedby="emailHelp" value="{{ email }}" readonly required>
+      </div>
+      <div class="form-group">
+        <label for="exampleInputEmail1">Destinatario: </label>
+        <input class="form-control" name="name" aria-describedby="emailHelp" value="{{ fullname }}" readonly required>
+      </div>
+      <div class="form-group">
+        <label for="exampleInputEmail1">Asunto: </label>
+        <input type="text" class="form-control" name="subject" aria-describedby="emailHelp" required>
+        <small id="emailHelp" class="form-text text-muted">Asunto del mail</small>
+      </div>
+      <div class="custom-file form-group">
+        <input type="file" class="custom-file-input" id="inputGroupFile01" aria-describedby="inputGroupFileAddon01" name="attach" style="padding: 2em;">
+        <label class="custom-file-label" for="inputGroupFile01">Seleccionar</label>
+      </div>
+    </div>
+    <div class="col">
+      <div class="form-group">
+        <label>Comentario academico:</label>
+        <textarea class="form-control" name="message" aria-describedby="emailHelp" rows="3" required></textarea>
+        <small id="emailHelp" class="form-text text-muted">Breve mensaje dirigido al docente</small>
+      </div>
+      <div class="form-group">
+        <label for="exampleInputEmail1">link reunion </label>
+        <input type="text" class="form-control" name="feedback" aria-describedby="emailHelp" required>
+      </div>
+    </div>
+  </div>
+  <button type="submit" class="btn btn-info" >Enviar</button>
+</form>
+{% endblock %}
+{% block r_sidebar %}
+{% include 'partials/rightsidebar.html' %}
+{% endblock %}
+{% block footer %}
+{% include 'partials/footer.html' %}
+
+{% endblock %}
+{% block javascript %}                
+        <!-- JAVASCRIPT -->
+        <script src="{% static 'libs/jquery/jquery.min.js' %}"></script>
+        <script src="{% static 'libs/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bs-custom-file-input/dist/bs-custom-file-input.min.js"></script>
+        <script src="{% static 'libs/metismenu/metisMenu.min.js' %}"></script>
+        <script src="{% static 'libs/simplebar/simplebar.min.js' %}"></script>
+        <script src="{% static 'libs/node-waves/waves.min.js' %}"></script>
+                        
+        <script src="{% static 'libs/datatables.net/js/jquery.dataTables.min.js' %}"></script>        
+        <script src="{% static 'libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+
+        <script src="{% static 'libs/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
+        <script src="{% static 'libs/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js' %}"></script>
+        <script src="{% static 'libs/jszip/jszip.min.js' %}"></script>
+        <script src="{% static 'libs/pdfmake/build/pdfmake.min.js' %}"></script>
+        <script src="{% static 'libs/pdfmake/build/vfs_fonts.js' %}"></script>        
+        <script src="{% static 'libs/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
+        
+        <script src="{% static 'js/pages/datatables.init.js' %}"></script>    
+
+        <script src="{% static 'js/app.js' %}"></script>
+         
+        <script type="text/javascript">          
+            function timeToHuman() {
+                var theDate = new Date(document.u2h.timeStamp.value * 1000);
+                dateString = theDate.toGMTString();
+                document.u2h.result.value = dateString;
+            }       
+            $(document).ready(function () {
+              bsCustomFileInput.init()
+              
+              const fileSelector = document.getElementById('inputGroupFile01');
+              fileSelector.addEventListener('change', (event) => {
+              const fileList = event.target.files[0];
+              console.log(fileList);
+              });
+            })
+        </script>       
+{% endblock %}

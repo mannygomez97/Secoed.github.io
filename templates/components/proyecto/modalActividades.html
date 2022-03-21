@@ -15,9 +15,9 @@
             <div class="card-body">
 
                 <div class="table-responsive">
-                        <table class="table table-primary dt-responsive table-nowrap align-middle"
+                        <table class="table table-hover dt-responsive nowrap w-100 align-middle"
                         style="text-align: center" id = "datatable">
-                                <thead class="table-light">
+                                <thead>
                                     <tr id = "cabecera">
                                         <th>ID</th>
                                         <th>Activividad</th>
@@ -36,8 +36,7 @@
                                         </tr> 
                                     {% endfor %}
                                     {% else %}
-                                    <tr> 
-                                        <th><input type="hidden" name = "id"></th>
+                                    <tr>
                                         <th><input  type="hidden" name = "curso">No hay actividades</th> 
                                         <th><input type="hidden" name = "id"></th>     
                                         <th><input type="hidden" name = "id"></th>                                                                    
@@ -58,7 +57,7 @@
 <!-- Hasta aqui es lo primero -->
 
 <div class="container">
-    <div class="row">     
+    <div class="row">  
         {% if semaforo %}
             <div class = "col col-lg-6">
                 {% for sem in semaforo %}

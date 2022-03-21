@@ -7,6 +7,10 @@
 {% block extra_css %}
 {% endblock %}
 {% block contents %}
+<div>
+    <button type="button" onclick="abrir_Uni_crea('{% url 'agregar_producto_Cab_Cro' %}')" class="btn btn-outline-primary btn-lg"><i class="fas fa-folder-plus"></i></button>
+</div>
+
                         <div class="row">
                             <div class="col-12">
                                 <div class="card">
@@ -23,14 +27,17 @@
                                                     <option>Nombre</option>                                                                       
                                                     <option>Dia de creación</option> 
                                                     <option>Estado</option>
-                                                </select> 
+                                                    <option>Cualquier cosa</option>
+                                                </select>
                                                 <div class="input-group-append">
-                                                    <button class="btn btn-primary" type="submit"><i class="fas fa-search"></i></button>                                                    
-                                                    <button type="button" onclick="abrir_Uni_crea('{% url 'agregar_producto_Cab_Cro' %}')" class="btn btn-secondary"><i class="fas fa-folder-plus"></i></button>                                                                        
-                                                    <!--aqui--> 
-                                                </div> 
+                                                    <button class="btn btn-outline-success btn-lg" type="submit"><i class="fas fa-search"></i></button>                                                                        
+                                                </div>
+
+                                                
                                             </div>
                                         </form>
+
+                                        
                                         <div class="table-responsive">
                                             <table class="table table-editable table-nowrap align-middle table-edits">                                                
                                                 <thead>
@@ -60,8 +67,8 @@
                                                         {% else %}                  
                                                             <td>Aprobado</td>                                                                                                                             
                                                         {% endif %}
-                                                        <td><button onclick="abrir_Uni_edi('{% url 'modificar_producto_Cab_Cro' uni_nombres.Id_Cabecera_Crono %}')" class="btn btn-info btn-sm">Modificar</button>&nbsp;
-                                                            <button onclick="abrir_Uni_edi('{% url 'eliminar_producto_Cab_Cro' uni_nombres.Id_Cabecera_Crono %}')" class="btn btn-danger btn-sm">Eliminar</button></td>                                        
+                                                        <td><button onclick="abrir_Uni_edi('{% url 'modificar_producto_Cab_Cro' uni_nombres.Id_Cabecera_Crono %}')" class="btn btn-outline-warning btn-lg">Modificar</button>&nbsp;
+                                                            <button onclick="abrir_Uni_edi('{% url 'eliminar_producto_Cab_Cro' uni_nombres.Id_Cabecera_Crono %}')" class="btn btn-outline-danger btn-lg">Eliminar</button></td>                                        
                                                     </tr>     
                                                 {% endfor %}
                                             {% else %}                           

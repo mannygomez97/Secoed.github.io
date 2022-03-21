@@ -233,7 +233,7 @@ def loadRequisito(request):
 class FormEducacion(View):
     def get(self, request):
         greeting = {}
-        greeting['heading'] = "Designar asesor curso"
+        greeting['heading'] = "Asesores por cursos."
         greeting['pageview'] = "Forms"
 
         queryset = request.GET.get("buscar")
@@ -317,13 +317,9 @@ class actividades(View):
         else:
             actividad = None
 
-
- 
         greeting = {"heading":"Listado de Actividades", "pageview":"Forms"}
-
         if actividad:
             actividades = [dato for dato in actividad[0]["gradeitems"]]
-        
             cont = 0
             suma = 0
             nota = 0
@@ -333,15 +329,12 @@ class actividades(View):
                     if i["graderaw"]:
                         nota = (i["graderaw"]*100)/i["grademax"]
                         suma = nota + suma
-                        cont = cont + 1                
-
+                        cont = cont + 1
                 if suma == 0:
                     semaforo = 0
                 else:
                     semaforo = suma / cont
-
-                    greeting.update(semaforo = self.semaforo(semaforo))       
-
+                    greeting.update(semaforo = self.semaforo(semaforo))
         return render (request,'components/proyecto/modalActividades.html', greeting)
     
         
@@ -379,7 +372,7 @@ class FormEvaluation(View):
     
         return render (request,'components/proyecto/components-formevaluation.html',{
             "greeting": greeting,
-            "courses": [course['shortname'] for course in coursesList]
+            "courses": [course['fullname'] for course in coursesList]
             })
 
 def historialEvaluations(request):

@@ -23,6 +23,7 @@ class ProcessResultEvaluations(TemplateView):
         auto_ped = 0.00
         auto_did = 0.00
 
+
         n1 = 0.00
         n2 = 0.00
         n3 = 0.00

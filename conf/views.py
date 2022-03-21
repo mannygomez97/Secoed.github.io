@@ -8,9 +8,58 @@ from conf.forms import *
 from conf.models import *
 
 
-class MenuContentView(View):
+from rest_framework.response import Response
+from rest_framework.views import APIView
+from rest_framework.decorators import api_view
+from rest_framework.authtoken.models import Token
+from rest_framework.response import Response
+from django.contrib.auth.hashers import check_password
+from rest_framework.response import Response
+from .serializers import UsuarioSerializer
+from rest_framework import status
+from django.http import Http404
+from rest_framework.permissions import IsAuthenticated
+from rest_framework import permissions
 
-    # Carga los datos iniciales del HTML
+from authentication.models import Usuario
+from django.shortcuts import render, redirect
+
+class LoginUser(APIView):
+    permission_classes = [permissions.AllowAny]
+    def post(self, request, format=None):
+
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        try:
+            user = Usuario.objects.get(username=username)
+        except Usuario.DoesNotExist:
+            return Response(status=status.HTTP_404_NOT_FOUND)
+        
+        if check_password(password, user.password):
+            token = Token.objects.get_or_create(user=user)
+            print(token)
+            return Response(status=status.HTTP_200_OK)
+        else:
+            return Response(status=status.HTTP_400_BAD_REQUEST)
+
+class Usuario_APIView(APIView):
+    permission_classes = [IsAuthenticated]
+    
+    def get(self, request, format=None, *args, **kwargs):
+        user = Usuario.objects.all()
+        serializer = UsuarioSerializer(user, many=True)
+        return Response(serializer.data)
+        
+    def post(self, request, format=None):
+        serializer = UsuarioSerializer(data=request.data)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_201_CREATED)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+class MenuContentView(View):
     def get(self, request):
         menusview = Menu.objects.order_by('orden')
         modulos = Modulo.objects.order_by('descripcion')
@@ -21,7 +70,6 @@ class MenuContentView(View):
     # Metodo para guardar un nuevo menu
     def newMenu(request):
         if request.method == 'POST':
-            print("if")
             menuForm = MenuForm(request.POST)
             if menuForm.is_valid():
                 menuForm.save()
@@ -30,7 +78,6 @@ class MenuContentView(View):
                 messages.error(request, "No se puedo registrar", "error")
             return redirect('menu')
         else:
-            print("else")
             menuFormView = MenuForm()
             menu = Menu()
             view = False
@@ -79,7 +126,8 @@ class MenuContentView(View):
     # AJAX
     def loadMenus(request):
         modulo_id = request.GET.get('modulo_id')
-        menus = Menu.objects.filter(Q(modulo_id=modulo_id) & Q(href__isnull=True)).order_by('descripcion')
+        menus = Menu.objects.filter(Q(modulo_id=modulo_id) & (Q(href__isnull=True) | Q(href=''))).order_by(
+            'descripcion')
         return render(request, 'conf/menuList.html', {'menus': menus})
 
 
@@ -396,7 +444,8 @@ class RolUsuarioContentView(View):
     # Carga los datos iniciales del HTML
     def get(self, request):
         rolesUsuario = RolUser.objects.order_by('descripcion')
-        greeting = {'heading': "Roles de usuario del SECOED", 'pageview': "Administración", 'rolesUsuarioView': rolesUsuario}
+        greeting = {'heading': "Roles de usuario del SECOED", 'pageview': "Administración",
+                    'rolesUsuarioView': rolesUsuario}
         return render(request, 'conf/rolUsuarios.html', greeting)
 
     # Elimina un registro del rol-usuario
@@ -462,3 +511,5 @@ class RolMoodleContentView(View):
             rolMoodle.delete()
             messages.success(request, "Se ha eliminado correctamente", "success")
         return redirect('roles-moodle')
+
+

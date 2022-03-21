@@ -21,11 +21,11 @@
         <div class="col-lg-12">
             <div class="card">
                 <div class="card-body">
-                    <h1 class="card-title" style="margin: 10px; text-align: center;font-size: 2rem">MANTENIMIENTO DE
-                        CURSOS</h1>
+                   <!--  <h1 class="card-title" style="margin: 10px; text-align: center;font-size: 2rem">MANTENIMIENTO DE
+                        CURSOS</h1> -->
                     <div class="tab-pane" id="profile-1" role="tabpanel">
                         {#Boton que acciona el modal cursos#}
-                        <button style="margin: 10px;" type="button" class="btn btn-primary waves-effect waves-light"
+                        <button style="margin: 10px;" type="button" class="btn btn-success"
                                 onclick="limpiarCamposCursos()"
                                 data-bs-toggle="modal" data-bs-target="#modal-categoria">Crear Nuevo Curso
                         </button>
@@ -34,7 +34,6 @@
                                 <thead class="table-light">
                                 <tr>
                                     <th scope="col">Nombre Completo</th>
-                                    <th scope="col">Nombre corto</th>
                                     <th scope="col">Categoria</th>
                                     <th scope="col">Descripcion</th>
                                     <th scope="col">Acciones</th>
@@ -45,27 +44,26 @@
                                     {% for item in cursos.courses %}
                                         <tr>
                                             <td>{{ item.fullname }}</td>
-                                            <td>{{ item.shortname }}</td>
                                             <td>{{ item.categoryname }}</td>
                                             <td>{{ item.summary |striptags }}</td>
                                             <td style="align-items: center; text-align: center">
                                                 <button title="Visualizar" type="button"
                                                         onclick="visualizarCurso({{ item }})"
-                                                        class="btn btn-success waves-effect waves-light"
+                                                        class="btn btn-outline-success"
                                                         data-bs-target="#modal-categoria"
                                                         data-bs-toggle="modal">
                                                     <i class="fas fa-eye"></i>
                                                 </button>
                                                 <button title="Editar" type="button"
                                                         onclick="editarCursos({{ item }})"
-                                                        class="btn btn-warning waves-effect waves-light"
+                                                        class="btn btn-outline-warning"
                                                         data-bs-target="#modal-categoria"
                                                         data-bs-toggle="modal">
                                                     <i class="bx bx-pencil"></i>
                                                 </button>
                                                 <button title="Eliminar" type="button"
                                                         onclick="eliminarCurso({{ item }})"
-                                                        class="btn btn-danger waves-effect waves-light">
+                                                        class="btn btn-outline-danger">
                                                     <i class="bx bx-trash-alt"></i>
                                                 </button>
                                             </td>

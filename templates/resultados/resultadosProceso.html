@@ -1,0 +1,278 @@
+{% extends 'partials/base.html' %}
+{% load static %}
+
+{% load crispy_forms_tags %}
+
+{% block css %}
+    {% include 'partials/css.html' %}
+{% endblock %}
+
+{% block extra_css %}
+    <link href="{% static 'libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css' %}"
+          rel="stylesheet" type="text/css"/>
+    <link href="{% static 'libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css' %}"
+          rel="stylesheet" type="text/css"/>
+    <link href="{% static 'libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css' %}"
+          rel="stylesheet" type="text/css"/>
+{% endblock %}
+
+
+{% block contents %}
+    <div class=row">
+        <button type="button" class="btn btn-primary" onclick="global()"><i class="fas fa-chart-pie"></i> Estadistica global</button>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    {% for pg in parametros_Generales %}
+                        <div id="{{pg.code}}" style="display: none"> {{ pg.value }}  </div>
+                    {% endfor %}
+                    <table id="datatable"
+                           class="table table-primary table-responsive table-nowrap align-middle dt-responsive nowrap w-100"
+                           style="text-align: center">
+                        <thead class="table-light">
+                        <tr>
+                            <th>Estadistica</th>
+                            <th>Semaforo</th>
+                            <th>Docente</th>
+                            <th>Coevaluador</th>
+                            <th>auto_result_Tic</th>
+                            <th>auto_result_Did</th>
+                            <th>auto_result_Ped</th>
+                            <th>Total_Proceso_Auto</th>
+                            <th>coe_result_Tic</th>
+                            <th>coe_result_Did</th>
+                            <th>coe_result_Ped</th>
+                            <th>Total_Proceso_Coe</th>
+                            <th>Total_Proceso</th>
+
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for res in resultados %}
+                            <tr id="tr{{res.user.username}}">
+                                <td><button type="button" class="btn btn-primary btnestadistica" onclick="individual('{{res.user.username}}')"><i class="fas fa-chart-pie"></i></button></td>
+                                <td><div id="semaforo{{res.user.username}}"></div></td>
+                                <td>{{ res.user.nombres}} {{ res.user.apellidos}}</td>
+                                {% if res.coevaluator != null %}
+                                    <td>{{ res.coevaluator }}</td>
+                                {% else %}
+                                    <td>-</td>
+                                {% endif %}
+                                <td>{{ res.auto_result_Tic }}</td>
+                                <td>{{ res.auto_result_Did }}</td>
+                                <td>{{ res.auto_result_Ped }}</td>
+                                <td>{{ res.Total_Proceso_Auto }}</td>
+                                <td>{{ res.coe_result_Tic }}</td>
+                                <td>{{ res.coe_result_Did }}</td>
+                                <td>{{ res.coe_result_Ped }}</td>
+                                <td>{{ res.Total_Proceso_Coe }}</td>
+                                <td>{{ res.Total_Proceso }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+<!-- Modal -->
+    <<div class="modal fade" id="ModalGrafico" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+          <div class="modal-header">
+            <h5 class="modal-title" id="ModalLabel">Estadisticas <div id="nombreestadistica"> </div> </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body">
+              <div class="row" id="Semaforos">
+                  <div class = "col-12">
+                      <div>Indicador semaforo: </div>
+                      <div id="semaforoglobal"></div>
+                  </div>
+              </div>
+            <div class="row" id="Graficas">
+                <div class = "col-6">
+                    <div id="auto"></div>
+                </div>
+                <div class = "col-6">
+                    <div id="coe"></div>
+                </div>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+{% endblock %}
+
+{% block r_sidebar %}
+    {% include 'partials/rightsidebar.html' %}
+{% endblock %}
+
+{% block footer %}
+    {% include 'partials/footer.html' %}
+{% endblock %}
+
+{% block javascript %}
+    <!-- JAVASCRIPT -->
+    <script src="{% static 'libs/jquery/jquery.min.js' %}"></script>
+
+    <script src="{% static 'libs/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+    <script src="{% static 'libs/metismenu/metisMenu.min.js' %}"></script>
+    <script src="{% static 'libs/simplebar/simplebar.min.js' %}"></script>
+    <script src="{% static 'libs/node-waves/waves.min.js' %}"></script>
+
+    <!-- Required datatable js -->
+    <script src="{% static 'libs/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+    <script src="{% static 'libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+    <script src="{% static 'libs/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
+    <script src="{% static 'libs/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js' %}"></script>
+    <script src="{% static 'libs/jszip/jszip.min.js' %}"></script>
+    <script src="{% static 'libs/pdfmake/build/pdfmake.min.js' %}"></script>
+    <script src="{% static 'libs/pdfmake/build/vfs_fonts.js' %}"></script>
+    <script src="{% static 'libs/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
+    <script src="{% static 'libs/datatables.net-buttons/js/buttons.print.min.js' %}"></script>
+    <script src="{% static 'libs/datatables.net-buttons/js/buttons.colVis.min.js' %}"></script>
+    <!-- Responsive examples -->
+    <script src="{% static 'libs/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
+    <script src="{% static 'libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js' %}"></script>
+
+    <script src="{% static 'evaluations/libs/highcharts-8.1.2/highcharts.js' %}"></script>
+    <script src="{% static 'evaluations/libs/highcharts-8.1.2/highcharts-3d.js' %}"></script>
+    <script src="{% static 'evaluations/libs/highcharts-8.1.2/modules/exporting.js' %}"></script>
+    <script src="{% static 'evaluations/libs/highcharts-8.1.2/modules/export-data.js' %}"></script>
+    <script src="{% static 'evaluations/libs/highcharts-8.1.2/modules/accessibility.js' %}"></script>
+
+    <!--SWEET-ALERT -->
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Datatable init js -->
+    <!--<script src="{% static 'js/pages/datatables.init.js' %}"></script>-->
+
+    <script src="{% static 'js/app.js' %}"></script>
+    <script src="{% static 'js/resultados/resultados.js' %}"></script>
+    <script type="text/javascript">
+        $(document).ready(function() {
+
+            $('#datatable').DataTable( {
+                language: {
+                    lengthMenu: "Mostrando _MENU_ resultados por pagina",
+                    zeroRecords: "No se encontraron resultados",
+                    info: "Página _PAGE_ de _PAGES_",
+                    infoEmpty: "o se encontraron resultados",
+                    lengthMenu:     "Mostrar _MENU_ resultados por pagina",
+                    paginate: {
+                        first:      "Primero",
+                        last:       "Ultimo",
+                        next:       "Siguiente",
+                        previous:   "Anterior"
+                    },
+                    search:         "Buscar:",
+                },
+                dom: 'Bfrtip',
+                buttons: {
+                    dom: {
+                        button: {
+                            className: 'btn btn-primary btn-rounded'
+                        }
+                    },
+                    buttons :[
+                    {
+                        extend: 'pdfHtml5',
+                        text: '<i class="fas fa-file-pdf"></i> PDF',
+                        orientation: 'landscape',
+                        pageSize: 'LEGAL',
+                        exportOptions: {
+                            columns: [2,3,4,5,6,7,8,9,10,11,12],
+                        }
+                    },
+                    {
+                        extend: 'csvHtml5',
+                        text: '<i class="fas fa-file-csv"></i> CSV',
+                        title: 'Data export',
+                        orientation: 'landscape',
+                        exportOptions: {
+                            columns: [2,3,4,5,6,7,8,9,10,11,12],
+                        }
+                    }
+                ]}
+            } );
+
+
+
+
+            var id = "";
+            var total = 0;
+            {% for res in resultados %}
+                id = "{{res.user.username}}";
+                total = {{res.Total_Proceso}};
+                mostrarsemaforo(total,id);
+            {% endfor %}
+
+
+        } );
+        function global(){
+
+            var auto_pedagodia = 0;
+            var auto_tics = 0;
+            var auto_didactica = 0;
+            var total_auto_promedio= 0;
+            var coe_pedagodia = 0;
+            var coe_tics = 0;
+            var coe_didactica = 0;
+            var total_coe_promedio= 0;
+            var total_promedio= 0;
+            var contador=0;
+
+            {% for res in resultados %}
+                auto_pedagodia += {{ res.auto_result_Ped }};
+                auto_tics += {{ res.auto_result_Tic }};
+                auto_didactica += {{ res.auto_result_Did }};
+                total_auto_promedio += {{ res.Total_Proceso_Auto }};
+                coe_pedagodia += {{ res.coe_result_Ped }};
+                coe_tics += {{ res.coe_result_Tic }};
+                coe_didactica += {{ res.coe_result_Did }};
+                total_coe_promedio += {{ res.Total_Proceso_Coe }};
+                total_promedio += {{ res.Total_Proceso }};
+                contador++;
+            {% endfor %}
+            auto_pedagodia = auto_pedagodia/contador;
+            auto_tics = auto_tics/contador;
+            auto_didactica = auto_didactica/contador;
+            total_auto_promedio = total_auto_promedio/contador;
+            coe_pedagodia = coe_pedagodia/contador;
+            coe_tics = coe_tics/contador;
+            coe_didactica = coe_didactica/contador;
+            total_coe_promedio = total_coe_promedio/contador;
+            total_promedio = total_promedio/contador;
+            var autoglobal =
+               [
+                   ["Pedagógia",auto_pedagodia],
+                   ["Tics",auto_tics],
+                   ["Didáctica",auto_didactica]
+               ]
+           var coeglobal =
+               [
+                   ["Pedagógia" ,coe_pedagodia],
+                   ["Tics",coe_tics],
+                   ["Didáctica",coe_didactica]
+               ];
+
+            mostrarsemaforo(total_promedio,"global");
+
+            graph_auto_evaluation(total_auto_promedio,autoglobal);
+            graph_co_evaluation(total_coe_promedio,coeglobal);
+            $("#nombreestadistica").html("");
+            $("#ModalGrafico").modal("show");
+        }
+
+
+    </script>
+
+{% endblock %}
