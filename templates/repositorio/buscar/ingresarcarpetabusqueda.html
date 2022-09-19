@@ -1,0 +1,237 @@
+{% extends 'partials/base.html' %}
+
+{% load static %}
+{% load to_and %}
+
+{% block css%}
+    {% include 'partials/css.html' %}
+{% endblock %}
+
+{% block extra_css %}
+    <link href="{% static 'libs/sweetalert2/sweetalert2.min.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'evaluations/libs/datatables/datatables.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'libs/select2/css/select2.min.css' %}" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+
+
+
+
+
+{% block contents %}
+<div class="card-header font-weight-bold text-sm-center">
+    <h3>Busqueda General</h3>
+</div>
+<div class="card">
+
+    <div class="card-header" >
+    <p>
+        <form autocomplete="off" class="d-lg-flex" role="search" action="{% url 'buscargeneral' %}">
+            <input class="form-control me-2" name="buscar" type="buscar" placeholder="Buscar elementos" value="{{request.GET.buscar}}">
+            <button class="btn btn-success" type="submit">Buscar</button>
+        </form>
+        
+    </div>
+
+    <ol class="breadcrumb">
+        <li class="breadcrumb-item"><a href="{% url 'vistabuscargeneral' %}">Incio</a></li>
+        {% for carpeta in breadcrumbs %}
+        
+        {% if forloop.counter0 < 5 %}
+        <li class="breadcrumb-item {% if not forloop.last %} active {% endif %}">  <a href="{% url 'ingresarbusquedacarpeta' carpeta.idcarpeta %}">{{ carpeta.nombre }}</a></li>
+        {% endif %}
+        
+        {% endfor %}
+    </ol>
+
+    <div class="card-body" style="
+    max-width: auto;
+    overflow-x: scroll;
+
+    height: 370px;
+    overflow-y:auto;
+    width:auto;
+    ">
+    
+    {% if messages %}
+    {% for message in messages %}
+
+        {% if message.tags %}
+             <div class="alert alert-{{ message.tags }} msg fade show" role="alert">{{ message }}</div>
+        {% else %}
+            <div class="alert alert-info msg fade show" role="alert">{{ message }}</div>
+        {% endif %}
+
+    {% endfor %}
+{% endif %}
+        <table class="table">
+            <thead>
+                <tr>
+                    <th>Icono</th>
+                    <th>Nombre</th>
+                    <th>Descripcion</th>
+                    <th>Fecha de creacion</th>
+                    <th>Fecha de modificacion</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for carpeta in carpetas %}
+                <tr>
+                    <td><img src="{% static 'images/carpeta.png' %}" alt="" height="35"></td>
+                    <td>{{ carpeta.nombre }}</td>
+                    <td>{{ carpeta.descripcion }}</td>
+                    <td>{{ carpeta.fechacreacion }}</td>
+                    <td>{{ carpeta.fechamodificacion }}</td> 
+                    <td>  
+                        <div class="btn-group mt-4 mt-md-0" role="group" aria-label="Basic example">
+                            <a
+                                title="Ingresar"
+                                    href="{% url 'ingresarbusquedacarpeta' carpeta.idcarpeta %}?buscar={{request.GET.buscar}}"
+                                    class="btn btn-success waves-effect waves-light"
+                                    data-bs-toggle="modal">
+                                <i class="mdi mdi-eye"></i>
+                            </a>
+                            <!--<a
+                                title="Editar"
+                                    href="{% url 'editarbusquedacarpeta' carpeta.idcarpeta %}?buscar={{request.GET.buscar}}"
+                                    class="btn btn-primary waves-effect waves-light">
+                                <i class="mdi mdi-pencil"></i>
+                            </a>-->
+                          
+                            <!--<button
+                                title="Eliminar"
+                                data-toggle="modal" 
+                                onclick="AbrirModal('#TestModal','{% url 'eliminarbusquedacarpeta' carpeta.idcarpeta %}?buscar={{request.GET.buscar}}')"
+                                class="btn btn-danger waves-effect waves-light">
+                                <i class="mdi mdi-eraser"></i>
+                            </button>-->
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+                {% for archivo in archivos %}
+                <tr>
+                    <td><img src="{% static 'images/archivo.png' %}" alt="" height="35"></td>
+                    <td>{{ archivo.nombre }}</td>
+                    <td width="20%">{{ archivo.archivo.name|to_and }} - {{ archivo.descripcion }}</td>
+                    <td>{{ archivo.fechacreacion}}</td>
+                    <td>{{ archivo.fechamodificacion }}</td>
+                    <td> 
+                        <div class="btn-group mt-4 mt-md-0" role="group" aria-label="Basic example">
+                            <!--<a
+                                    title="Editar"
+                                    href="{% url 'editarbusquedaarchivo' archivo.idarchivo %}?buscar={{request.GET.buscar}}"
+                                    class="btn btn-primary waves-effect waves-light"
+                                    data-bs-toggle="modal" title:"Editar">
+                                <i class="mdi mdi-pencil"></i>
+                            </a>-->
+                          
+                            <!--<a
+                                title="Eliminar"
+                                onclick="AbrirModal('#TestModal','{% url 'eliminarbusquedaarchivo' archivo.idarchivo %}?buscar={{request.GET.buscar}}')"
+                                class="btn btn-danger waves-effect waves-light">
+                                <i class="mdi mdi-eraser"></i>
+                            </a>-->
+                            
+                            <a
+                            title="Descargar"
+                                    href="{{ archivo.archivo.url }}"
+                                    class="btn btn-success waves-effect waves-light">
+                                <i class="mdi mdi-download" title:"Editar"></i>
+                            </a>
+                        </div>
+                    </td>
+                </tr>
+                {% endfor %}
+
+            </tbody>
+        </table>
+        
+        
+
+        
+      
+        {% if contar_resultado  == True %}
+        <h3 class="text-center"> No se encontraron resultados por favor intente otra frase</h3>
+        {%endif %}
+        
+    </div>
+
+</div>
+{% endblock %}
+
+
+
+
+
+
+
+{% block notification %}
+    <input type="hidden" name="url_list" value="{{ url_list }}">
+
+    <div id="createModal" class="modal fade" tabindex="-1" aria-hidden="true"></div>
+    <div id="updateModal" class="modal fade" tabindex="-1" aria-hidden="true"></div>
+    <div id="deleteModal" class="modal fade" tabindex="-1" aria-hidden="true"></div>
+
+{% endblock %}
+{% block r_sidebar %}
+    {% include 'partials/rightsidebar.html' %}
+{% endblock %}
+{% block footer %}
+    {% include 'partials/footer.html' %}
+{% endblock %}
+{% block javascript %}
+<div class="modal" id="TestModal" tabindex="-1" role="dialog">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Accionaste el botón de eliminar</h5>
+          <button type="button" onclick="CerrarModal()" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <p>¿Estas seguro de eliminar?</p>
+        </div>
+    
+        <div class="modal-footer">
+          <a   onclick="BorrarItem()" type="button" class="btn btn-success">Sí</a>
+          <button onclick="CerrarModal()" type="button" class="btn btn-danger" data-dismiss="modal">Cancelar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+        <!-- JAVASCRIPT -->
+        <script src="{% static 'libs/jquery/jquery.min.js' %}"></script>
+        <script src="{% static 'libs/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+        <script src="{% static 'libs/metismenu/metisMenu.min.js' %}"></script>
+        <script src="{% static 'libs/simplebar/simplebar.min.js' %}"></script>
+        <script src="{% static 'libs/node-waves/waves.min.js' %}"></script>
+
+        <script src="{% static 'js/app.js' %}"></script>
+         <!-- sweetalert2 -->
+        <script src="{% static 'libs/sweetalert2/sweetalert2.all.min.js' %}"></script>
+        <script src="{% static 'js/eva.js' %}"></script>
+        <script src="{% static 'evaluations/libs/datatables/datatables.js' %}"></script>
+        <script src="{% static 'evaluations/datatables.init.js' %}"></script>
+        <script src="{% static 'libs/select2/js/select2.full.min.js' %}"></script>
+
+        <script type="text/javascript">
+            var url = ""
+            function AbrirModal(item,url2) {
+                    url = url2;
+                    $(item).modal('show');   // show modal/popup
+                } 
+                function BorrarItem() {
+                    window.location.href = url;   // show modal/popup
+                } 
+
+
+                function CerrarModal() {
+               
+                     $("#TestModal").modal('hide');   // show modal/popup
+                } 
+               
+        </script>
+{% endblock %}

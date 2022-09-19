@@ -1,0 +1,18 @@
+<form enctype="multipart/form-data" method="POST">
+    {% csrf_token %}
+
+    <div class="mb-3">
+      
+        {% if campo.field.widget.input_type == 'file' and campo.value %}
+        <br/>
+        <a href="{{MEDIA_URL}}/media/{{campo.value}}">{{campo.value}}</a>
+        <br>
+        {% endif %}
+        
+        {{formulario}}
+    </div>
+    <input name="" id="" class="btn btn-success" type="submit" value="Enviar informacion">
+
+      
+    <a    onclick="goBack()" class="btn btn-danger">Cancelar</a>
+</form>

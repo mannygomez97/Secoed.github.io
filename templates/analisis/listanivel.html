@@ -1,0 +1,143 @@
+{% extends 'partials/base.html' %}
+
+{% load static %}
+
+{% block css%}
+{% include 'partials/css.html' %}
+{% endblock %}
+
+{% block extra_css %}
+<link href="{% static 'libs/sweetalert2/sweetalert2.min.css' %}" rel="stylesheet" type="text/css" />
+<link href="{% static 'evaluations/libs/datatables/datatables.css' %}" rel="stylesheet" type="text/css" />
+<link href="{% static 'libs/select2/css/select2.min.css' %}" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+{% block contents %}
+<div class="row">
+    <div class="col-12">
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+            Agregar Criterio
+        </button>
+
+        <!-- Modal -->
+        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+            aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="staticBackdropLabel">Registra el Criterio de Analisis</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="post" action="{% url 'guardarnivel' %}">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="exampleFormControlInput1">Ingresar Criterio</label>
+                                <input type="text" class="form-control" id="exampleFormControlInput1"
+                                    placeholder="Ingresar..." name="nivel" required>
+                            </div>
+                            <select class="form-control" id="exampleFormControlSelect2" name="ciclo" required
+                                    selected>
+                                    <option value="">Elige una opción</option>
+                                    {% for ciclo in db_ciclo %}
+                                    <option value="{{ciclo.id}}">{{ciclo.name}}</option>
+                                    {% endfor %}
+                            </select>
+                                <hr>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-success">Agregar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <div class="card-body" style="max-width: auto;overflow-x: scroll;height: 350px;overflow-y:auto;width:auto;">
+                <table id="datatable" class="table table-bordered dt-responsive nowrap w-100">
+                    <thead>
+                        <tr role="row">
+                            {% block cols %}
+                            <th>Criterios de Analisis</th>
+                            <th>Acciones</th>
+                            {% endblock %}
+                        </tr>
+                    </thead>
+                    {% for niveles in db_nivel %}
+                    <tbody>
+                        {% block filas %}
+                        <th>{{ niveles.nivel }}</th> 
+                        <th>
+                            <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+                                <a href="{% url 'actualizanivel' niveles.id %}" class="btn btn-primary" >Actualizar</a>
+                                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#staticBackdrop{{ niveles.id }}">
+                                    Eliminar
+                                </button>
+                                </div>
+                                <!---Modal eliminar-->
+                                <div class="modal fade" id="staticBackdrop{{ niveles.id }}" data-bs-backdrop="static"
+                                        data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel"
+                                        aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="staticBackdropLabel">¿Estas Seguro de Eliminar el nivel?
+                                                    </h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">   
+                                                    <p>{{ niveles.nivel }}</p>
+                                                    <hr>
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>  
+                                                    <a href="{% url 'borrarnivel' niveles.id %}" class="btn btn-danger">Borrar</a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                        </th>
+                        {% endblock %}
+                    </tbody>
+                    {% endfor %}
+                </table>
+                </div>
+            </div>
+            <div class="card-footer">
+                    
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block notification %}
+<input type="hidden" name="url_list" value="{{ url_list }}">
+
+<div id="createModal" class="modal fade" tabindex="-1" aria-hidden="true"></div>
+<div id="updateModal" class="modal fade" tabindex="-1" aria-hidden="true"></div>
+<div id="deleteModal" class="modal fade" tabindex="-1" aria-hidden="true"></div>
+
+{% endblock %}
+{% block r_sidebar %}
+{% include 'partials/rightsidebar.html' %}
+{% endblock %}
+{% block footer %}
+{% include 'partials/footer.html' %}
+{% endblock %}
+{% block javascript %}
+<!-- JAVASCRIPT -->
+<script src="{% static 'libs/jquery/jquery.min.js' %}"></script>
+<script src="{% static 'libs/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'libs/metismenu/metisMenu.min.js' %}"></script>
+<script src="{% static 'libs/simplebar/simplebar.min.js' %}"></script>
+<script src="{% static 'libs/node-waves/waves.min.js' %}"></script>
+
+<script src="{% static 'js/app.js' %}"></script>
+<!-- sweetalert2 -->
+<script src="{% static 'libs/sweetalert2/sweetalert2.all.min.js' %}"></script>
+<script src="{% static 'js/eva.js' %}"></script>
+<script src="{% static 'evaluations/libs/datatables/datatables.js' %}"></script>
+<script src="{% static 'evaluations/datatables.init.js' %}"></script>
+<script src="{% static 'libs/select2/js/select2.full.min.js' %}"></script>
+{% endblock %}

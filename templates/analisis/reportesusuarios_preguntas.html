@@ -1,0 +1,115 @@
+{% extends 'partials/base.html' %}
+
+{% load static %}
+
+{% block css%}
+{% include 'partials/css.html' %}
+{% endblock %}
+
+{% block extra_css %}
+<link href="{% static 'libs/sweetalert2/sweetalert2.min.css' %}" rel="stylesheet" type="text/css" />
+<link href="{% static 'evaluations/libs/datatables/datatables.css' %}" rel="stylesheet" type="text/css" />
+<link href="{% static 'libs/select2/css/select2.min.css' %}" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+{% block contents %}
+{% for user in db_usuario %}
+<h3> {{ user.nombres }} {{ user.apellidos }}</h3>
+{% endfor %}
+<div class="row">
+    <div class="col-12">
+        <form method="GET">
+            <label>Criterios</label>
+            <select class="form-control" id="exampleFormControlSelect1" name="buscarnivel" required selected>
+                <option value=""> Buscar criterios ... </option>
+                {% for data in db_nivel %}
+                    <option value="{{data.nivel}}"> {{data.nivel}} </option>
+                {% endfor %}
+            </select>
+            <button type="submit" class="btn btn-success mt-2">Buscar</button>   
+        </form>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <table id="datatable" class="table table-bordered dt-responsive nowrap w-100">
+                    <thead>
+                        <tr role="row">
+                            {% block cols %}
+                            <th>Usuario</th>
+                            <th>Numero</th>
+                            <th>Respuestas</th>
+                            <th>Criterios</th>
+                            {% endblock %}
+                        </tr>
+                    </thead>
+                    {% for usuario in db_data %}
+                    <tbody>
+                        {% block filas %}
+                        <th>{{ usuario.pregunta.pregunta }}</th> 
+                        <th>{{ usuario.respuesta }}</th>              
+                        <th>
+                            
+                                {% if usuario.respuesta == '1' %}
+                                Totalmente en desacuerdo
+                                {% endif %}
+                                {% if usuario.respuesta == '2' %}
+                                Algo en desacuerdo
+                                {% endif %}
+                                {% if usuario.respuesta == '3' %}
+                                Ni de acuerdo ni en desacuerdo
+                                {% endif %}
+                                {% if usuario.respuesta == '4' %}
+                                Resuesta: Algo de acuerdo
+                                {% endif %}
+                                {% if usuario.respuesta == '5' %}
+                                Totalmente de acuerdo
+                                {% endif %} 
+                                    
+                        </th>
+                        <th>{{ usuario.nivel }}</th>
+                        {% endblock %}
+                    </tbody>
+                    {% endfor %}
+                </table>
+            </div>
+            <div class="card-footer">
+                    
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block notification %}
+<input type="hidden" name="url_list" value="{{ url_list }}">
+
+<div id="createModal" class="modal fade" tabindex="-1" aria-hidden="true"></div>
+<div id="updateModal" class="modal fade" tabindex="-1" aria-hidden="true"></div>
+<div id="deleteModal" class="modal fade" tabindex="-1" aria-hidden="true"></div>
+
+{% endblock %}
+{% block r_sidebar %}
+{% include 'partials/rightsidebar.html' %}
+{% endblock %}
+{% block footer %}
+{% include 'partials/footer.html' %}
+{% endblock %}
+{% block javascript %}
+<!-- JAVASCRIPT -->
+<script src="{% static 'libs/jquery/jquery.min.js' %}"></script>
+<script src="{% static 'libs/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'libs/metismenu/metisMenu.min.js' %}"></script>
+<script src="{% static 'libs/simplebar/simplebar.min.js' %}"></script>
+<script src="{% static 'libs/node-waves/waves.min.js' %}"></script>
+
+<script src="{% static 'js/app.js' %}"></script>
+<!-- sweetalert2 -->
+<script src="{% static 'libs/sweetalert2/sweetalert2.all.min.js' %}"></script>
+<script src="{% static 'js/eva.js' %}"></script>
+<script src="{% static 'evaluations/libs/datatables/datatables.js' %}"></script>
+<script src="{% static 'evaluations/datatables.init.js' %}"></script>
+<script src="{% static 'libs/select2/js/select2.full.min.js' %}"></script>
+{% endblock %}

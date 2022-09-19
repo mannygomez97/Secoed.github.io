@@ -1,0 +1,162 @@
+{% extends 'partials/base.html' %}
+
+{% load static %}
+
+{% block css%}
+{% include 'partials/css.html' %}
+{% endblock %}
+
+{% block extra_css %}
+<link href="{% static 'libs/sweetalert2/sweetalert2.min.css' %}" rel="stylesheet" type="text/css" />
+<link href="{% static 'evaluations/libs/datatables/datatables.css' %}" rel="stylesheet" type="text/css" />
+<link href="{% static 'libs/select2/css/select2.min.css' %}" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+{% block contents %}
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <table id="datatable" class="table table-bordered dt-responsive nowrap w-100">
+                    <thead>
+                        <tr role="row">
+                            {% block cols %}
+                            <th>N°</th>
+                            <th>Pregunta</th>
+                            <th>Acciones</th>
+                            {% endblock %}
+                        </tr>
+                    </thead>
+                    
+                    <tbody>
+                        {% for data in db_data %}
+                        {% if data.id not in respuesas_completadas %}
+                            {% block filas %}
+                            
+                            <th>{{ data.id }}</th>
+                            <th>{{ data.pregunta }}</th>
+                            <th>
+                                <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+                                  
+                                    <!-- Button trigger modal -->
+                                    <button type="button" class="btn btn-primary mb-3" data-bs-toggle="modal"
+                                        data-bs-target="#staticBackdrop{{ data.id }}">
+                                        Evaluar
+                                    </button>
+                                    <!-- Modal -->
+                                    <div class="modal fade" id="staticBackdrop{{ data.id }}" data-bs-backdrop="static"
+                                        data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel"
+                                        aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="staticBackdropLabel">Contesta la Evaluacion
+                                                    </h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">
+                                                    <form method="post" action="{% url 'guardarespuestas' %}">
+                                                        {% csrf_token %}
+                                                        <div class="form-group">
+                                                            <input type="hidden" name="username"
+                                                                value="{{request.user.username}}">
+                                                            <input type="hidden" name="nombres"
+                                                                value="{{request.user.nombres}}">
+                                                            <input type="hidden" name="apellidos"
+                                                                value="{{request.user.apellidos}}">
+                                                            <input type="hidden" name="email"
+                                                                value="{{request.user.email}}">
+                                                            <input type="hidden" name="pregunta" value="{{data.id}}">
+                                                            <input type="hidden" name="nivel" value="{{data.nivel}}">
+                                                            <input type="hidden" name="ciclo" value="{{data.ciclo}}">
+                                                            <h6>1 = Totalmente en desacuerdo</h6>
+                                                            <h6>2 = Algo en desacuerdo</h6>
+                                                            <h6>3 = Ni de acuerdo ni en desacuerdo</h6>
+                                                            <h6>4 = Algo de acuerdo</h6>
+                                                            <h6>5 = Totalmente de acuerdo</h6>
+                                                            <label for="exampleFormControlInput1"
+                                                                class="mt-3 text-center">{{data.pregunta}}</label>
+                                                            <br>
+                                                            <div class="form-check form-check-inline mt-3">
+                                                                <input class="form-check-input" type="radio"
+                                                                    name="respuesta" id="inlineRadio1" value="1">
+                                                                <label class="form-check-label" for="inlineRadio1">1</label>
+                                                            </div>
+                                                            <div class="form-check form-check-inline">
+                                                                <input class="form-check-input" type="radio"
+                                                                    name="respuesta" id="inlineRadio2" value="2">
+                                                                <label class="form-check-label" for="inlineRadio2">2</label>
+                                                            </div>
+                                                            <div class="form-check form-check-inline">
+                                                                <input class="form-check-input" type="radio"
+                                                                    name="respuesta" id="inlineRadio3" value="3">
+                                                                <label class="form-check-label" for="inlineRadio3">3</label>
+                                                            </div>
+                                                            <div class="form-check form-check-inline">
+                                                                <input class="form-check-input" type="radio"
+                                                                    name="respuesta" id="inlineRadio4" value="4">
+                                                                <label class="form-check-label" for="inlineRadio4">4</label>
+                                                            </div>
+                                                            <div class="form-check form-check-inline">
+                                                                <input class="form-check-input" type="radio"
+                                                                    name="respuesta" id="inlineRadio5" value="5">
+                                                                <label class="form-check-label" for="inlineRadio5">5</label>
+                                                            </div>
+                                                            <hr>
+                                                        </div>
+                                                        <button type="submit" class="btn btn-success">Enviar</button>
+                                                    </form>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            </th>
+                            {% endblock %}
+                        {% endif %}
+            
+            </tbody>   
+           
+            {% endfor %}
+           
+            </table>
+        </div>
+        <div class="card-footer">
+
+        </div>
+    </div>
+</div>
+</div>
+{% endblock %}
+{% block notification %}
+<input type="hidden" name="url_list" value="{{ url_list }}">
+
+<div id="createModal" class="modal fade" tabindex="-1" aria-hidden="true"></div>
+<div id="updateModal" class="modal fade" tabindex="-1" aria-hidden="true"></div>
+<div id="deleteModal" class="modal fade" tabindex="-1" aria-hidden="true"></div>
+
+{% endblock %}
+{% block r_sidebar %}
+{% include 'partials/rightsidebar.html' %}
+{% endblock %}
+{% block footer %}
+{% include 'partials/footer.html' %}
+{% endblock %}
+{% block javascript %}
+<!-- JAVASCRIPT -->
+<script src="{% static 'libs/jquery/jquery.min.js' %}"></script>
+<script src="{% static 'libs/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'libs/metismenu/metisMenu.min.js' %}"></script>
+<script src="{% static 'libs/simplebar/simplebar.min.js' %}"></script>
+<script src="{% static 'libs/node-waves/waves.min.js' %}"></script>
+
+<script src="{% static 'js/app.js' %}"></script>
+<!-- sweetalert2 -->
+<script src="{% static 'libs/sweetalert2/sweetalert2.all.min.js' %}"></script>
+<script src="{% static 'js/eva.js' %}"></script>
+<script src="{% static 'evaluations/libs/datatables/datatables.js' %}"></script>
+<script src="{% static 'evaluations/datatables.init.js' %}"></script>
+<script src="{% static 'libs/select2/js/select2.full.min.js' %}"></script>
+{% endblock %}

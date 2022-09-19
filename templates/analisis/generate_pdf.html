@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+
+    <head>
+        <meta charset="UTF-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Reporte Pdf</title>
+    <style>
+		* { 
+	margin: 0; 
+	padding: 0; 
+	}
+	body { 
+		font: 14px/1.4 Georgia, Serif; 
+	}
+	#page-wrap {
+		margin: 50px;
+	}
+	p {
+		margin: 20px 0; 
+	}
+
+
+	table { 
+		width: 100%; 
+		border-collapse: collapse; 
+	}
+	/* Zebra striping */
+	tr:nth-of-type(odd) { 
+		background: rgb(20, 116, 66); 
+	}
+	th { 
+		background: rgb(255, 255, 255); 
+		color: rgb(0, 0, 0); 
+		font-weight: bold; 
+	}
+	td, th { 
+		padding: 6px; 
+		border: 1px solid rgba(199, 200, 215, 0.5); 
+		text-align: left; 
+	}
+    .respuestas{
+        margin: auto;
+        text-align: center;
+    }
+    tr { 
+		background: rgb(255, 255, 255); 
+		color: rgb(0, 0, 0); 
+		font-weight: bold; 
+	}
+    .tablacabe{
+        background-color:#28a451;
+        color: white;
+    }
+    .cabeza{
+        color: #1b853e;
+    }
+    .cuerpo{ 
+		background: rgb(255, 255, 255); 
+		color: rgb(0, 0, 0); 
+		font-weight: bold; 
+	}
+
+	</style>
+
+    </head>
+    <body>
+        <img src="../static/images/secoed/logo-secoed.png" style="width: 100px;" align="right">
+        <h2  class="cabeza"style="text-align: center;">Reporte de las Respuestas de Usuario</h2>
+        {% for user in db_usuario %}
+        <h4 class="cabeza">Apellidos y Nombres: <strong>{{ user.apellidos }} {{ user.nombres }}</strong></h4>
+        <h4 class="cabeza">Cedula: <strong>{{ user.identificacion }}</strong></h4>
+        {% endfor %}
+        <!--
+        <table class="table">
+            <thead class="thead-dark">
+              <tr>
+                {% for nivel in db_nivel  %}
+                <th  class="tablacabe">{{ nivel.nivel }}</th>
+                {% endfor %}
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                {% for dataset in item2s  %}
+                    <td  class="cuerpo">{{ dataset}} %</td>
+                {% endfor %}
+                </tr>
+                <tr>
+                    {% for dataset in item2s  %}
+                        {% if dataset <= 20 %}
+                        <td class="cuerpo"><img src="../static/images/eva/rojo.png" style="max-width: 120px;"alt=""></td>
+                        {% endif %}
+                        
+                        {% if dataset >= 21 and dataset <= 40 %}
+                        <td class="cuerpo"><img src="../static/images/eva/rojo.png" style="max-width: 120px;"alt=""></td>
+                        {% endif %}
+                
+                        {% if dataset >= 41 and dataset <= 60   %}
+                        <td class="cuerpo"><img src="../static/images/eva/amarillo.png" style="max-width: 120px;" alt=""></td>
+                        {% endif %}
+                   
+                        {% if dataset >= 61 and dataset <= 80 %}
+                        <td class="cuerpo"><img src="../static/images/eva/azul.png" style="max-width: 120px;" alt=""></td>
+                        {% endif %}
+                  
+                        {% if dataset >= 81 and dataset <= 100 %}
+                        <td class="cuerpo"><img src="../static/images/eva/verde.png" style="max-width: 120px;" alt=""></td>
+                        {% endif %}
+                    {% endfor %}
+                </tr>
+            </tbody>
+        </table>
+    -->
+        <table>
+            <thead>
+                <tr>
+                    <th class="tablacabe" colspan="3">Preguntas</th>
+                    <th class="tablacabe" colspan="1">Respuestas</th>
+                    <th class="tablacabe" colspan="1">Criterios</th>
+                </tr>
+            </thead>
+            {% for usuario in db_data %}
+            <tbody>
+                <th colspan="3">{{ usuario.pregunta.pregunta }}</th> 
+                <th class="respuestas" colspan="1">{{ usuario.respuesta }}</th>    
+                <th colspan="1">{{ usuario.nivel }}</th> 
+            </tbody>
+            {% endfor %}
+        </table>
+
+
+        
+
+                   
