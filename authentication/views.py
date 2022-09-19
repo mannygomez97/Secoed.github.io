@@ -1,3 +1,6 @@
+from os import terminal_size
+from webbrowser import get
+
 import requests
 from django.shortcuts import render, redirect, get_object_or_404
 from django.views.generic.base import View
@@ -11,11 +14,30 @@ from django.utils.http import urlsafe_base64_encode
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.encoding import force_bytes
 from django.db.models.query_utils import Q
-from authentication.models import Usuario
+from authentication.models import Usuario, RolUser, HistoricoUsers
 from authentication.forms import UserRegisterForm
 from secoed.settings import TOKEN_MOODLE, API_BASE, CONTEXT_ID
 
+#DRF
+from authentication import serializers
+from authentication.serializers import RolUserSerializer, UsuarioSerializer
+from rest_framework.views import APIView
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework import permissions
+
+
 username = '';
+
+class GetRolUser(APIView):
+    permissions_classes = [permissions.AllowAny]
+    @api_view(['GET'])
+    def rolUser(request):
+        if request.method == 'GET':
+            roluser = RolUser.objects.all()
+            serializer = RolUserSerializer(roluser, many=True)
+            return Response(serializer.data, status=status.HTTP_200_OK)
 
 
 class PagesLoginView(View):
@@ -39,6 +61,7 @@ class PagesLoginView(View):
                 return redirect('pages-login')
             else:
                 user = auth.authenticate(username=username, password=password)
+                
                 if user is not None:
                     if user.usuario_activo:
                         request.session['username'] = username
@@ -286,10 +309,24 @@ class UsuarioView(View):
     # Consulta el registro de un usuario por su pk
     def viewUsuario(request, pk):
         usuario = get_object_or_404(Usuario, pk=pk)
+
+        print(usuario)
+        testt = HistoricoUsers.objects.filter(idd=1)
+        print(testt)
         usuarioFormView = UserRegisterForm(instance=usuario)
         view = True
         context = {'usuarioFormView': usuarioFormView, 'usuario': usuario, 'view': view}
         return render(request, 'authentication/usuarioForm.html', context)
+
+    # Para los historicos
+    def historicoUsuario(request, pk):
+        usuario = get_object_or_404(Usuario, pk=pk)
+        print(usuario)
+        historico = HistoricoUsers.objects.filter(idd=pk).order_by('id')
+        print(historico)
+        view = True
+        context = {'usuario': usuario, 'historico': historico, 'view': view}
+        return render(request, 'authentication/historicoForm.html', context)
 
     # Editar los datos de un usuario por su pk
     def editUsuario(request, pk):

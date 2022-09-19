@@ -1,3 +1,4 @@
+from pprint import pp
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
@@ -20,6 +21,8 @@ class QuestionsListView(ListView):
         context['pageview'] = cycle.name
         context['create_url'] = reverse_lazy('eva:create-questions')
         context['url_list'] = reverse_lazy('eva:list-questions')
+        context['object_list'] = Pregunta.objects.filter(ciclo_id=self.request.session.get('cicloId'))
+
         return context
 
 
@@ -33,7 +36,9 @@ class QuestionsCreateView(CreateView):
         data = {}
         try:
             if request.is_ajax():
-                form = self.form_class(request.POST)
+                updated_request = request.POST.copy()
+                updated_request.update({'ciclo': self.request.session.get('cicloId')})
+                form = self.form_class(updated_request)
                 if form.is_valid():
                     form.save()
                     message = f'{self.model.__name__} registrada correctamente'
@@ -119,7 +124,7 @@ class PreguntasAutoView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Preguntas de Autoevaluación'
-        context['questions'] = Pregunta.objects.filter(type=1)
+        context['questions'] = Pregunta.objects.filter(type=1,ciclo_id=self.request.session.get('cicloId'))
         context['categories'] = Categoria.objects.all()
         return context
 
@@ -132,6 +137,6 @@ class PreguntasCoeView(TemplateView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['title'] = 'Preguntas de Coevaluación'
-        context['questions'] = Pregunta.objects.filter(type=2)
+        context['questions'] = Pregunta.objects.filter(type=2,ciclo_id=self.request.session.get('cicloId'))
         context['categories'] = Categoria.objects.all()
         return context

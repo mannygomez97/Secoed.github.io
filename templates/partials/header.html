@@ -5,9 +5,7 @@
 <header id="page-topbar">
 
     <div class="navbar-header">
-
         <div class="d-flex">
-            <!-- LOGO -->
             <div class="navbar-brand-box">
                 <a href="{% url 'dashboard' %}" class="logo logo-dark">
                     <span class="logo-sm">
@@ -36,6 +34,20 @@
         </div>
 
         <div class="d-flex">
+            <div id="periodoAcademicoDiv" class="form-group">
+                <div class="">Periodo 
+                    <select name="periodoAcademico" class="select form-control" id="periodoAcademico">
+                    </select> 
+                </div> 
+            </div>
+            <div  class="form-group">
+                <div class="">Ciclo 
+                    <select name="cicloAcademico" class="select form-control" id="cicloAcademico"> 
+                     
+                    </select> 
+                </div> 
+            </div>
+
 
             <div class="dropdown d-none d-lg-inline-block ms-1">
                 <button type="button" class="btn header-item noti-icon waves-effect" data-toggle="fullscreen">
@@ -140,6 +152,8 @@
                     {% endif %}
                 </div>
             </div>
+
+            
         </div>
     </div>
 </header>

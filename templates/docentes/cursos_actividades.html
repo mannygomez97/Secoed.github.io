@@ -1,0 +1,46 @@
+{% load crispy_forms_tags %}
+<div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content" style="width: auto">
+        <div class="modal-header">
+            <h5 class="modal-title">
+                {{ resultList.curso.fullname }}
+            </h5>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"/>
+        </div>
+        <div class="modal-body">
+            <table id="datatable2"
+                   class="table table-primary table-nowrap dt-responsive">
+                <thead class="table-light">
+                <tr style="text-align: center">
+                    <th>ACTIVIDAD</th>
+                    <th>ESTADO</th>
+                    <th>NOTA</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% if resultList.actividades %}
+                    {% for actividades in resultList.actividades %}
+                        {% ifequal actividades.nota 0.00 %}
+                            <tr class="table-success">
+                                <td>{{ actividades.itemname | upper }}</td>
+                                <td>NO EVALUADO</td>
+                                <td> {{ actividades.nota }}</td>
+                            </tr>
+                        {% else %}
+                            <tr class="table-warning">
+                                <td>{{ actividades.itemname | upper }}</td>
+                                <td>EVALUADO</td>
+                                <td> {{ actividades.nota }}</td>
+                            </tr>
+                        {% endifequal %}
+                    {% endfor %}
+                {% else %}
+                    <tr class="table-light">
+                        <td colspan="4">NO DISPONE DE ACTIVIDADES</td>
+                    </tr>
+                {% endif %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>

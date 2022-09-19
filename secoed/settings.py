@@ -1,14 +1,5 @@
 import os
 from pathlib import Path
-from django.contrib.messages import constants as messages
-
-MESSAGE_TAGS = {
-    messages.DEBUG: 'alert-info',
-    messages.INFO: 'alert-info',
-    messages.SUCCESS: 'alert-success',
-    messages.WARNING: 'alert-warning',
-    messages.ERROR: 'alert-danger',
-}
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -22,7 +13,7 @@ SECRET_KEY = 'd!m50t)w$$&ff(*pn7%oqw-1yxo+eub*xcxd^8pzo=*2)ynq=w'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['95.216.216.98', '127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['95.216.216.98', '127.0.0.1', 'localhost', '194.163.151.250']
 
 # Base APP
 
@@ -36,6 +27,7 @@ BASE_APPS = [
     'channels',
     'django_celery_beat',
     'django_celery_results',
+    
 ]
 
 # Third Party App
@@ -44,6 +36,9 @@ THIRD_APPS = [
     'crispy_forms',
     'widget_tweaks',
     'import_export',
+    'corsheaders',
+    'django_filters',
+    'bootstrapform',
 ]
 
 # Local App
@@ -70,13 +65,16 @@ CRISPY_TEMPLATE_PACK = 'bootstrap4'
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
-    'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'easyaudit.middleware.easyaudit.EasyAuditMiddleware',
+    'corsheaders.middleware.CorsMiddleware',
+    'django.middleware.common.CommonMiddleware',
 ]
+
+CORS_ORIGIN_ALLOW_ALL = True
 
 ROOT_URLCONF = 'secoed.urls'
 
@@ -101,25 +99,20 @@ TEMPLATES = [
 WSGI_APPLICATION = 'secoed.wsgi.application'
 ASGI_APPLICATION = 'secoed.asgi.application'
 
-# Database
-# https://docs.djangoproject.com/en/3.1/ref/settings/#databases
 
-# CONEXION DEVELOPER --> debe regitrar su conexion si trabajara con preproduccion
-
-CONEXION_NAME = 'db_secoed'
+# CONEXION DEVELOPER
+CONEXION_NAME = 'db_secoed_prueba2'
 CONEXION_USER = 'secoed'
 CONEXION_PASSWORD = 'secoed2021'
-CONEXION_HOST = 'pgdb'
-CONEXION_PORT = '5432'
+CONEXION_HOST = '95.216.216.98'
+CONEXION_PORT = 5434
 
-"""""
-# CONEXION PRODUCCION --> debe regitrar su conexion si trabajara con produccion
-# CONEXION_NAME = 'db_pro_secoed'
-# CONEXION_USER = 'secoed'
-# CONEXION_PASSWORD = 'secoed2021'
-# CONEXION_HOST = 'pgdb'
-# CONEXION_PORT = 5432
-"""""
+# CONEXION PRODUCCION
+""" CONEXION_NAME = 'db_secoed_prueba2'
+CONEXION_USER = 'secoed'
+CONEXION_PASSWORD = 'secoed2021'
+CONEXION_HOST = '95.216.216.98'
+CONEXION_PORT = '5434' """
 
 DATABASES = {
     'default': {
@@ -199,7 +192,8 @@ DJANGO_EASY_AUDIT_ADMIN_SHOW_AUTH_EVENTS = False
 DJANGO_EASY_AUDIT_ADMIN_SHOW_REQUEST_EVENTS = False
 
 TOKEN_MOODLE = 'cae40824ddd52a292888f736c8843929'
-API_BASE = 'http://academyec.com/moodle/webservice/rest/server.php'
+TOKEN_ROOT = '2fb3df9ba2006ef257f072651b547b3d'
+API_BASE = 'http://secoed.com/moodle/webservice/rest/server.php'
 CONTEXT_ID = 116
 
 CHANNEL_LAYERS = {
@@ -211,12 +205,13 @@ CHANNEL_LAYERS = {
     },
 }
 
-#CELERY SETTINGS
+SERVER_HOST = 'http://95.216.216.98:8086/'
+
+# CELERY SETTINGS
 CELERY_BROKER_URL = 'redis://127.0.0.1:6379'
 CELERY_RESULT_BACKEND = 'django-db'
 CELERY_ACCEPT_CONTENT = ['application/json']
 CELERY_RESULT_SERIALIZER = 'json'
 CELERY_TASK_SELERLIZER = 'json'
 CELERY_TIMEZONE = 'America/Guayaquil'
-
 CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers:DatabaseScheduler'

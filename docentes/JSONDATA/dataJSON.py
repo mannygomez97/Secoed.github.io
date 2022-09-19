@@ -1,4 +1,5 @@
 import json
+from datetime import datetime, date
 
 
 class core_enrol_get_users_courses:
@@ -23,10 +24,19 @@ class core_enrol_get_users_courses:
         self.completionhascriteria = completionhascriteria
         self.completionusertracked = completionusertracked
         self.category = category
-        self.progress = progress
-        self.completed = completed
-        self.startdate = startdate
-        self.enddate = enddate
+        if progress is None:
+            self.progress = '0'
+        else:
+            self.progress = progress
+        if completed is None:
+            self.completed = 'EN PROCESO'
+        else:
+            if completed:
+                self.completed = 'COMPLETO'
+            else:
+                self.completed = 'EN PROCESO'
+        self.startdate = str( datetime.fromtimestamp(startdate))
+        self.enddate = str( datetime.fromtimestamp(enddate))
         self.marker = marker
         self.lastaccess = lastaccess
         self.isfavourite = isfavourite
@@ -64,8 +74,8 @@ class gradeitems:
     def __init__(self, id, itemname, itemtype, itemmodule, iteminstance, itemnumber, idnumber, categoryid, outcomeid,
                  scaleid, locked, graderaw, gradedatesubmitted, gradedategraded, gradehiddenbydate, gradeneedsupdate,
                  gradeishidden, gradeislocked, gradeisoverridden, gradeformatted, grademin,
-                 grademax, rangeformatted, percentageformatted, feedback, feedbackformat, cmid = None, weightraw = None,
-                 status = None, weightformatted = None):
+                 grademax, rangeformatted, percentageformatted, feedback, feedbackformat, cmid=None, weightraw=None,
+                 status=None, weightformatted=None):
         self.id = id
         self.itemname = itemname
         self.itemtype = itemtype
@@ -96,7 +106,7 @@ class gradeitems:
         self.weightformatted = weightformatted
         self.status = status
         if graderaw is not None:
-            self.nota = (graderaw * 100)/grademax
+            self.nota = (graderaw * 100) / grademax
         else:
             self.nota = 0.00
 
@@ -108,10 +118,21 @@ class gradeitems:
     def __repr__(self):
         return f'<gradeitems: {self.itemname}>'
 
+
+class categoria():
+    def __init__(self, name, facultad):
+        self.name = name
+        self.facultad = facultad.replace('<p dir="ltr" style="text-align:left;">','').replace('<br /></p>','')
+
+    def __repr__(self):
+        return f'<categoria: {self.name}>'
+
+
 class course_activities:
-    def __init__(self, curso, actividades):
+    def __init__(self, curso, actividades, categoria):
         self.curso = curso
         self.actividades = actividades
+        self.categoria = categoria
 
     def __repr__(self):
         return f'<curso: {self.curso}>'

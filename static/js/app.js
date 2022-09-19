@@ -90,6 +90,10 @@ File: Main Js File
         });
     }
 
+  
+
+   
+
     function initMenuItemScroll() {
         // focus active menu in left sidebar
         $(document).ready(function () {
@@ -360,3 +364,97 @@ File: Main Js File
 
     init();
 })(jQuery);
+$( document ).ready(function() {
+    getPeriodos();
+});
+
+$("#periodoAcademico").change(function () {
+    const periodoId = $(this).val();
+    const csrftoken = getCookieMain('csrftoken');
+    const url = location.protocol + '//' + location.host + "/cursos/getCycle/" + periodoId;
+    $.ajax({
+        url: url,
+        type: 'GET',
+        headers: {"X-CSRFToken": csrftoken},
+    
+        success: function (data) {
+            $("#cicloAcademico").empty();
+            data.context.forEach( function(valor, indice, array) {
+                if(valor.id == data.cicloId)
+                {
+                    $("#cicloAcademico").append('<option value="' + valor.id + '"selected>' + valor.nombre + '</option>');
+
+                }else{
+                    $("#cicloAcademico").append('<option value="' + valor.id + '">' + valor.nombre + '</option>');
+                }
+            });
+            
+         
+        }, error: function (xhr, status, error) {
+            console.log(xhr);
+        }
+    });
+
+});
+
+$("#cicloAcademico").change(function () {
+    const cycleId = $(this).val();
+    const csrftoken = getCookieMain('csrftoken');
+    const url = location.protocol + '//' + location.host + "/cursos/setSessionCycle/" + cycleId;
+    $.ajax({
+        url: url,
+        type: 'GET',
+        headers: {"X-CSRFToken": csrftoken},
+    
+        success: function (data) {        
+            location.reload();
+         
+        }, error: function (xhr, status, error) {
+            console.log(xhr);
+        }
+    });
+
+});
+
+function getPeriodos() {
+    const csrftoken = getCookieMain('csrftoken');
+    var url = location.protocol + '//' + location.host +  "/cursos/getPeriod";
+    $.ajax({
+        url: url,
+        dataType: "json",
+        type: 'POST',
+        headers: {"X-CSRFToken": csrftoken},
+        success: function (data) {
+            $("#periodoAcademico").empty();
+            // $("#comboCategorias").append('<option value="0">RAIZ</option>');
+            data.context.forEach( function(valor, indice, array) {
+                if(valor.id == data.periodoId)
+                {
+                    $("#periodoAcademico").append('<option value="' + valor.id + '"selected>' + valor.name + '</option>');
+
+                }else{
+                    $("#periodoAcademico").append('<option value="' + valor.id + '">' + valor.name + '</option>');
+                }
+            });
+            $("#periodoAcademico").val("1").change();
+
+         
+        }, error: function (xhr, status, error) {
+            console.log(xhr);
+        }
+    })
+} 
+function  getCookieMain(name){
+    let cookieValue=null;
+    if(document.cookie && document.cookie!= ''){
+        const cookies=document.cookie.split(';');
+        for (let i=0;i<cookies.length;i++){
+            const cookie=cookies[i].trim();
+            if(cookie.substring(0,name.length+1)===(name+'=')){
+                cookieValue=decodeURIComponent(cookie.substring(name.length+1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+} 

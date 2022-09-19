@@ -20,13 +20,29 @@ from django.shortcuts import render, redirect, get_object_or_404
 Notificacion = load_model('notify', 'Notification')
 
 
-def emitirNotificacionRetroalimentacion(user_id, actividad):
+# Emite notificacion de retroalimentacion
+def notificacionRetroalimentacion(usuario,message,feedback):
+    post = Post()
+    post.url = feedback
+    post.title = "Retroalimentación"
+    post.text = message
+    post.user = usuario
+    post.save()
+
+
+# Emite notificacion de automatriculación
+def emitirNotificacion(user_id, texto, accion):
     post = Post()
     post.url = '#'
-    post.title = "Retroalimentación"
-    post.text = "Comuniquese con el evaluador para su respectiva retroalimentacion de la actividad: " + actividad
+    if accion:
+        post.title = "Retroalimentación"
+        post.text = "Comuniquese con el evaluador para su respectiva retroalimentacion de la actividad: " + texto
+    else:
+        post.title = "Automatriculación"
+        post.text = "Debido a su proceso de autoevaluación y coevaluación es necesario una formación en el siguiente curso: " + texto
     post.user = get_object_or_404(Usuario, pk=user_id)
     post.save()
+
 
 class NotificacionView(View):
 

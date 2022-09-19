@@ -5,18 +5,20 @@ from django.core.mail import send_mail
 from django.db import transaction, IntegrityError
 from django.http import JsonResponse
 from django.template.loader import render_to_string
+from django.views import View
+
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView, CreateView
-
+from django.shortcuts import render, redirect, get_object_or_404
 from authentication.models import Usuario
 from conf.models import RolMoodle
 from eva.forms import CoevaluacionForm, AutoEvaluacionForm
 from eva.models import Respuesta, DetalleRespuesta, ResultadoProceso, ParametrosGeneral, Ciclo, \
     Pregunta, Categoria, Tipo, Parametro, Materia, AreasConocimiento, Courses
 from secoed.settings import TOKEN_MOODLE, API_BASE
-
+from notify.views import emitirNotificacion
 
 class TeachersPendingEvaluationList(ListView):
     model = Usuario
@@ -274,8 +276,10 @@ def send_mail_notification(docente: Usuario, coevaluator:Usuario=None, course=No
     email_1 = render_to_string(email_template_name, c)
     if coevaluator is None:
         send_mail(subject, email_1, 'secoed.web@gmail.com', [docente.email], fail_silently=False)
+        emitirNotificacion(docente.id,course,False)
     else:
         send_mail(subject, email_1, 'secoed.web@gmail.com', [coevaluator.email], fail_silently=False)
+        emitirNotificacion(docente.id, course,False)
 
 
 def enroll_course_evaluation(user: Usuario, course):

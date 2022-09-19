@@ -19,42 +19,52 @@
 
 {% block contents %}
     <div class=row">
-        <button type="button" class="btn btn-primary" onclick="global()"><i class="fas fa-chart-pie"></i> Estadistica global</button>
+        <button type="button" class="btn btn-primary" onclick="global()"><i class="fas fa-chart-pie"></i> Estadistica
+            global
+        </button>
     </div>
     <div class="row">
         <div class="col-12">
             <div class="card">
                 <div class="card-body">
                     {% for pg in parametros_Generales %}
-                        <div id="{{pg.code}}" style="display: none"> {{ pg.value }}  </div>
+                        <div id="{{ pg.code }}" style="display: none"> {{ pg.value }}  </div>
                     {% endfor %}
                     <table id="datatable"
-                           class="table table-primary table-responsive table-nowrap align-middle dt-responsive nowrap w-100"
+                           class="table table-primary table-responsive table-striped table-nowrap align-middle nowrap w-100"
                            style="text-align: center">
                         <thead class="table-light">
                         <tr>
-                            <th>Estadistica</th>
-                            <th>Semaforo</th>
+                            <th>Acciones</th>
+                            <th>Semáforo</th>
                             <th>Docente</th>
                             <th>Coevaluador</th>
-                            <th>auto_result_Tic</th>
-                            <th>auto_result_Did</th>
-                            <th>auto_result_Ped</th>
-                            <th>Total_Proceso_Auto</th>
-                            <th>coe_result_Tic</th>
-                            <th>coe_result_Did</th>
-                            <th>coe_result_Ped</th>
-                            <th>Total_Proceso_Coe</th>
-                            <th>Total_Proceso</th>
-
+                            <th>autoevaluación TIC</th>
+                            <th>autoevaluación Didáctica</th>
+                            <th>autoevaluación Pedagogía</th>
+                            <th>Total Autoevaluación</th>
+                            <th>coevaluación TIC</th>
+                            <th>coevaluación Didáctica</th>
+                            <th>coevaluación Pedagogía</th>
+                            <th>Total Coevaluación</th>
+                            <th>Total Proceso</th>
                         </tr>
                         </thead>
                         <tbody>
                         {% for res in resultados %}
-                            <tr id="tr{{res.user.username}}">
-                                <td><button type="button" class="btn btn-primary btnestadistica" onclick="individual('{{res.user.username}}')"><i class="fas fa-chart-pie"></i></button></td>
-                                <td><div id="semaforo{{res.user.username}}"></div></td>
-                                <td>{{ res.user.nombres}} {{ res.user.apellidos}}</td>
+                            <tr id="tr{{ res.user.moodle_user }}">
+                                <td>
+                                    <button type="button" class="btn btn-primary"
+                                            onclick="location.href='{% url 'eva:reporte_individual' res.id %}'">
+                                        <i class="fas fa-file-pdf"></i></button>
+                                    <button type="button" class="btn btn-primary btnestadistica"
+                                            onclick="individual('{{ res.user.moodle_user }}')"><i
+                                            class="fas fa-chart-pie"></i></button>
+                                </td>
+                                <td>
+                                    <div id="semaforo{{ res.user.moodle_user }}"></div>
+                                </td>
+                                <td>{{ res.user.nombres }} {{ res.user.apellidos }}</td>
                                 {% if res.coevaluator != null %}
                                     <td>{{ res.coevaluator }}</td>
                                 {% else %}
@@ -78,37 +88,39 @@
         </div>
     </div>
 
-<!-- Modal -->
-    <<div class="modal fade" id="ModalGrafico" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-lg">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="ModalLabel">Estadisticas <div id="nombreestadistica"> </div> </h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-              <div class="row" id="Semaforos">
-                  <div class = "col-12">
-                      <div>Indicador semaforo: </div>
-                      <div id="semaforoglobal"></div>
-                  </div>
-              </div>
-            <div class="row" id="Graficas">
-                <div class = "col-6">
-                    <div id="auto"></div>
+    <!-- Modal -->
+    <div class="modal fade" id="ModalGrafico" tabindex="-1" aria-labelledby="ModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-lg">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="ModalLabel">Estadisticas
+                        <div id="nombreestadistica"></div>
+                    </h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                 </div>
-                <div class = "col-6">
-                    <div id="coe"></div>
+                <div class="modal-body">
+                    <div class="row" id="Semaforos">
+                        <div class="col-12">
+                            <div>Indicador semaforo:</div>
+                            <div id="semaforoglobal"></div>
+                        </div>
+                    </div>
+                    <div class="row" id="Graficas">
+                        <div class="col-6">
+                            <div id="auto"></div>
+                        </div>
+                        <div class="col-6">
+                            <div id="coe"></div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
                 </div>
             </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          </div>
         </div>
-      </div>
     </div>
-
+    <img id='imglogo' src="/static/images/secoed/logo-secoed.png" alt="" hidden>
 {% endblock %}
 
 {% block r_sidebar %}
@@ -131,6 +143,7 @@
     <!-- Required datatable js -->
     <script src="{% static 'libs/datatables.net/js/jquery.dataTables.min.js' %}"></script>
     <script src="{% static 'libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+    <!-- Buttons examples -->
     <script src="{% static 'libs/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
     <script src="{% static 'libs/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js' %}"></script>
     <script src="{% static 'libs/jszip/jszip.min.js' %}"></script>
@@ -140,6 +153,7 @@
     <script src="{% static 'libs/datatables.net-buttons/js/buttons.print.min.js' %}"></script>
     <script src="{% static 'libs/datatables.net-buttons/js/buttons.colVis.min.js' %}"></script>
     <!-- Responsive examples -->
+    <script src="{% static 'libs/admin-resources/rwd-table/rwd-table.min.js' %}"></script>
     <script src="{% static 'libs/datatables.net-responsive/js/dataTables.responsive.min.js' %}"></script>
     <script src="{% static 'libs/datatables.net-responsive-bs4/js/responsive.bootstrap4.min.js' %}"></script>
 
@@ -158,22 +172,39 @@
     <script src="{% static 'js/app.js' %}"></script>
     <script src="{% static 'js/resultados/resultados.js' %}"></script>
     <script type="text/javascript">
-        $(document).ready(function() {
+        $(document).ready(function () {
+            var today = new Date();
+            const yyyy = today.getFullYear();
+            let mm = today.getMonth() + 1; // Months start at 0!
+            let dd = today.getDate();
 
-            $('#datatable').DataTable( {
+            if (dd < 10) dd = '0' + dd;
+            if (mm < 10) mm = '0' + mm;
+
+            today = dd + '/' + mm + '/' + yyyy;
+            var id = "";
+            var total = 0;
+            {% for res in resultados %}
+                id = "{{res.user.moodle_user}}";
+                total = {{res.Total_Proceso}};
+                mostrarsemaforo(total, id);
+            {% endfor %}
+
+
+            $('#datatable').DataTable({
                 language: {
                     lengthMenu: "Mostrando _MENU_ resultados por pagina",
                     zeroRecords: "No se encontraron resultados",
                     info: "Página _PAGE_ de _PAGES_",
                     infoEmpty: "o se encontraron resultados",
-                    lengthMenu:     "Mostrar _MENU_ resultados por pagina",
+                    lengthMenu: "Mostrar _MENU_ resultados por pagina",
                     paginate: {
-                        first:      "Primero",
-                        last:       "Ultimo",
-                        next:       "Siguiente",
-                        previous:   "Anterior"
+                        first: "Primero",
+                        last: "Ultimo",
+                        next: "Siguiente",
+                        previous: "Anterior"
                     },
-                    search:         "Buscar:",
+                    search: "Buscar:",
                 },
                 dom: 'Bfrtip',
                 buttons: {
@@ -182,53 +213,62 @@
                             className: 'btn btn-primary btn-rounded'
                         }
                     },
-                    buttons :[
-                    {
-                        extend: 'pdfHtml5',
-                        text: '<i class="fas fa-file-pdf"></i> PDF',
-                        orientation: 'landscape',
-                        pageSize: 'LEGAL',
-                        exportOptions: {
-                            columns: [2,3,4,5,6,7,8,9,10,11,12],
-                        }
-                    },
-                    {
-                        extend: 'csvHtml5',
-                        text: '<i class="fas fa-file-csv"></i> CSV',
-                        title: 'Data export',
-                        orientation: 'landscape',
-                        exportOptions: {
-                            columns: [2,3,4,5,6,7,8,9,10,11,12],
-                        }
-                    }
-                ]}
-            } );
+                    buttons: [
+                        {
+                            extend: 'pdfHtml5',
+                            customize: function (doc) {
+                                doc.content.splice(0, 0, {
+                                    margin: [0, 0, 0, 12],
+                                    alignment: 'center',
+                                    height: 50,
+                                    width: 75,
+                                    image: getBase64Image(document.getElementById("imglogo")),
+                                });
+                            },
+                            text: '<i class="fas fa-file-pdf"></i> PDF',
+                            title: `UNIVERSIDAD DE GUAYAQUIL \n Reporte Resultados de Coevaluación y Autoevaluación \n` + today,
+                            orientation: 'landscape',
+                            pageSize: 'LEGAL',
+                            exportOptions: {
+                                columns: [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+                            }
+                        },
+                        {
+                            extend: 'csvHtml5',
+                            text: '<i class="fas fa-file-csv"></i> CSV',
+                            title: `UNIVERSIDAD DE GUAYAQUIL \n Reporte Resultados de Coevaluación y Autoevaluación \n ` + +today,
+                            orientation: 'landscape',
+                            exportOptions: {
+                                columns: [2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+                            }
+                        },
+                        {
+                            extend: 'colvis',
+                            text: '<i class="bx bx-list-check"></i> Columna visible',
+                        },
+                        {
+                            extend: 'colvisRestore',
+                            text: '<i class="bx bx-table"></i> Ver todo',
+                        },
+                    ]
+                }
+            });
 
 
+        });
 
-
-            var id = "";
-            var total = 0;
-            {% for res in resultados %}
-                id = "{{res.user.username}}";
-                total = {{res.Total_Proceso}};
-                mostrarsemaforo(total,id);
-            {% endfor %}
-
-
-        } );
-        function global(){
+        function global() {
 
             var auto_pedagodia = 0;
             var auto_tics = 0;
             var auto_didactica = 0;
-            var total_auto_promedio= 0;
+            var total_auto_promedio = 0;
             var coe_pedagodia = 0;
             var coe_tics = 0;
             var coe_didactica = 0;
-            var total_coe_promedio= 0;
-            var total_promedio= 0;
-            var contador=0;
+            var total_coe_promedio = 0;
+            var total_promedio = 0;
+            var contador = 0;
 
             {% for res in resultados %}
                 auto_pedagodia += {{ res.auto_result_Ped }};
@@ -242,36 +282,51 @@
                 total_promedio += {{ res.Total_Proceso }};
                 contador++;
             {% endfor %}
-            auto_pedagodia = auto_pedagodia/contador;
-            auto_tics = auto_tics/contador;
-            auto_didactica = auto_didactica/contador;
-            total_auto_promedio = total_auto_promedio/contador;
-            coe_pedagodia = coe_pedagodia/contador;
-            coe_tics = coe_tics/contador;
-            coe_didactica = coe_didactica/contador;
-            total_coe_promedio = total_coe_promedio/contador;
-            total_promedio = total_promedio/contador;
+            auto_pedagodia = auto_pedagodia / contador;
+            auto_tics = auto_tics / contador;
+            auto_didactica = auto_didactica / contador;
+            total_auto_promedio = total_auto_promedio / contador;
+            coe_pedagodia = coe_pedagodia / contador;
+            coe_tics = coe_tics / contador;
+            coe_didactica = coe_didactica / contador;
+            total_coe_promedio = total_coe_promedio / contador;
+            total_promedio = total_promedio / contador;
+
+
             var autoglobal =
-               [
-                   ["Pedagógia",auto_pedagodia],
-                   ["Tics",auto_tics],
-                   ["Didáctica",auto_didactica]
-               ]
-           var coeglobal =
-               [
-                   ["Pedagógia" ,coe_pedagodia],
-                   ["Tics",coe_tics],
-                   ["Didáctica",coe_didactica]
-               ];
+                [
+                    ["Pedagógia", auto_pedagodia],
+                    ["Tics", auto_tics],
+                    ["Didáctica", auto_didactica]
+                ]
+            var coeglobal =
+                [
+                    ["Pedagógia", coe_pedagodia],
+                    ["Tics", coe_tics],
+                    ["Didáctica", coe_didactica]
+                ];
 
-            mostrarsemaforo(total_promedio,"global");
+            total_promedio = total_promedio.toFixed(2);
+            total_auto_promedio = total_auto_promedio.toFixed(2);
+            total_coe_promedio = total_coe_promedio.toFixed(2);
+            console.log(total_promedio)
+            mostrarsemaforo(total_promedio, "global");
 
-            graph_auto_evaluation(total_auto_promedio,autoglobal);
-            graph_co_evaluation(total_coe_promedio,coeglobal);
+            graph_auto_evaluation(total_auto_promedio, autoglobal);
+            graph_co_evaluation(total_coe_promedio, coeglobal);
             $("#nombreestadistica").html("");
             $("#ModalGrafico").modal("show");
         }
 
+        function getBase64Image(img) {
+            var canvas = document.createElement("canvas");
+            canvas.width = img.width;
+            canvas.height = img.height;
+            var ctx = canvas.getContext("2d");
+            ctx.drawImage(img, 0, 0);
+            var dataURL = canvas.toDataURL();
+            return dataURL;
+        }
 
     </script>
 

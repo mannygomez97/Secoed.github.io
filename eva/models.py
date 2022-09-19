@@ -6,10 +6,44 @@ from conf.models import Carrera
 
 
 # Migración
+class Ciclo(models.Model):
+    name = models.CharField(max_length=100, unique=True, db_column='nombre')
+    is_active = models.BooleanField(default=False, db_column='es_activo')
+    date_created = models.DateTimeField(auto_now_add=True, db_column='fecha_creacion',
+                                        help_text='Registra la fecha de creación de un valor')
+    date_update = models.DateTimeField(auto_now=True, db_column='fecha_edicion',
+                                       help_text='Fecha de edición del registro')
+
+    def __str__(self):
+        txt = "{0} "
+        return txt.format(self.nombre)
+
+    class Meta:
+        db_table = "pt_ciclo"
+
+class Ciclo2(models.Model):
+    is_active = models.BooleanField(default=False, db_column='activo')
+    date_created = models.DateTimeField(auto_now_add=True, db_column='created_at',
+                                        help_text='Registra la fecha de creación de un valor')
+    date_update = models.DateTimeField(auto_now=True, db_column='update_at',
+                                       help_text='Fecha de edición del registro')
+    nombre = models.CharField(max_length=100, unique=True, db_column='nombre')
+    identificador = models.CharField(max_length=100, unique=True, db_column='identificador')
+    periodo = models.ForeignKey(Ciclo, db_column='periodo_id', null=False, blank=False, on_delete=models.CASCADE)
+
+
+    def __str__(self):
+        return str(self.periodo.name)+ " " + str(self.nombre)
+
+    class Meta:
+        db_table = "ciclo"
+
+# Migración
 class AreasConocimiento(models.Model):
     name = models.CharField(max_length=255, db_column='nombre', unique=True)
     career = models.ForeignKey(Carrera, null=False, blank=False, on_delete=models.CASCADE, db_column='carrera')
     docente = models.ForeignKey(Usuario, null=False, blank=False, on_delete=models.CASCADE, db_column='docente')
+    id_ciclo = models.ForeignKey(Ciclo2, db_column='id_ciclo', null=False, blank=False, on_delete=models.CASCADE)
     date_created = models.DateTimeField(auto_now_add=True, db_column='fecha_creacion',
                                         help_text='Registra la fecha de creación de un valor')
     date_update = models.DateTimeField(auto_now=True, db_column='fecha_edicion',
@@ -34,12 +68,32 @@ class Materia(models.Model):
     date_update = models.DateTimeField(auto_now=True, db_column='fecha_edicion',
                                        help_text='Fecha de edición del registro')
 
+
     def __str__(self):
         txt = "{0} "
         return txt.format(self.name)
 
     class Meta:
         db_table = "pt_materia"
+
+
+
+# Migración
+class MateriaCiclo(models.Model):
+    materia = models.ForeignKey(Materia, db_column='materia_id', null=False, blank=False, on_delete=models.CASCADE)
+    ciclo = models.ForeignKey(Ciclo2, on_delete=models.CASCADE,null=False, blank=False, default=1)
+    date_created = models.DateTimeField(auto_now_add=True, db_column='fecha_creacion',
+                                        help_text='Registra la fecha de creación de un valor')
+    date_update = models.DateTimeField(auto_now=True, db_column='fecha_edicion',
+                                       help_text='Fecha de edición del registro')
+
+
+    def __str__(self):
+        txt = "{0} "
+        return txt.format(self.name)
+
+    class Meta:
+        db_table = "materia_ciclo"
 
 
 # Migración
@@ -59,27 +113,14 @@ class MateriaDocente(models.Model):
         db_table = 'pt_materia_docente'
 
 
-# Migración
-class Ciclo(models.Model):
-    name = models.CharField(max_length=100, unique=True, db_column='nombre')
-    is_active = models.BooleanField(default=False, db_column='es_activo')
-    date_created = models.DateTimeField(auto_now_add=True, db_column='fecha_creacion',
-                                        help_text='Registra la fecha de creación de un valor')
-    date_update = models.DateTimeField(auto_now=True, db_column='fecha_edicion',
-                                       help_text='Fecha de edición del registro')
 
-    def __str__(self):
-        txt = "{0} "
-        return txt.format(self.name)
-
-    class Meta:
-        db_table = "pt_ciclo"
 
 
 # Desarrollo Nuevo FCI-016
 class Categoria(models.Model):
     name = models.CharField(max_length=100, unique=True, db_column='nombre')
     state = models.BooleanField(default=True, db_column='estado')
+    ciclo_id = models.IntegerField(db_column='ciclo_id', null=False, blank=False)
     date_created = models.DateTimeField(auto_now_add=True, db_column='fecha_creacion',
                                         help_text='Registra la fecha de creación de un valor')
     date_update = models.DateTimeField(auto_now=True, db_column='fecha_edicion',
@@ -162,6 +203,8 @@ class Pregunta(models.Model):
                                         help_text='Registra la fecha de creación de un valor')
     date_update = models.DateTimeField(db_column='fecha_edicion', auto_now=True,
                                        help_text='Fecha de edición del registro')
+    ciclo = models.ForeignKey(Ciclo2, on_delete=models.CASCADE,null=False, blank=False, default=1)
+
 
     def __str__(self):
         txt = "{0} "
@@ -205,7 +248,7 @@ class DetalleRespuesta(models.Model):
 class ResultadoProceso(models.Model):
     answer = models.ForeignKey(Respuesta, db_column='respuesta', null=False, blank=False, on_delete=models.CASCADE)
     cycle = models.IntegerField(null=False, blank=False, db_column='ciclo')
-    user = models.ForeignKey(Usuario, null=False, blank=False, on_delete=models.CASCADE, db_column='docente')
+    user = models.IntegerField(null=False, blank=False, db_column='docente')
     coevaluator = models.CharField(max_length=10, null=True, blank=True, db_column='coevaluador')
     auto_result_Tic = models.DecimalField(max_digits=9, decimal_places=2, default=0)
     auto_result_Did = models.DecimalField(max_digits=9, decimal_places=2, default=0)
@@ -225,6 +268,15 @@ class ResultadoProceso(models.Model):
         db_table = "pt_resultado_proceso"
 
 
+class ResultadoProcesoModel():
+    def __init__(self, resultadoProceso, cycle):
+        self.resultadoProceso = resultadoProceso
+        self.cycle = cycle
+
+    def __repr__(self):
+        return f'<ResultadoProcesoModel: {self.resultadoProceso}>'
+
+
 class Courses(models.Model):
     idMoodle = models.IntegerField(db_column='id_moodle')
     sortName = models.CharField(max_length=150, db_column='nombre_corto')
@@ -240,4 +292,3 @@ class Courses(models.Model):
 
     class Meta:
         db_table = 'pt_curso'
-

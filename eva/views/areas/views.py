@@ -16,6 +16,7 @@ class KnowledgeAreasListView(ListView):
         context['heading'] = 'Matenimiento Áreas de Conocimiento'
         cycle = Ciclo.objects.filter(is_active=True).first()
         context['pageview'] = cycle.name
+        context['object_list'] = AreasConocimiento.objects.filter(id_ciclo=self.request.session.get('cicloId'))
         context['action'] = 'add'
         context['create_url'] = reverse_lazy('eva:create-area')
         context['url_list'] = reverse_lazy('eva:list-area')
@@ -32,8 +33,10 @@ class KnowledgeAreasCreateView(CreateView):
         data = {}
         try:
             if request.is_ajax():
+                updated_request = request.POST.copy()
+                updated_request.update({'id_ciclo': self.request.session.get('cicloId')})
                 option = request.POST['action']
-                form = self.get_form()
+                form = self.form_class(updated_request)
                 if option == 'add':
                     form.save()
                     message = f'{self.model.__name__} registrada correctamente'

@@ -1,0 +1,125 @@
+{% extends 'partials/base.html' %}
+{% load static %}
+{% block css%}
+{% include 'partials/css.html' %}
+{% endblock %}
+{% block extra_css %}
+<script src="{% static 'libs/highcharts/data/highcharts.js' %}"></script>
+<script src="{% static 'libs/highcharts/data/exporting.js' %}"></script>
+<script src="{% static 'libs/highcharts/data/export-data.js' %}"></script>
+<script src="{% static 'libs/highcharts/data/accessibility.js' %}"></script>
+{% endblock %}
+{% block contents %}
+<div class="container">
+    <table class="table table-bordered dt-responsive nowrap w-100">
+        <thead class="text-center">
+            <tr>
+                <th>Curso</th>
+                <th>Ciclo</th>
+                <th>Carrera</th>
+            </tr>
+        </thead>
+        <tbody class="text-center">
+            {% for course in infoSecoed %}
+                <tr>
+                    <td>{{course.course.fullname}}</td>
+                    <td>{{course.cicle}}</td>
+                    <td>{{course.carrer.descripcion}}</td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<div class="col-md-12">
+    <figure class="highcharts-figure">
+        <div id="container"></div>
+    </figure>
+</div>
+
+<div class="row">
+    <div class="col-md-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-bordered dt-responsive nowrap w-100">
+                        <thead>
+                            <tr>
+                                <th>Código docente</th>
+                                <th>Nombre docente</th>
+                                <th>Nombre de actividad</th>
+                                <th>Valoración de actividad</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for course in toSave %}
+                                <tr>
+                                    <td>{{course.userid}}</td>
+                                    <td>{{course.userfullname}}</td>
+                                    <td>{{course.activitiesCourse}}</td>
+                                    <td>{{course.scoreCourse}}</td>
+                                </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div> <!-- end col -->
+</div>
+{% endblock %}
+{% block r_sidebar %}
+{% include 'partials/rightsidebar.html' %}
+{% endblock %}
+{% block footer %}
+{% include 'partials/footer.html' %}
+
+{% endblock %}
+{% block javascript %}
+<!-- JAVASCRIPT -->
+<script src="{% static 'libs/jquery/jquery.min.js' %}"></script>
+<script src="{% static 'libs/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'libs/metismenu/metisMenu.min.js' %}"></script>
+<script src="{% static 'libs/simplebar/simplebar.min.js' %}"></script>
+<script src="{% static 'libs/node-waves/waves.min.js' %}"></script>
+
+
+<script src="{% static 'js/app.js' %}"></script>
+<script>
+    Highcharts.chart('container', {
+        chart: { type: 'column' },
+        title: { text: '{{fullname}}' },
+        subtitle: { text: '{{nombre}}' },
+        xAxis: {
+            categories: [
+                {% for item in toSave %}
+                    '{{item.userfullname}}',
+                {% endfor %}],
+            crosshair: true
+        },
+        yAxis: {
+            min: 0,
+            title: { text: 'Escala' }
+        },
+        tooltip: {
+            headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+            pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+                '<td style="padding:0"><b>{point.y:.1f} mm</b></td></tr>',
+            footerFormat: '</table>',
+            shared: true,
+            useHTML: true
+        },
+        plotOptions: {
+            column: {
+                pointPadding: 0.2,
+                borderWidth: 0
+            }
+        },
+        series:
+            [
+                { name: 'Valoración de actividades del curso',
+                data: {{notesChart}}
+                },
+            ]
+    });
+</script>
+{% endblock %}

@@ -1,0 +1,130 @@
+{% extends 'partials/base.html' %}
+{% load static %}
+
+
+{% block css%}
+{% include 'partials/css.html' %}
+{% endblock %}
+{% block extra_css %}
+<link href="{% static 'libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css' %}" rel="stylesheet"
+    type="text/css" />
+<link href="{% static 'libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css' %}" rel="stylesheet"
+    type="text/css" />
+<!-- Responsive datatable examples -->
+<link href="{% static 'libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css' %}" rel="stylesheet"
+    type="text/css" />
+    <link href="{% static 'css/btn.css' %}" rel="stylesheet" type="text/css" />
+{% endblock %}
+{% block contents %}
+
+{% if messages %}
+<ul class="messages">
+    {% for message in messages %}
+    <li{% if message.tags %} class="alert alert-{{ message.tags }}"{% endif %}>{{ message }}</li>
+    {% endfor %}
+</ul>
+{% endif %}
+
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="curso" class="table table-hover dt-responsive nowrap w-100">
+                        <thead>
+                            <tr>
+                                <th>Id</th>
+                                <th>Curso</th>
+                                <th>Ciclo</th>
+                                <th>Carrera</th>
+                                <th>Estado</th>
+                                <th>Menu</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for course in courses %}
+                            <tr>
+                                <td>{{course.id}}</td>
+                                <td>{{course.course}}</td>
+                                <td>{{course.cicle}}</td>
+                                <td>{{course.carrer}}</td>
+                                <td>{{course.status}}</td>
+                                <td style="align-items: center; text-align: center">
+                                    <a title="Eliminar"
+                                        class="btn btn-outline-danger"
+                                        onclick="confirmDelete({{ course.id }})">
+                                        <i class="bx bx-trash-alt"></i>
+                                    </a>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div> <!-- end col -->
+</div> <!-- end row -->
+
+<div class="modal fade" id="create" role="dialog">
+
+</div>
+
+<a href="{% url 'add_course_cicle' %}" class="addEvent"> <i class="bx bx-plus-circle addEvent-icon"></i></a>
+{% endblock %}
+{% block r_sidebar %}
+{% include 'partials/rightsidebar.html' %}
+{% endblock %}
+{% block footer %}
+{% include 'partials/footer.html' %}
+
+{% endblock %}
+{% block javascript %}
+<!-- JAVASCRIPT -->
+<script src="{% static 'js/libs/sweetalert2.all.min.js' %}"></script>
+<script src="{% static 'libs/jquery/jquery.min.js' %}"></script>
+<script src="{% static 'libs/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'libs/metismenu/metisMenu.min.js' %}"></script>
+<script src="{% static 'libs/simplebar/simplebar.min.js' %}"></script>
+<script src="{% static 'libs/node-waves/waves.min.js' %}"></script>
+
+<script src="{% static 'libs/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+
+<script src="{% static 'libs/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'libs/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js' %}"></script>
+<script src="{% static 'libs/jszip/jszip.min.js' %}"></script>
+<script src="{% static 'libs/pdfmake/build/pdfmake.min.js' %}"></script>
+<script src="{% static 'libs/pdfmake/build/vfs_fonts.js' %}"></script>
+<script src="{% static 'libs/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
+
+<script src="{% static 'js/pages/datatables.init.js' %}"></script>
+
+<script src="{% static 'js/app.js' %}"></script>
+
+<script type="text/javascript">
+    function confirmDelete(id) {
+        Swal.fire({
+        title: 'Esta seguro?',
+        text: "Esta acción no se puede revertir!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Confirmar!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            window.location.href = "delete_course_cicle/" + id + "/"
+        }
+    })
+    }
+    $(document).ready(function () {
+        $('#curso').DataTable({
+
+            dom: 'Bfrtip',
+            buttons: []
+        });
+    });
+
+</script>
+{% endblock %}

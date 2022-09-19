@@ -12,13 +12,14 @@
     <th>Nombre</th>
     <th>Estado</th>
     <th>Acción</th>
+    <th>Actual</th>
 {% endblock %}
 <!--Filas de la tabla-->
 {% block filas %}
     {% for item in object_list %}
         <tr>
             <td>{{ item.id }}</td>
-            <td>{{ item.name }}</td>
+            <td>{{ item.nombre }}</td>
             <td>
                 {% if item.is_active %}
                     <span class="rounded-circle btn btn-outline-success btn-sm "><i class="bx bx-check-circle" ></i></span>
@@ -34,6 +35,13 @@
                     <i class="fas fa-trash"></i>
                 </button>
                 {% csrf_token %}
+            </td>
+            <td>
+                {% if item.is_active %}
+                    <span class="rounded-circle btn btn-outline-success btn-sm "><i class="bx bx-check-circle" ></i></span>
+                {%else %}
+                    <span class="rounded-circle btn btn-outline-danger btn-sm"><i class="far fa-times-circle" ></i></span>
+                {% endif %}
             </td>
         </tr>
     {% endfor %}

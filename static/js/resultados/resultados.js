@@ -2,6 +2,7 @@
 function individual(x){
 
     var total = $("#tr"+x+' td:nth-child(13)').text();
+    //alert(total);
 
     var auto =
        [
@@ -15,7 +16,6 @@ function individual(x){
            ["Tics",parseFloat($("#tr"+x+' td:nth-child(9)').text())],
            ["Didáctica",parseFloat($("#tr"+x+' td:nth-child(10)').text())]
        ];
-
    mostrarsemaforo(total,"global");
    var totalauto = parseFloat($("#tr"+x+' td:nth-child(8)').text());
 
@@ -42,19 +42,19 @@ function mostrarsemaforo(total,divid){
        }
        else if(parseFloat(total)<=parseFloat(n2))
        {
-          $(id).html("<img src='../../static/images/eva/naranja.png' style='width: 50%;'>");
+          $(id).html("<img src='../../static/images/eva/amarillo.png' style='width: 50%;'>");
        }
        else if(parseFloat(total)<=parseFloat(n3))
        {
-          $(id).html("<img src='../../static/images/eva/amarillo.png' style='width: 50%;'>");
+          $(id).html("<img src='../../static/images/eva/verde.png' style='width: 50%;'>");
        }
        else if(parseFloat(total)<=parseFloat(n4))
        {
-          $(id).html("<img src='../../static/images/eva/verde.png' style='width: 50%;'>");
+          $(id).html("<img src='../../static/images/eva/azul.png' style='width: 50%;'>");
        }
        else
        {
-          $(id).html("<img src='../../static/images/eva/verde.png' style='width: 50%;'>");
+          $(id).html("<img src='../../static/images/eva/azul.png' style='width: 50%;'>");
        }
 }
 

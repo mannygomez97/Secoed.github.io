@@ -22,22 +22,25 @@
                                             <table id="curso" class="table table-hover dt-responsive nowrap w-100">
                                                 <thead>
                                                 <tr>
-                                                    <!-- <th>Id</th> -->
-                                                    <th>Nombre del Curso</th>                                                     
+                                                    <th>Ciclo</th>
                                                     <th>Fecha Inicio</th>
                                                     <th>Fecha Final</th>
-                                                    <th>Activo</th>                                                                                                                                                      
+                                                    <th>Activo</th>
+                                                    <th>Acciones</th>
                                                 </tr>
                                                 </thead>                
                                                 <tbody>                                                   
                                                 {% if context %}
                                                     {% for item in context %}                            
-                                                        <tr>                              
-                                                            <!-- <td>{{item.id}}</td> -->                                       
-                                                            <td>{{item.ciclo}} {{item.periodo}}</td>                                                           
-                                                            <td>{{item.fecha_inicio}}</td>
-                                                            <td>{{item.fecha_fin}}</td>
-                                                            <td>{{item.estado}}</td>
+                                                        <tr>
+                                                            <td>{{item.year}} {{item.cicle}}</td>                                                           
+                                                            <td>{{item.initDate}}</td>
+                                                            <td>{{item.endDate}}</td>
+                                                            <td>{{item.status}}</td>
+                                                            <td>
+                                                                <a title="Editar" href="{% url 'update_pacademico' item.id %}" class="btn btn-outline-warning btn-sm"><i class="fas fa-edit"></i></a>
+                                                                <a title="Eliminar" href="{% url 'delete_pacademico' item.id %}" class="btn btn-outline-danger btn-sm"><i class="fas fa-trash"></i></a>
+                                                            </td>
                                                         </tr>     
                                                     {% endfor %}
                                                 {% else %}                       

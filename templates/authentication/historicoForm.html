@@ -1,0 +1,49 @@
+
+{% load crispy_forms_tags %}
+
+
+
+{% block contents %}
+
+<div class="modal-dialog modal-lg" role="document" style="width: auto">
+    <div class="modal-content dtr-modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">
+                    Nombres: {{ usuario.nombres }} Apellidos: {{ usuario.apellidos }}
+            </h5>
+        </div>
+        <div class="modal-body">
+            <table id="datatable2" class="table table-primary dataTables_scrollBody "
+                           style="text-align: center">
+                        <thead class="table-light">
+                        <tr>
+                            <th>IDENTIFICACIÓN</th>
+                            <th>APELLIDOS</th>
+                            <th>NOMBRES</th>
+                            <th>EMAIL</th>
+                            <th>ROL</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {% for user in historico %}
+                            <tr>
+                                <td>{{ user.identificacion }}</td>
+                                <td>{{ user.apellidos }}</td>
+                                <td>{{ user.nombres }}</td>
+                                <td>{{ user.email }}</td>
+                                 <td>{{ user.rolhis }}</td>
+                            </tr>
+                        {% endfor %}
+                        </tbody>
+                    </table>
+            </div>
+    <div class="modal-footer">
+            <button type="button" class="btn btn-danger" data-bs-dismiss="modal">
+                    <i class="mdi mdi-close"></i>
+                    Cerrar
+                </button>
+        </div>
+    </div>
+</div>
+{% endblock %}
+

@@ -1,0 +1,90 @@
+{% extends 'partials/base.html' %}
+{% load static %}
+
+{% block css%}
+{% include 'partials/css.html' %}
+{% endblock %}
+{% block extra_css %}
+
+<script src="{% static 'libs/highcharts/data/highcharts.js' %}"></script>
+<script src="{% static 'libs/highcharts/data/exporting.js' %}"></script>
+<script src="{% static 'libs/highcharts/data/export-data.js' %}"></script>
+<script src="{% static 'libs/highcharts/data/accessibility.js' %}"></script>
+
+{% endblock %}
+{% block contents %}
+
+<figure class="highcharts-figure">
+    <div id="container"></div>
+</figure>
+
+
+{% endblock %}
+{% block r_sidebar %}
+{% include 'partials/rightsidebar.html' %}
+{% endblock %}
+{% block footer %}
+{% include 'partials/footer.html' %}
+
+{% endblock %}
+{% block javascript %}                
+        <!-- JAVASCRIPT -->
+        <script src="{% static 'libs/jquery/jquery.min.js' %}"></script>
+        <script src="{% static 'libs/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+        <script src="{% static 'libs/metismenu/metisMenu.min.js' %}"></script>
+        <script src="{% static 'libs/simplebar/simplebar.min.js' %}"></script>
+        <script src="{% static 'libs/node-waves/waves.min.js' %}"></script>
+
+        <script src="{% static 'js/app.js' %}"></script>
+        <script>
+            Highcharts.chart('container', {
+    chart: {
+        type: 'column'
+    },
+    title: {
+        text: '{{fullname}}'
+    },
+    subtitle: {
+        text: '{{nombre}}'
+    }, 
+    xAxis: {
+        categories: [
+        {% for name in context %}
+            '{{name.itemname}}',
+        {% endfor %}
+        ],
+        crosshair: true
+    },
+    yAxis: {
+        min: 0,
+        title: {
+            text: 'Escala'
+        }
+    },
+    tooltip: {
+        headerFormat: '<span style="font-size:10px">{point.key}</span><table>',
+        pointFormat: '<tr><td style="color:{series.color};padding:0">{series.name}: </td>' +
+            '<td style="padding:0"><b>{point.y:.1f} mm</b></td></tr>',
+        footerFormat: '</table>',
+        shared: true,
+        useHTML: true
+    },
+    plotOptions: {
+        column: {
+            pointPadding: 0.2,
+            borderWidth: 0
+        }
+    },
+    series:
+    [
+    
+        {
+            name: 'Valoración',
+            data: [43934, 48656, 65165, 81827, 112143, 142383,
+            171533, 165174, 155157, 161454, 154610]
+        },
+    ]
+});
+        </script>
+
+{% endblock %}

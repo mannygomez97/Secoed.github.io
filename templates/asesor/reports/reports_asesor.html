@@ -1,0 +1,154 @@
+{% extends 'partials/base.html' %}
+{% load static %}
+{% load bootstrap %}
+{% block css%}
+{% include 'partials/css.html' %}
+<script src="{% static 'js/libs/xlsx.full.min.js' %}" ></script>
+<script src="{% static 'js/libs/FileSaver.min.js' %}" ></script>
+<script src="{% static 'js/libs/tableexport.min.js' %}" ></script>
+{% endblock %}
+{% block contents %}
+
+
+
+<div class="container">
+    <form method="get">
+        <div class="row">
+            <div class="col-md-4">
+                <div class="form-group">
+                    {{ myFilter.form.course|bootstrap }}
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    {{ myFilter.form.cicle|bootstrap }}
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    {{ myFilter.form.carrer|bootstrap }}
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    {{ myFilter.form.studentName|bootstrap }}
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="form-group">
+                    {{ myFilter.form.asesor|bootstrap }}
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    {{ myFilter.form.scoreCourse__gt|bootstrap }}
+                </div>
+            </div>
+            <div class="col-md-2">
+                <div class="form-group">
+                    {{ myFilter.form.scoreCourse__lt|bootstrap }}
+                </div>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <div class="form-group text-center">
+                    <button class="btn btn-outline-success" type="submit">Buscar</button>
+                </div>
+            </div>
+        </div>
+    </form>
+
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="tabla" class="table table-bordered dt-responsive nowrap w-100">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">Curso</th>
+                                    <th class="text-center">Docente</th>
+                                    <th class="text-center">No. actividades</th>
+                                    <th class="text-center">Valoración</th>
+                                    <th class="text-center">Semaforización</th>
+                                    <th class="text-center">Asesor</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in page_obj %}
+                                <tr>
+                                    <td>{{item.courseCicleCarrer}}</td>
+                                    <td>{{item.studentName}}</td>
+                                    <td>{{item.activitiesCourse}}</td>
+                                    <td>{{item.scoreCourse}} %</td>
+                                    <td class="text-center">
+                                        {% if item.scoreCourse < 25 %}
+                                            <img src="{% get_static_prefix %}images/components/semaforo1.png" alt="" width="40px" >
+                                        {% elif item.scoreCourse > 25 and item.scoreCourse < 50 %}
+                                            <img src="{% get_static_prefix %}images/components/semaforo1.png" alt="" width="40px" >
+                                        {% elif item.scoreCourse > 50 and item.scoreCourse < 75 %}
+                                            <img src="{% get_static_prefix %}images/components/semaforo2.png" alt="" width="40px" >
+                                        {% elif item.scoreCourse >= 75 and item.scoreCourse < 90 %}
+                                            <img src="{% get_static_prefix %}images/components/semaforo3.png" alt="" width="40px" >
+                                        {% elif item.scoreCourse >= 90 %}
+                                            <img src="{% get_static_prefix %}images/components/semaforo4.jpg" alt="" width="40px" >
+                                        {% endif %}
+                                    </td>
+                                    <td>{{item.userCreated}}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div>
+                        <span class="step-links">
+                            {% if page_obj.has_previous %}
+                            <a href="?page=1">&laquo; 1</a>
+                            <a href="?page={{ page_obj.previous_page_number }}">Previa</a>
+                            {% endif %}
+
+                            <span class="current">
+                                Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}.
+                            </span>
+
+                            {% if page_obj.has_next %}
+                            <a href="?page={{ page_obj.next_page_number }}">Próxima</a>
+                            <a href="?page={{ page_obj.paginator.num_pages }}">&raquo;Ultima</a>
+                            {% endif %}
+                    </div>
+                    <input type="hidden" id="user" value="{{asesor}}">
+                    <div class="text-center">
+                        <input type="button" class="btn btn-outline-info" onclick="generate()" value="Exportar a PDF" />
+                        <button class="btn btn-success" id="btnExportar"> Exportar a Excel</button>
+                    </div> 
+                </div> <!-- end col -->
+            </div> <!-- end row -->
+        </div> <!-- container-fluid -->
+    </div>
+</div>
+
+
+{% endblock %}
+{% block r_sidebar %}
+{% include 'partials/rightsidebar.html' %}
+{% endblock %}
+{% block footer %}
+{% include 'partials/footer.html' %}
+
+{% endblock %}
+{% block javascript %}
+<!-- JAVASCRIPT -->
+<script src="{% static 'js/reports/toExcel.js' %}"></script>
+<script src="{% static 'js/reports/toPdf.js' %}"></script>
+<script src="{% static 'js/libs/jspdf.min.js' %}"></script>
+<script src="{% static 'js/libs/jspdf.plugin.autotable.min.js' %}"></script>
+
+<script src="{% static 'libs/jquery/jquery.min.js' %}"></script>
+<script src="{% static 'libs/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'libs/metismenu/metisMenu.min.js' %}"></script>
+<script src="{% static 'libs/simplebar/simplebar.min.js' %}"></script>
+<script src="{% static 'libs/node-waves/waves.min.js' %}"></script>
+<script src="{% static 'js/app.js' %}"></script>
+
+{% endblock %}

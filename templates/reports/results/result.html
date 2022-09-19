@@ -11,6 +11,11 @@
 {% endblock %}
 
 {% block contents %}
+<div class ="row">
+    {% if total > 0 %}
+        <h3 style="color: {{ colortotal }}; font-style: italic; font-weight: bold">Total del proceso: {{ total }} </h3>
+    {% endif %}
+</div>
 
 <div class="row">
 {% if auto.Total_Proceso_Auto > 0 %}
@@ -19,10 +24,16 @@
     </div>
 
     <div class="col-6">
-        <div class="card">
-            <div class="card-body">
+        <div class="card"  >
+            <div class="card-body" style="text-align: center">
+                <span class="d-none d-sm-block">TIC: {{ result_atic }}</span>
+                <img src="{% static semaforo_atic %}" alt="" style="width: 50%;">
+                <span class="d-none d-sm-block">Didáctica: {{ result_adid }}</span>
+                <img src="{% static semaforo_adid %}" alt="" style="width: 50%;">
+                <span class="d-none d-sm-block">Pedagogía: {{ result_aped }}</span>
+                <img src="{% static semaforo_aped %}" alt="" style="width: 50%;">
                 <!-- Nav tabs -->
-                <ul class="nav nav-pills nav-justified" role="tablist">
+                <!--<ul class="nav nav-pills nav-justified" role="tablist">
                     <li class="nav-item waves-effect waves-light">
                         <a class="nav-link active" data-bs-toggle="tab" href="#tics" role="tab" aria-selected="true">
                             <span class="d-block d-sm-none"><i class="fas fa-home"></i></span>
@@ -41,17 +52,17 @@
                             <span class="d-none d-sm-block">Pedagogia</span>
                         </a>
                     </li>
-                </ul>
+                </ul>-->
 
                 <!-- Tab panes -->
-                <div class="tab-content p-3 text-muted">
+                <!-- <div class="tab-content p-3 text-muted">
                     <div class="tab-pane active" id="tics" role="tabpanel">
                         <div id="semaforo">
                             <div class="card">
                                 <div class="card-header bg-transparent border-bottom" style="text-align: center">
                                     <h4>Usted se encuentra en semáforo</h4>
                                 </div>
-                                <div class="card-body" style="text-align: center">
+                                <div class="card-body" style="text-align: center"> {{ semaforo_atic }}
                                     <img src="{% static semaforo_atic %}" alt="" style="width: 85%;">
                                 </div>
                             </div>
@@ -82,7 +93,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div>-->
 
                 </div>
             </div>
@@ -118,9 +129,15 @@
 
     <div class="col-6">
         <div class="card">
-            <div class="card-body">
+            <div class="card-body" style="text-align: center">
+                <span class="d-none d-sm-block">TIC: {{ result_ctic }}</span>
+                <img src="{% static semaforo_ctic %}" alt="" style="width: 50%;">
+                <span class="d-none d-sm-block">Didáctica: {{ result_cdid }}</span>
+                <img src="{% static semaforo_cdid %}" alt="" style="width: 50%;">
+                <span class="d-none d-sm-block">Pedagogía: {{ result_cped }}</span>
+                <img src="{% static semaforo_cped %}" alt="" style="width: 50%;">
                 <!-- Nav tabs -->
-                <ul class="nav nav-pills nav-justified" role="tablist">
+                <!-- <ul class="nav nav-pills nav-justified" role="tablist">
                     <li class="nav-item waves-effect waves-light">
                         <a class="nav-link active" data-bs-toggle="tab" href="#c_tics" role="tab" aria-selected="true">
                             <span class="d-block d-sm-none"><i class="fas fa-home"></i></span>
@@ -139,10 +156,10 @@
                             <span class="d-none d-sm-block">Pedagogia</span>
                         </a>
                     </li>
-                </ul>
+                </ul>-->
 
                 <!-- Tab panes -->
-                <div class="tab-content p-3 text-muted">
+                <!-- <div class="tab-content p-3 text-muted">
                     <div class="tab-pane active" id="c_tics" role="tabpanel">
                         <div id="semaforo">
                             <div class="card">
@@ -179,7 +196,7 @@
                             </div>
                         </div>
                     </div>
-                </div>
+                </div>-->
             </div>
         </div>
     </div>

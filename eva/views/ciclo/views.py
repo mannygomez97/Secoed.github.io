@@ -1,31 +1,31 @@
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
-from eva.models import Ciclo
+from eva.models import Ciclo2
 from eva.forms import CicloForm
 from django.http import JsonResponse
 
 
 class CycleListView(ListView):
-    model = Ciclo
+    model = Ciclo2
     template_name = 'ciclo/list.html'
     success_url = reverse_lazy('eva:list-cycle')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['heading'] = 'Matenimiento Ciclos'
-        cycle = Ciclo.objects.filter(is_active=True).first()
-        context['pageview'] = cycle.name
+        context['heading'] = 'Mantenimiento Ciclo'
+        cycle = Ciclo2.objects.filter(is_active=True).first()
+        context['pageview'] = cycle.nombre
         context['create_url'] = reverse_lazy('eva:create-cycle')
         context['url_list'] = reverse_lazy('eva:list-cycle')
         return context
 
 
 class CycleCreateView(CreateView):
-    model = Ciclo
+    model = Ciclo2
     form_class = CicloForm
     template_name = "ciclo/create.html"
-    success_url = reverse_lazy('eva:list-cycle')
+    success_urls = reverse_lazy('eva:list-cycle')
     
     def post(self, request, *args, **kwargs):
         data = {}
@@ -33,7 +33,7 @@ class CycleCreateView(CreateView):
             if request.is_ajax():
                 form = self.form_class(request.POST)
                 if form.is_valid():
-                    ciclo = Ciclo.objects.filter(is_active=True).first()
+                    ciclo = Ciclo2.objects.filter(is_active=True).first()
                     if ciclo is not None and ciclo.is_active and request.POST['option'] == 'true':
                         message = f'El ciclo {ciclo.name} se encuentra altualmente activo '
                         error = {'Error ': 'El ciclo ' + ciclo.name + ' se encuentra activo'}
@@ -65,7 +65,7 @@ class CycleCreateView(CreateView):
     
 
 class CycleUpdateView(UpdateView):
-    model = Ciclo
+    model = Ciclo2
     form_class = CicloForm
     template_name = "ciclo/update.html"
     success_url = reverse_lazy('eva:list-cycle')
@@ -101,7 +101,7 @@ class CycleUpdateView(UpdateView):
 
 
 class CycleDeleteView(DeleteView):
-    model = Ciclo
+    model = Ciclo2
     success_url = reverse_lazy('eva:list-cycle')
 
     def delete(self, request, *args, **kwargs):

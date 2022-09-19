@@ -1,0 +1,108 @@
+{% extends 'partials/base.html' %}
+{% load static %}
+
+{% block css%}
+{% include 'partials/css.html' %}
+{% endblock %}
+{% block extra_css %}
+
+<link href="{% static 'css/fullcalendar/main.css' %}" rel="stylesheet" type="text/css" />
+<link href="{% static 'css/btn.css' %}" rel="stylesheet" type="text/css" />
+<!-- Responsive datatable examples -->
+{% endblock %}
+{% block contents %}
+
+<div id="calendar" class="card" style="padding: 20px;"></div>
+
+<div>
+    <div class="text-center" style="padding: 1em;">
+        <h4><strong>Eventos del calendario</strong></h4>
+    </div>
+    <div class="row">
+        <div class="col-12">
+            <div class="card">
+                <div class="card-body">
+                    <div class="table-responsive">
+                        <table id="curso" class="table table-hover dt-responsive nowrap w-100">
+                            <thead>
+                                <tr>
+                                    <th>Nombre del evento</th>
+                                    <th>Tipo Moodle</th>
+                                    <th>Opción</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in events %}
+                                <tr>
+                                    <td>{{item.name}}</td>
+                                    <td>{{item.repeatid}}</td>
+                                    <td><a href="{% url 'del_schedule_event' courseid item.id item.repeatid fullname %}"
+                                            class="btn btn-outline-danger btn-sm">Eliminar</a></td>
+                                    <!-- <td><a onclick="confirmDelete({{item}})"
+                                            class="btn btn-outline-danger btn-sm">Eliminar</a></td> -->
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div> <!-- end col -->
+    </div> <!-- end row -->
+</div>
+
+<a href="{% url 'form_add_schedule_event' courseid fullname  %}" class="addEvent"> <i
+        class="bx bx-plus-circle addEvent-icon"></i></a>
+
+{% endblock %}
+{% block r_sidebar %}
+{% include 'partials/rightsidebar.html' %}
+{% endblock %}
+{% block footer %}
+{% include 'partials/footer.html' %}
+
+{% endblock %}
+{% block javascript %}
+<!-- JAVASCRIPT -->
+<script src="{% static 'libs/jquery/jquery.min.js' %}"></script>
+<script src="{% static 'libs/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'libs/metismenu/metisMenu.min.js' %}"></script>
+<script src="{% static 'libs/simplebar/simplebar.min.js' %}"></script>
+<script src="{% static 'libs/node-waves/waves.min.js' %}"></script>
+
+<script src="{% static 'libs/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+
+<script src="{% static 'libs/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'libs/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js' %}"></script>
+<script src="{% static 'libs/jszip/jszip.min.js' %}"></script>
+<script src="{% static 'libs/pdfmake/build/pdfmake.min.js' %}"></script>
+<script src="{% static 'libs/pdfmake/build/vfs_fonts.js' %}"></script>
+<script src="{% static 'libs/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
+
+<script src="{% static 'js/fullcalendar/main.js' %}"></script>
+<script src="{% static 'js/pages/datatables.init.js' %}"></script>
+
+<script src="{% static 'js/app.js' %}"></script>
+
+<script type="text/javascript">
+    document.addEventListener('DOMContentLoaded', function () {
+        var calendarUI = document.getElementById('calendar')
+        var calendar = new FullCalendar.Calendar(calendarUI, {
+            events: [
+                {% for evnt in events %}
+                                {
+                title: '{{evnt.name}}' + ' > ' + '{{evnt.description}}',
+                start: new Date('{{evnt.timestart}}' * 1000),
+                end: new Date(((parseInt('{{evnt.timestart}}')) + (parseInt('{{evnt.timeduration}}'))) * 1000)
+            },
+            {% endfor %}
+                    ]
+                })
+    calendar.render()
+            })
+    function confirmDelete(item) {
+        console.log(item)
+    }
+</script>
+{% endblock %}

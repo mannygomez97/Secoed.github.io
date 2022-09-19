@@ -2,7 +2,7 @@ from django.forms import *
 
 from conf.models import Rol, RolMoodle
 from eva.models import *
-
+from django import forms
 
 class DocenteForm(ModelForm):
     def __init__(self, *args, **kwargs):
@@ -55,7 +55,8 @@ class MateriaForm(ModelForm):
         widgets = {
             'area': Select(attrs={'class': 'form-select select2-templating'}),
             'teacher': Select(attrs={'class': 'form-select select2-templating'}),
-            'name': TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre de la materia'})
+            'name': TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre de la materia'}),
+            'ciclo': forms.HiddenInput()
         }
 
     def save(self, commit=True):
@@ -108,7 +109,9 @@ class CategoriaForm(ModelForm):
         fields = '__all__'
 
         widgets = {
-            'name': TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre de la categoria'})
+            'name': TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre de la categoria'}),
+            'ciclo_id': forms.HiddenInput()
+
         }
 
     def save(self, commit=True):
@@ -170,7 +173,8 @@ class PreguntaForm(ModelForm):
             'category': Select(attrs={'class': 'form-select'}),
             'title': TextInput(attrs={'class': 'form-control', 'placeholder': 'Aquí un título para la pregunta'}),
             'description': TextInput(attrs={'class': 'form-control', 'placeholder': 'Descripción de la pregunta'}),
-            'type': Select(attrs={'class': 'form-control select2'})
+            'type': Select(attrs={'class': 'form-control select2'}),
+            'ciclo': forms.HiddenInput()
         }
 
 
@@ -188,6 +192,7 @@ class AreasConocimientoForm(ModelForm):
     class Meta:
         model = AreasConocimiento
         fields = '__all__'
+        
 
         labels = {'name': 'Nombre', 'career': 'Carrera', 'docente': 'Docente', 'materia': 'Materia'}
 
@@ -195,6 +200,7 @@ class AreasConocimientoForm(ModelForm):
             'name': TextInput(attrs={'class': 'form-control', 'placeholder': 'Aquí nombre del área de conocimiento'}),
             'career': Select(attrs={'class': 'form-select select2'}),
             'docente': Select(attrs={'class': 'form-select select2'}),
+            'id_ciclo': forms.HiddenInput()
         }
 
     # def save(self, commit=True):

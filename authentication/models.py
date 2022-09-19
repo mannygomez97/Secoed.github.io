@@ -1,7 +1,7 @@
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.db import models
 
-from conf.models import Rol, RolMoodle
+from conf.models import Facultad, Rol, RolMoodle
 
 # Utils
 from django.utils import timezone
@@ -56,9 +56,10 @@ class Usuario(AbstractBaseUser):
     direccion = models.CharField('Direccion domiciliaria', max_length=500)
     telefono = models.CharField('Teléfono', max_length=50)
     usuario_activo = models.BooleanField(default=True)
+    idPeriodoUltimo = models.IntegerField(db_column='idPeriodoUltimo', null=False, blank=False, default=1)
+    idCicloUltimo = models.IntegerField(db_column='idCicloUltimo', null=False, blank=False, default=1)
     usuario_administrador = models.BooleanField(default=False)
-    imagen = models.ImageField('Imagen de perfil', upload_to='user/', max_length=200, blank=False, null=True,
-                               height_field=None)
+    imagen = models.ImageField('Imagen de perfil', upload_to='user/', max_length=200, blank=False, null=True,height_field=None)
     roles = models.ManyToManyField(Rol, blank=False, through='RolUser')
     rol_moodle = models.ForeignKey(RolMoodle, on_delete=models.SET_NULL, null=True)
     objects = UsuarioManger()
@@ -67,7 +68,7 @@ class Usuario(AbstractBaseUser):
     REQUIRED_FIELDS = ['email', 'nombres', 'apellidos', 'identificacion', 'telefono']
 
     def __str__(self):
-        return f'{self.nombres},{self.apellidos}'
+        return f'{self.nombres} {self.apellidos}'
 
     def has_perm(self, perm, obj=None):
         return True
@@ -89,10 +90,34 @@ class RolUser(models.Model):
     descripcion = models.TextField(max_length=1000, null=True)
 
     def __str__(self):
-        return f'{self.descripcion}'
+        return f'{self.user} {self.rol}'
 
     class Meta:
         db_table = 'conf_rol_user'
+
+class FacultyUser(models.Model):
+    user = models.ForeignKey(Usuario, on_delete=models.SET_NULL, null=True)
+    faculty = models.ForeignKey(Facultad, on_delete=models.SET_NULL, null=True)
+
+    def __str__(self):
+        return f'{self.user} {self.faculty}'
+
+    class Meta:
+        db_table = 'conf_faculty_user'
+
+class HistoricoUsers(models.Model):
+    idd = models.IntegerField()
+    username = models.CharField(max_length=100)
+    email = models.CharField(max_length=254)
+    nombres = models.CharField(max_length=200)
+    apellidos = models.CharField(max_length=200)
+    identificacion = models.CharField(max_length=20)
+    direccion = models.CharField(max_length=500)
+    telefono = models.CharField(max_length=100)
+    rolhis = models.CharField(max_length=100)
+
+    class Meta:
+        db_table = 'conf_user_repo'
 
 
 class Post(models.Model):

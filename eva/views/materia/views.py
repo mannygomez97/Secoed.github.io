@@ -1,7 +1,7 @@
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
-from eva.models import Materia, Ciclo
+from eva.models import Materia, Ciclo, MateriaCiclo
 from eva.forms import MateriaForm
 from django.http import JsonResponse
 
@@ -16,6 +16,8 @@ class MatterListView(ListView):
         context['heading'] = 'Matenimiento Materia'
         cycle = Ciclo.objects.filter(is_active=True).first()
         context['pageview'] = cycle.name
+        context['object_list'] =  Materia.objects.filter( materiaciclo__ciclo_id = self.request.session.get('cicloId'))
+
         context['create_url'] = reverse_lazy('eva:create-matter')
         context['url_list'] = reverse_lazy('eva:list-matter')
         return context
@@ -33,7 +35,8 @@ class MatterCreateView(CreateView):
             if request.is_ajax():
                 form = self.form_class(request.POST)
                 if form.is_valid():
-                    form.save()
+                    form.save()                    
+                    MateriaCiclo.objects.create(id = 500,materia_ids=form.id, ciclo_id=1)
                     message = f'{self.model.__name__} registrada correctamente'
                     error = 'No han ocurrido errores'
                     response = JsonResponse({'message': message, 'error': error})

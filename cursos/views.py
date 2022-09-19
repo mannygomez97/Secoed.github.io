@@ -1,18 +1,22 @@
 from builtins import print
-
 import delorean
 from django.http import JsonResponse
 from django.shortcuts import render, redirect
+from eva.models import Ciclo, Ciclo2
+from .models import CoursesMoodle
 import requests
-from django.utils.datetime_safe import datetime
+from datetime import datetime, date, timedelta, time
+from conf.models import Carrera, Facultad
+from django.core import serializers
+from conf.models import Carrera
+from authentication.models import Usuario, FacultyUser
+from django.core.serializers import json
+from django.core import serializers
 # Create your views here.
 from django.views import View
 
 from secoed.settings import TOKEN_MOODLE, API_BASE
-
-
 class CursoView(View):
-
     def categoria(request):
         params = {"wstoken": TOKEN_MOODLE,
                   "wsfunction": "core_course_get_categories",
@@ -33,7 +37,7 @@ class CursoView(View):
     def createEditCategoria(request):
         texto = ""
         if (request.POST['id'] == ""):
-            wsfunction = "core_course_create_categories";
+            wsfunction = "core_course_create_categories"
             params = {"wstoken": TOKEN_MOODLE,
                       "wsfunction": wsfunction,
                       "moodlewsrestformat": "json",
@@ -89,11 +93,29 @@ class CursoView(View):
             print(e)
         return redirect('categoria')
 
+
+    def getPeriod(request):
+        period = list(Ciclo.objects.filter(is_active=True).values())
+        periodoId = request.session.get('periodoId')
+        return JsonResponse({'context': period, 'periodoId' : periodoId})
+
+    def getCycle(request,periodoId): 
+        request.session['periodoId'] = periodoId       
+        ciclo = list(Ciclo2.objects.filter(periodo=periodoId).values())
+        ciclo_idSession = request.session.get('cicloId')
+        return JsonResponse({'context': ciclo, 'cicloId': ciclo_idSession})
+
+    def setSessionCycle(request,cycleId):
+        request.session['cicloId'] = cycleId
+        return JsonResponse({'context': request.session['cicloId']})
+
+   
+            
     def get(self, request):
         params = {"wstoken": TOKEN_MOODLE,
-        "wsfunction": "core_course_get_courses_by_field ",
-        "moodlewsrestformat": "json",
-        }
+                  "wsfunction": "core_course_get_courses_by_field ",
+                  "moodlewsrestformat": "json",
+                  }
         cursos = {}
         try:
             response = requests.post(API_BASE, params)
@@ -107,9 +129,9 @@ class CursoView(View):
 
     def allCategorias(request):
         params = {"wstoken": TOKEN_MOODLE,
-        "wsfunction": "core_course_get_categories",
-        "moodlewsrestformat": "json",
-        }
+                  "wsfunction": "core_course_get_categories",
+                  "moodlewsrestformat": "json",
+                  }
         context = {}
         try:
             response = requests.post(API_BASE, params)
@@ -123,6 +145,14 @@ class CursoView(View):
         return JsonResponse(context)
 
     def crearEditarCurso(request):
+        user = Usuario.objects.filter(username__icontains=request.session['username']).values()[0]['id']
+
+        datei = request.POST['fechaInicio'].replace('/', '-')
+        init_date = datetime.strptime(datei, '%m-%d-%Y').date()
+
+        datef = request.POST['fechaFin'].replace('/', '-')
+        end_date = datetime.strptime(datef, '%m-%d-%Y').date()
+
         calificacion = 0
         actividad = 0
         visibilidad = 0
@@ -139,7 +169,8 @@ class CursoView(View):
         if ('notificacion' in request.POST):
             notificacion = 1
         if (request.POST['id'] == ""):
-            fecha_inicio = datetime.strptime(request.POST['fechaInicio'], '%m/%d/%Y')
+            fecha_inicio = datetime.strptime(
+                request.POST['fechaInicio'], '%m/%d/%Y')
             fecha_fin = datetime.strptime(request.POST['fechaFin'], '%m/%d/%Y')
             tiempo = delorean.Delorean(fecha_inicio, timezone='UTC').epoch * 1
             tiempo2 = delorean.Delorean(fecha_fin, timezone='UTC').epoch * 1
@@ -168,10 +199,14 @@ class CursoView(View):
                       "courses[0][lang]": "es",
                       }
         else:
-            fecha_inicio_edit = datetime.strptime(request.POST['fechaInicio'], '%m/%d/%Y')
-            fecha_fin_edit = datetime.strptime(request.POST['fechaFin'], '%m/%d/%Y')
-            tiempo1_edit = delorean.Delorean(fecha_inicio_edit, timezone='UTC').epoch * 1
-            tiempo2_edit = delorean.Delorean(fecha_fin_edit, timezone='UTC').epoch * 1
+            fecha_inicio_edit = datetime.strptime(
+                request.POST['fechaInicio'], '%m/%d/%Y')
+            fecha_fin_edit = datetime.strptime(
+                request.POST['fechaFin'], '%m/%d/%Y')
+            tiempo1_edit = delorean.Delorean(
+                fecha_inicio_edit, timezone='UTC').epoch * 1
+            tiempo2_edit = delorean.Delorean(
+                fecha_fin_edit, timezone='UTC').epoch * 1
             wsfunction = "core_course_update_courses"
             params = {"wstoken": TOKEN_MOODLE,
                       "wsfunction": wsfunction,
@@ -209,7 +244,19 @@ class CursoView(View):
                     print("ENTRA AL IF 500 " + str(response))
                     print("500")
                 if response.status_code == 200:
-                    print(r)
+                    curso = r[0]['id']
+
+                    courseSecoed = CoursesMoodle.objects.create(
+                        moodleId = curso,
+                        fullname = request.POST["fullName"],
+                        shortname = request.POST["nameShort"],
+                        description = request.POST['resumen'],
+                        startdate = init_date,
+                        enddate = end_date,
+                        status = False,
+                        userCreated = Usuario.objects.get(id = user))
+                    print(courseSecoed)
+
                     print("ENTRA AL IF 200 " + str(response))
             else:
                 print("NO ENTRA al if")

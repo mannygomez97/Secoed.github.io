@@ -1,24 +1,18 @@
 {% extends 'partials/base.html' %}
 {% load static %}
+{% load bootstrap %}
 
 {% block css%}
 {% include 'partials/css.html' %}
-{% endblock %}
-{% block extra_css %}
-<link href="{% static 'libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" />
-<link href="{% static 'libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" />
-
-<!-- Responsive datatable examples -->
-<link href="{% static 'libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" /> 
 {% endblock %}
 {% block contents %}
 
 <div>
     <form method="post">
         {% csrf_token %}
-        {{ form }}
+        {{ form|bootstrap }}
         <div style="text-align: center;padding: 1em;">
-            <button class="btn btn-info" type="submit">Guardar</button>
+            <button class="btn btn-info" type="submit">Guardar calendario academico</button>
             <a href="{% url 'periodo_academico' %}" class="btn btn-danger" type="reset">Cancelar</a>
         </div>
     </form>

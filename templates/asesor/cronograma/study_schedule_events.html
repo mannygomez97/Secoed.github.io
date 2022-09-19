@@ -14,19 +14,19 @@
 {% endblock %}
 {% block contents %}
 
-<div>
-    
-</div>
 
 <div class="card">
     <div class="card-header">
         <div class="row">
             <div class="col">
-                <h3>{{fullname}}</h3> <a href="{% url 'detail_schedule_events_course' courseid %}" class="btn btn-outline-warning">Eliminar eventos</a>
+                <a href="{% url 'detail_schedule_events_course' courseid fullname %}" class="btn btn-outline-info">Detalle eventos {{fullname}} </a>
             </div>
         </div>
     </div>
     <div id="calendar" class="card" style="padding: 10px;"></div>
+</div>
+
+<div class="modal fade" id="edicion" role="dialog">
 </div>
 
 

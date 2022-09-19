@@ -5,11 +5,14 @@
 {% include 'partials/css.html' %}
 {% endblock %}
 {% block extra_css %}
-<link href="{% static 'libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" />
-<link href="{% static 'libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" />
+<link href="{% static 'libs/datatables.net-bs4/css/dataTables.bootstrap4.min.css' %}" rel="stylesheet"
+    type="text/css" />
+<link href="{% static 'libs/datatables.net-buttons-bs4/css/buttons.bootstrap4.min.css' %}" rel="stylesheet"
+    type="text/css" />
 
 <!-- Responsive datatable examples -->
-<link href="{% static 'libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css' %}" rel="stylesheet" type="text/css" /> 
+<link href="{% static 'libs/datatables.net-responsive-bs4/css/responsive.bootstrap4.min.css' %}" rel="stylesheet"
+    type="text/css" />
 {% endblock %}
 {% block contents %}
 
@@ -23,73 +26,52 @@
 </div>
 {% endif %}
 
-                        <div class="row">
-                            <div class="col-12">
-                                <div class="card">
-                                    <div class="card-body">                                               
-                                        <div class="table-responsive">
-                                            <table id="curso" class="table table-hover dt-responsive nowrap w-100 text-center">
-                                                <thead>
-                                                <tr>
-                                                    <!-- <th>Id</th> -->
-                                                    <th>Nombre del docente</th>                                                     
-                                                    <th>Calificación</th>
-                                                    <th>Valoración</th>
-                                                    <th>Opciones</th>
-                                                </tr>
-                                                </thead>                
-                                                <tbody>                                                   
-                                                {% if context %}
-                                                    {% for item in context %}                            
-                                                        <tr>                              
-                                                            <!-- <td>{{item.id}}</td> -->                                       
-                                                            <td>{{item.teachername}}</td>                                                           
-                                                            <td>{{item.actividad.graderaw}}</td>
-                                                            <td >
-                                                                {% if item.actividad.graderaw == None %}
-                                                                    <img class="img-fluid" src="{% get_static_prefix %}images/components/semaforos/nivel1.png" alt="" style="width: 10%;">
-                                                                    <a  class="btn btn-outline-danger btn-sm">Emitir alarma</a>
-                                                                {% elif item.actividad.graderaw < 20 %}
-                                                                    <img class="img-fluid" src="{% get_static_prefix %}images/components/semaforos/nivel1.png" alt="" style="width: 10%;">
-                                                                    <a  class="btn btn-outline-warning btn-sm">Emitir alarma</a>
-                                                                {% elif item.actividad.graderaw < 40 %}
-                                                                    <img class="img-fluid" src="{% get_static_prefix %}images/components/semaforos/nivel2.png" alt="" style="width: 10%;">
-                                                                    <a  class="btn btn-outline-secondary btn-sm">Emitir alarma</a>
-                                                                {% elif item.actividad.graderaw < 60 %}
-                                                                    <img class="img-fluid" src="{% get_static_prefix %}images/components/semaforos/nivel3.png" alt="" style="width: 10%;">
-                                                                    <a  class="btn btn-outline-primary btn-sm">Emitir alarma</a>
-                                                                {% elif item.actividad.graderaw < 80 %}
-                                                                    <img class="img-fluid" src="{% get_static_prefix %}images/components/semaforos/nivel4.png" alt="" style="width: 10%;">
-                                                                    <a  class="btn btn-outline-info btn-sm">Emitir alarma</a>
-                                                                {% elif item.actividad.graderaw == 100 %}
-                                                                    <img class="img-fluid" src="{% get_static_prefix %}images/components/semaforos/nivel5.png" alt="" style="width: 10%;">
-                                                                    <a  class="btn btn-outline-success btn-sm">Emitir alarma</a>
-                                                                {% endif %}
-                                                            </td>
-                                                            <td><a href="{% url 'save_activities_module_users' course namecourse item.teacherid item.teachername moduleid modulename actid actname item.actividad.graderaw %}" class="btn btn-outline-success btn-sm">Guardar</a></td>
-                                                        </tr>     
-                                                    {% endfor %}
-                                                {% else %}                       
-                                                    <div class="row">
-                                                        <div class="alert alert-warning alert-dismissible fade show col-md-5 col-md-offset-4" role="alert">
-                                                            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                                                            <span aria-hidden="true">&times;</span>
-                                                            </button>
-                                                            <strong>Advertencia!</strong> Búsqueda Fallida, dato no encontrado.
-                                                        </div>
-                                                    </div>                                 
-                                                {% endif %}
-                                                </tbody>
-                                            </table>
-                                        </div>    
-                                    </div>
+<div class="row">
+    <div class="col-12">
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table id="curso" class="table table-hover dt-responsive nowrap w-100 text-center">
+                        <thead>
+                            <tr>
+                                <!-- <th>Id</th> -->
+                                <th>Nombre del docente</th>
+                                <th>Estado actividad</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% if context %}
+                            {% for item in context %}
+                            <tr>
+                                <!-- <td>{{item.id}}</td> -->
+                                <td>{{item.teachername}}</td>
+                                <td>{{item.actividad.graderaw}}</td>
+                                <!-- <td><a href="{% url 'save_activities_module_users' course namecourse item.teacherid item.teachername moduleid modulename actid actname item.actividad.graderaw asesor_id %}"
+                                        class="btn btn-outline-info btn-sm">Registrar</a></td> -->
+                            </tr>
+                            {% endfor %}
+                            {% else %}
+                            <div class="row">
+                                <div class="alert alert-warning alert-dismissible fade show col-md-5 col-md-offset-4"
+                                    role="alert">
+                                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                                        <span aria-hidden="true">&times;</span>
+                                    </button>
+                                    <strong>Advertencia!</strong> Búsqueda Fallida, dato no encontrado.
                                 </div>
-                            </div> <!-- end col -->
-                        </div> <!-- end row -->
-
-                    </div> <!-- container-fluid -->
+                            </div>
+                            {% endif %}
+                        </tbody>
+                    </table>
                 </div>
-                <!-- End Page-content -->             
+            </div>
+        </div>
+    </div> <!-- end col -->
+</div> <!-- end row -->
+
+</div> <!-- container-fluid -->
+</div>
+<!-- End Page-content -->
 {% endblock %}
 {% block r_sidebar %}
 {% include 'partials/rightsidebar.html' %}
@@ -98,41 +80,41 @@
 {% include 'partials/footer.html' %}
 
 {% endblock %}
-{% block javascript %}                
-        <!-- JAVASCRIPT -->
-        <script src="{% static 'libs/jquery/jquery.min.js' %}"></script>
-        <script src="{% static 'libs/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
-        <script src="{% static 'libs/metismenu/metisMenu.min.js' %}"></script>
-        <script src="{% static 'libs/simplebar/simplebar.min.js' %}"></script>
-        <script src="{% static 'libs/node-waves/waves.min.js' %}"></script>
-                        
-        <script src="{% static 'libs/datatables.net/js/jquery.dataTables.min.js' %}"></script>        
-        <script src="{% static 'libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
+{% block javascript %}
+<!-- JAVASCRIPT -->
+<script src="{% static 'libs/jquery/jquery.min.js' %}"></script>
+<script src="{% static 'libs/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'libs/metismenu/metisMenu.min.js' %}"></script>
+<script src="{% static 'libs/simplebar/simplebar.min.js' %}"></script>
+<script src="{% static 'libs/node-waves/waves.min.js' %}"></script>
 
-        <script src="{% static 'libs/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
-        <script src="{% static 'libs/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js' %}"></script>
-        <script src="{% static 'libs/jszip/jszip.min.js' %}"></script>
-        <script src="{% static 'libs/pdfmake/build/pdfmake.min.js' %}"></script>
-        <script src="{% static 'libs/pdfmake/build/vfs_fonts.js' %}"></script>        
-        <script src="{% static 'libs/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
-        
-        <script src="{% static 'js/pages/datatables.init.js' %}"></script>    
+<script src="{% static 'libs/datatables.net/js/jquery.dataTables.min.js' %}"></script>
+<script src="{% static 'libs/datatables.net-bs4/js/dataTables.bootstrap4.min.js' %}"></script>
 
-        <script src="{% static 'js/app.js' %}"></script>
-         
-        <script type="text/javascript">          
-            function timeToHuman() {
-                var theDate = new Date(document.u2h.timeStamp.value * 1000);
-                dateString = theDate.toGMTString();
-                document.u2h.result.value = dateString;
-            }       
-            $(document).ready(function() {                
-                $('#curso').DataTable( {
-                    
-                    dom: 'Bfrtip',                    
-                    buttons: []
-                } );
-            } );
-                        
-        </script>       
+<script src="{% static 'libs/datatables.net-buttons/js/dataTables.buttons.min.js' %}"></script>
+<script src="{% static 'libs/datatables.net-buttons-bs4/js/buttons.bootstrap4.min.js' %}"></script>
+<script src="{% static 'libs/jszip/jszip.min.js' %}"></script>
+<script src="{% static 'libs/pdfmake/build/pdfmake.min.js' %}"></script>
+<script src="{% static 'libs/pdfmake/build/vfs_fonts.js' %}"></script>
+<script src="{% static 'libs/datatables.net-buttons/js/buttons.html5.min.js' %}"></script>
+
+<script src="{% static 'js/pages/datatables.init.js' %}"></script>
+
+<script src="{% static 'js/app.js' %}"></script>
+
+<script type="text/javascript">
+    function timeToHuman() {
+        var theDate = new Date(document.u2h.timeStamp.value * 1000);
+        dateString = theDate.toGMTString();
+        document.u2h.result.value = dateString;
+    }
+    $(document).ready(function () {
+        $('#curso').DataTable({
+
+            dom: 'Bfrtip',
+            buttons: []
+        });
+    });
+
+</script>
 {% endblock %}

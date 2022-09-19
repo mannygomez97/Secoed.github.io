@@ -1,7 +1,7 @@
 from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
-from eva.models import Categoria, Ciclo
+from eva.models import Categoria, Ciclo, Ciclo2
 from eva.forms import CategoriaForm
 from django.http import JsonResponse
 
@@ -14,9 +14,9 @@ class CategoryListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['heading'] = 'Matenimiento Categorias'
-        cycle = Ciclo.objects.filter(is_active=True).first()
+        cycle = Ciclo.objects.filter(is_active=True).first()      
         context['pageview'] = cycle.name
-        context['object_list'] = Categoria.objects.filter(state=True)
+        context['object_list'] = Categoria.objects.filter(ciclo_id=self.request.session.get('cicloId'))
         context['create_url'] = reverse_lazy('eva:create-category')
         context['url_list'] = reverse_lazy('eva:list-category')
         return context
@@ -24,6 +24,7 @@ class CategoryListView(ListView):
 
 class CategoryCreateView(CreateView):
     model = Categoria
+    
     form_class = CategoriaForm
     template_name = "categoria/create.html"
     success_url = reverse_lazy('eva:list-category')
@@ -32,7 +33,9 @@ class CategoryCreateView(CreateView):
         response = None
         try:
             if request.is_ajax():
-                form = self.form_class(request.POST)
+                updated_request = request.POST.copy()
+                updated_request.update({'ciclo_id': self.request.session.get('cicloId')})
+                form = self.form_class(updated_request)
                 if form.is_valid():
                     form.save()
                     message = f'{self.model.__name__} registrada correctamente'

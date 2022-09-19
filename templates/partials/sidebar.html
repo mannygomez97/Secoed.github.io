@@ -17,8 +17,9 @@
                                 <!--- menu nivel 1 -->
                                 {% for n1 in mod.menus %}
                                     <li>
-                                        <a class="{% if n1.items %}has-arrow waves-effect{% endif %}"
+                                       <a class="{% if n1.items %}has-arrow waves-effect{% endif %}"
                                                 {% if n1.url %} href="{% url n1.url %}" {% endif %}>
+                                              
                                             <i class="{{ n1.icon }}"></i>
                                             <span key="{{ n1.key }}">{{ n1.descripcion }}</span>
                                         </a>
@@ -26,8 +27,9 @@
                                             <!--- menu nivel 2 -->
                                             {% for n2 in n1.items %}
                                                 <li>
-                                                    <a class="waves-effect"
+                                                   <a class="waves-effect"
                                                             {% if n2.url %} href="{% url n2.url %}" {% endif %}>
+   
                                                         <i class="{{ n2.icon }}"></i>
                                                         <span key="{{ n2.key }}">{{ n2.descripcion }}</span>
                                                     </a>

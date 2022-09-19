@@ -13,6 +13,9 @@ from eva.views.parametro.views import *
 from eva.views.parametros_generales.views import *
 from eva.views.preguntas.views import *
 from eva.views.resultados.views import *
+from eva.views.periodo.views import *
+from django.urls import path
+from eva import views
 
 app_name = 'eva'
 
@@ -25,10 +28,16 @@ urlpatterns = [
     url(r'^tipo/editar/(?P<pk>\d+)/$', login_required(TypeUpdateView.as_view()), name='update-type'),
     url(r'^tipo/eliminar/(?P<pk>\d+)/$', login_required(TypeDeleteView.as_view()), name='delete-type'),
     # CYCLE routes
-    url(r'^ciclo/lista/', login_required(CycleListView.as_view()), name='list-cycle'),
     url(r'^ciclo/crear/', login_required(CycleCreateView.as_view()), name='create-cycle'),
+    path(r'ciclo/lista/', views.ciclo.views.CycleListView.as_view(), name='list-cycle'),
+
     url(r'^ciclo/editar/(?P<pk>\d+)/$', login_required(CycleUpdateView.as_view()), name='update-cycle'),
     url(r'^ciclo/eliminar/(?P<pk>\d+)/$', login_required(CycleDeleteView.as_view()), name='delete-cycle'),
+     # PERIODS routes
+    url(r'^periodo/lista/', login_required(PeriodListView.as_view()), name='list-periodo'),
+    url(r'^periodo/crear/', login_required(PeriodCreateView.as_view()), name='create-periodo'),
+    url(r'^periodo/editar/(?P<pk>\d+)/$', login_required(PeriodUpdateView.as_view()), name='update-periodo'),
+    url(r'^periodo/eliminar/(?P<pk>\d+)/$', login_required(PeriodDeleteView.as_view()), name='delete-periodo'),
     # MATTER routes
     url(r'^materia/lista/', login_required(MatterListView.as_view()), name='list-matter'),
     url(r'^materia/crear/', login_required(MatterCreateView.as_view()), name='create-matter'),
@@ -71,7 +80,7 @@ urlpatterns = [
     url(r'^evaluacion/reportes', login_required(ProcessResultEvaluations.as_view()), name='report-evaluation'),
     # Cursos routes
     url(r'^cursos/lista', login_required(CursosEva.as_view()), name='cursos-evaluation'),
-    #resultados
+    # resultados
     url(r'^proceso/resultados', login_required(Resultado.as_view()), name='resultados-procesos'),
+    url(r'^reporte/individual/(?P<pk>\d+)', login_required(Resultado.reporte_individual), name='reporte_individual'),
 ]
-
