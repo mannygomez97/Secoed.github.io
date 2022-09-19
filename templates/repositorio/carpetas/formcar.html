@@ -1,0 +1,16 @@
+<form enctype="multipart/form-data" method="POST">
+    {% csrf_token %}
+    
+    <div class="mb-3">
+       
+        {{formulario}}
+        
+    </div>
+    <div class="col-12 help-text"> {{ campo.errors }}</div>
+
+    <input name="" id="" class="btn btn-success" type="submit" value="Enviar información">
+    
+      
+    <a  onclick="goBack()" class="btn btn-danger">Cancelar</a>
+</form>
+

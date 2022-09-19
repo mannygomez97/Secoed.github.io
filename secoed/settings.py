@@ -53,7 +53,9 @@ LOCAL_APPS = [
     'components',
     'easyaudit',
     'docentes',
-    'notify'
+    'notify',
+    'repositorio',
+    'analisis'
 ]
 
 INSTALLED_APPS = BASE_APPS + LOCAL_APPS + THIRD_APPS

@@ -1,0 +1,182 @@
+{% extends 'partials/base.html' %}
+
+{% load static %}
+
+{% block css%}
+{% include 'partials/css.html' %}
+{% endblock %}
+
+{% block extra_css %}
+<link href="{% static 'libs/sweetalert2/sweetalert2.min.css' %}" rel="stylesheet" type="text/css" />
+<link href="{% static 'evaluations/libs/datatables/datatables.css' %}" rel="stylesheet" type="text/css" />
+<link href="{% static 'libs/select2/css/select2.min.css' %}" rel="stylesheet" type="text/css" />
+{% endblock %}
+
+{% block contents %}
+<div class="row">
+    <div class="col-12">
+        <form method="GET">
+            <label>Critero</label>
+            <select class="form-control" id="exampleFormControlSelect1" name="buscarnivel" required selected>
+                <option value=""> Buscar Criterio ... </option>
+                {% for data in db_nivel %}
+                    <option value="{{data.nivel}}"> {{data.nivel}} </option>
+                {% endfor %}
+            </select>
+              <label class="mt-2">Ciclo</label>
+              <select class="form-control mt-2" id="exampleFormControlSelect2" name="buscarciclo" required selected>
+                <option value=""> Buscar Ciclo ... </option>
+                {% for data in db_ciclo %}
+                    <option value="{{data.name}}"> {{data.name}} </option>
+                {% endfor %}
+              </select>
+            <button type="submit" class="btn btn-outline-success mt-2">  <i class="mdi mdi-search-web"></i> Buscar </button>   
+        </form>
+    </div>
+</div>
+
+<div class="row">
+    <div class="col-12">
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-primary mb-3 mt-3" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+            <i class="mdi mdi-plus-circle"> Agregar Pregunta</i>
+        </button>
+
+        <!-- Modal -->
+        <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+            aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="staticBackdropLabel">Registra tu Pregunta de Analisis</h5>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <form method="post" action="{% url 'guardar' %}">
+                            {% csrf_token %}
+                            <div class="form-group">
+                                <label for="exampleFormControlInput1">Ingresar la Pregunta</label>
+                                <input type="text" class="form-control" id="exampleFormControlInput1"
+                                    placeholder="Ingresar..." name="pregunta" required>
+                            </div>
+                            <div class="form-group pt-3">
+                                <label for="exampleFormControlSelect1">Seleccion de Criterio</label>
+                                <select class="form-control" id="exampleFormControlSelect1" name="nivel" required
+                                    selected>
+                                    <option value="">Elige una opción</option>
+                                    {% for niveles in db_nivel %}
+                                    <option value="{{niveles.id}}">{{niveles.nivel}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                            <div class="form-group pt-3">
+                                <label for="exampleFormControlSelect1">Seleccion de Ciclo</label>
+                                <select class="form-control" id="exampleFormControlSelect1" name="ciclo" required
+                                    selected>
+                                    <option value="">Elige una opción</option>
+                                    {% for ciclos in db_ciclo %}
+                                    <option value="{{ciclos.id}}">{{ciclos.name}}</option>
+                                    {% endfor %}
+                                </select>
+                            </div>
+                                <hr>
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="submit" class="btn btn-success">Agregar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <table id="datatable" class="table table-bordered dt-responsive nowrap w-100">
+                    <thead>
+                        <tr role="row">
+                            {% block cols %}
+                            <th>Pregunta</th>
+                            <th>Criterio</th>
+                            <th>Ciclo</th>
+                            <th>Acciones</th>
+                            {% endblock %}
+                        </tr>
+                    </thead>
+                    {% for data in db_data %}
+                    <tbody>
+                        {% block filas %}
+                        <th>{{ data.pregunta }}</th>
+                        <th>{{ data.nivel }}</th>
+                        <th>{{ data.ciclo }}</th>
+                        <th>
+                            <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+                            <a href="{% url 'actualiza' data.id %}" class="btn btn-primary" data-toggle="tooltip" data-placement="top" title="Actualizar">   <i class="mdi mdi-pencil"></i> </a>
+                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#staticBackdrop{{ data.id }}" data-toggle="tooltip" data-placement="top" title="Eliminar">
+                                <i class="mdi mdi-eraser"></i>
+                            </button>
+                            </div>
+                            <!---Modal eliminar-->
+                            <div class="modal fade" id="staticBackdrop{{ data.id }}" data-bs-backdrop="static"
+                                    data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel"
+                                    aria-hidden="true">
+                                    <div class="modal-dialog">
+                                        <div class="modal-content">
+                                            <div class="modal-header">
+                                                <h5 class="modal-title" id="staticBackdropLabel">¿Estas Seguro de Eliminar la Pregunta?
+                                                </h5>
+                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                    aria-label="Close"></button>
+                                            </div>
+                                            <div class="modal-body">   
+                                                <p>{{ data.pregunta }}</p>
+                                                <hr>
+                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>  
+                                            <a href="{% url 'borrar' data.id %}" class="btn btn-danger">Borrar</a>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                        </th>
+                        {% endblock %}
+                    </tbody>
+                    {% endfor %}
+                </table>
+            </div>
+            <div class="card-footer">
+                    
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+{% block notification %}
+<input type="hidden" name="url_list" value="{{ url_list }}">
+
+<div id="createModal" class="modal fade" tabindex="-1" aria-hidden="true"></div>
+<div id="updateModal" class="modal fade" tabindex="-1" aria-hidden="true"></div>
+<div id="deleteModal" class="modal fade" tabindex="-1" aria-hidden="true"></div>
+
+{% endblock %}
+{% block r_sidebar %}
+{% include 'partials/rightsidebar.html' %}
+{% endblock %}
+{% block footer %}
+{% include 'partials/footer.html' %}
+{% endblock %}
+{% block javascript %}
+<!-- JAVASCRIPT -->
+<script src="{% static 'libs/jquery/jquery.min.js' %}"></script>
+<script src="{% static 'libs/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+<script src="{% static 'libs/metismenu/metisMenu.min.js' %}"></script>
+<script src="{% static 'libs/simplebar/simplebar.min.js' %}"></script>
+<script src="{% static 'libs/node-waves/waves.min.js' %}"></script>
+
+<script src="{% static 'js/app.js' %}"></script>
+<!-- sweetalert2 -->
+<script src="{% static 'libs/sweetalert2/sweetalert2.all.min.js' %}"></script>
+<script src="{% static 'js/eva.js' %}"></script>
+<script src="{% static 'evaluations/libs/datatables/datatables.js' %}"></script>
+<script src="{% static 'evaluations/datatables.init.js' %}"></script>
+<script src="{% static 'libs/select2/js/select2.full.min.js' %}"></script>
+{% endblock %}
+
+
+

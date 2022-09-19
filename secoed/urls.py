@@ -57,6 +57,10 @@ urlpatterns = [
 
     # url de notify
     path(r'notify/', include('notify.urls')),
+
+    path('repositorio/', include('repositorio.urls')),
+
+    path(r'analisis/', include('analisis.urls')),
 ]
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
