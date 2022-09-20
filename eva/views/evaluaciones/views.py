@@ -463,9 +463,10 @@ class CoevaluacionCreateView(CreateView):
                                 response.status_code = 201
                                 return response
         except Exception as e:
-            response['error'] = str(e)
+            #response['error'] = str(e) #GRUPO REPOSITORIO ERROR
             transaction.rollback()
-            return JsonResponse(response)
+            #return JsonResponse(response) GRUPO REPOSITORIO ERROR
+            return JsonResponse({'error':str(e)})
         except IntegrityError:
             transaction.rollback()
             return JsonResponse(response)
