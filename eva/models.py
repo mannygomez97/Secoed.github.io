@@ -16,7 +16,7 @@ class Ciclo(models.Model):
 
     def __str__(self):
         txt = "{0} "
-        return txt.format(self.nombre)
+        return txt.format(self.name)
 
     class Meta:
         db_table = "pt_ciclo"
