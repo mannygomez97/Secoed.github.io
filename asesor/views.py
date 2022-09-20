@@ -238,7 +238,7 @@ def userActivities(request, id, nombre, idest):
 def courseNotes(request):
     u="Detalle de notas"
     t="Cursos"
-    notes = ValorationsCourses.objects.all()
+    notes = ValorationsCourses.objects.filter(cicle__is_active = True)
     myFilter = valorationCourseStudentFilter(request.GET, queryset = notes)
     notes = myFilter
 
@@ -532,7 +532,7 @@ def reportsAsesor(request):
 
     asesor = getAsesorInfo(request)
 
-    notes = ValorationsCourses.objects.all()
+    notes = ValorationsCourses.objects.filter(cicle__is_active = True)
     myFilter = valorationToAcademicManagerFilter(request.GET, queryset = notes)
     notes = myFilter
 
