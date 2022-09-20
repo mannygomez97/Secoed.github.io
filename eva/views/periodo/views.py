@@ -15,7 +15,10 @@ class PeriodListView(ListView):
         context = super().get_context_data(**kwargs)
         context['heading'] = 'Mantenimiento Periodo'
         cycle = Ciclo.objects.filter(is_active=True).first()
-        context['pageview'] = cycle.name
+        if(cycle is not None): #Nuevo COE Y EVA - GRUPO REPOSITORIO
+            context['pageview'] = cycle.name #Nuevo COE Y EVA - GRUPO REPOSITORIO
+        else: #Nuevo COE Y EVA - GRUPO REPOSITORIO
+            context['pageview'] = "" #Nuevo COE Y EVA - GRUPO REPOSITORIO
         context['create_url'] = reverse_lazy('eva:create-cycle')
         context['url_list'] = reverse_lazy('eva:list-periodo')
         return context
