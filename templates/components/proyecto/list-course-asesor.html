@@ -48,9 +48,6 @@
                                 <td>{{course.asesor}}</td>
                                 <td>{{course.status}}</td>
                                 <td style="align-items: center; text-align: center">
-                                    <a title="Editar" href="{% url 'update_course_asesor' course.id %}" class="btn btn-outline-warning">
-                                        <i class="fas fa-edit"></i>
-                                    </a>
                                     <a title="Eliminar" class="btn btn-outline-danger" 
                                         onclick="confirmDelete({{ course.id }})"> 
                                         <i class="bx bx-trash-alt"></i>
