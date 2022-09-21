@@ -454,8 +454,10 @@ def asesor_course(request, id, course_id):
 #Nueva version de asiganción
 
 def courseCicleCarrerList(request):
+    t="Mantenimientos" 
+    u="Parametrización curso ciclo "
     courses = CourseCicleCarrer.objects.all()
-    context = {'courses': courses}
+    context = {'courses': courses, 'heading': u,'pageview': t}
     return render (request, 'components/proyecto/list-course-period.html',context)
 
 def addCourseCicleCarrer(request):
@@ -507,8 +509,11 @@ def deleteCourseCicle(request, id):
     return redirect('course_cicle_carrer')
 
 def courseAsesorList(request):
+    t="Mantenimientos" 
+    u="Parametrización curso asesor "
+
     courseAsesor = CourseAsesor.objects.all()
-    context = {'courseAsesor': courseAsesor}
+    context = {'courseAsesor': courseAsesor, 'heading': u,'pageview': t}
     return render (request, 'components/proyecto/list-course-asesor.html',context)
 
 def addCourseAsesor(request):

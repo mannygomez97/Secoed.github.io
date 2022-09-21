@@ -180,8 +180,8 @@ def getContentsCourse(request, id):
             return contents
 
 def coursesSecoedView(request):
-    t="Cursos asignados" 
-    u=datetime.today().strftime('%Y')
+    t="Cursos" 
+    u="Cursos asignados"
     user = getAsesorLogin(request)
     asesorCourses = getAsesorCourses(request, user)
 
