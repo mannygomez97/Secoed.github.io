@@ -15,7 +15,7 @@ class CycleListView(ListView):
         context = super().get_context_data(**kwargs)
         context['heading'] = 'Mantenimiento Ciclo'
         cycle = Ciclo2.objects.filter(is_active=True).first()
-        context['pageview'] = cycle.nombre
+        context['pageview'] = cycle.name
         context['create_url'] = reverse_lazy('eva:create-cycle')
         context['url_list'] = reverse_lazy('eva:list-cycle')
         return context
