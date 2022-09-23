@@ -381,7 +381,7 @@ $("#periodoAcademico").change(function () {
         success: function (data) {
             var dat2 = data;
             $("#cicloAcademico").empty();
-            $("#cicloAcademico").append('<option value="0">Seleccionar ciclo</option>');
+            /*$("#cicloAcademico").append('<option value="0">Seleccionar ciclo</option>');*/
             const url = location.protocol + '//' + location.host + "/eva/actual/ciclo/";
             $.ajax({
                 url: url,
