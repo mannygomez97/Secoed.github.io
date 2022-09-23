@@ -368,6 +368,7 @@ $( document ).ready(function() {
     getPeriodos();
 });
 
+/*GRUPO REPOSITORIO COE Y EVA*/
 $("#periodoAcademico").change(function () {
     const periodoId = $(this).val();
     const csrftoken = getCookieMain('csrftoken');
@@ -378,24 +379,43 @@ $("#periodoAcademico").change(function () {
         headers: {"X-CSRFToken": csrftoken},
     
         success: function (data) {
+            var dat2 = data;
             $("#cicloAcademico").empty();
-            data.context.forEach( function(valor, indice, array) {
-                if(valor.id == data.cicloId)
-                {
-                    $("#cicloAcademico").append('<option value="' + valor.id + '"selected>' + valor.nombre + '</option>');
-
-                }else{
-                    $("#cicloAcademico").append('<option value="' + valor.id + '">' + valor.nombre + '</option>');
+            $("#cicloAcademico").append('<option value="0">Seleccionar ciclo</option>');
+            const url = location.protocol + '//' + location.host + "/eva/actual/ciclo/";
+            $.ajax({
+                url: url,
+                type: 'GET',
+                headers: {"X-CSRFToken": csrftoken},
+                success: function (data2) {
+                    console.log(dat2.context)
+                    $.each(dat2.context, function(indice,valor) 
+                    {
+                      
+                        $("#cicloAcademico").append('<option '+((parseInt(data2.ciclo_id)==valor.id)?"selected='selected'":"")+'"  value="' + valor.id + '">' + valor.nombre + '</option>');
+                    });
                 }
             });
+            $("#cicloAcademico").change(function(e){
+                const periodoId = $(this).val();
+                const url = location.protocol + '//' + location.host + "/eva/store/ciclo/" + periodoId;
+                $.ajax({
+                    url: url,
+                    type: 'GET',
+                    headers: {"X-CSRFToken": csrftoken},
+                    success: function (data) {
+                        window.location.reload();
+                    }
+                });
             
+            });
          
         }, error: function (xhr, status, error) {
             console.log(xhr);
         }
     });
 
-});
+});/*GRUPO REPOSITORIO COE Y EVA*/
 
 $("#cicloAcademico").change(function () {
     const cycleId = $(this).val();
