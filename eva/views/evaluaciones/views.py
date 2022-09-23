@@ -25,6 +25,7 @@ class TeachersPendingEvaluationList(ListView):
     template_name = 'evaluaciones/list.html'
     success_url = reverse_lazy('eva:list-coevaluar')
 
+#GRUPO REPOSIOTRIO COE Y EVA 
     def get_pendings_evaluation(self):
         data = []
         by_co_evaluate = []
@@ -46,7 +47,20 @@ class TeachersPendingEvaluationList(ListView):
                 coevaluated = resultado.filter(teacher=d.id).first()
                 if coevaluated is None:
                     data.append(d)
-        return data
+        else:#GRUPO REPOSIOTRIO COE Y EVA 
+            materia = Materia.objects.all()
+            code = RolMoodle.objects.filter(descripcion='Estudiante').first()
+            docentes = Usuario.objects.filter(usuario_activo=True, rol_moodle__codigo__gte=code.codigo)
+            for m in materia:
+                for d in docentes:
+                    if m.teacher_id == d.id:
+                        by_co_evaluate.append(d)
+
+            for d in by_co_evaluate:
+                coevaluated = resultado.filter(teacher=d.id).first()
+                if coevaluated is None:
+                    data.append(d)            
+        return data#GRUPO REPOSIOTRIO COE Y EVA 
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -238,12 +252,17 @@ class AutoEvaluacionCreateView(CreateView):
             transaction.rollback()
             return JsonResponse(response)
 
+#GRUPO REPOSITORIO COE Y EVA 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['heading'] = 'AutoEvaluación'
         tipo = Tipo.objects.filter(name='Autoevaluación').first()
         parametro = Parametro.objects.filter(name='Autoevaluación').first()
-        context['object_list'] = Pregunta.objects.filter(type=tipo.id, state=True)
+        ciclo = self.request.session.get('ciclo_id') 
+        if ciclo is not None:
+            context['object_list'] = Pregunta.objects.filter(type=tipo.id, ciclo__pk=ciclo, state=True)
+        else:
+            context['object_list'] = Pregunta.objects.filter(type=tipo.id, state=True)
         context['categories'] = Categoria.objects.filter(state=True)
         context['parameters'] = ParametrosGeneral.objects.filter(parameter=parametro.id)
         cycle = Ciclo.objects.filter(is_active=True).first()
@@ -260,7 +279,7 @@ class AutoEvaluacionCreateView(CreateView):
         context['type'] = tipo.id
         context['type_evaluation'] = 'AUTO EVALUACIÓN DOCENTE'
         return context
-
+#GRUPO REPOSITORIO COE Y EVA 
 
 def send_mail_notification(docente: Usuario, coevaluator:Usuario=None, course=None):
     subject = 'Matriculación Automática'
@@ -471,6 +490,7 @@ class CoevaluacionCreateView(CreateView):
             transaction.rollback()
             return JsonResponse(response)
 
+#GRUPO REPOSITORIO COE Y EVA
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         self.request.session['docente'] = self.request.GET.get('docente')
@@ -484,7 +504,11 @@ class CoevaluacionCreateView(CreateView):
                 return context
         tipo = Tipo.objects.filter(name='Coevaluación').first()
         parametro = Parametro.objects.filter(name='Coevaluación').first()
-        context['object_list'] = Pregunta.objects.filter(type=tipo.id)
+        ciclo = self.request.session.get('ciclo_id') #GRUPO REPOSITORIO COE Y EVA
+        if ciclo is not None: #GRUPO REPOSITORIO COE Y EVA
+            context['object_list'] = Pregunta.objects.filter(type=tipo.id, ciclo__pk=ciclo, state=True) #GRUPO REPOSITORIO COE Y EVA
+        else: #GRUPO REPOSITORIO COE Y EVA
+            context['object_list'] = Pregunta.objects.filter(type=tipo.id, state=True) #GRUPO REPOSITORIO COE Y EVA
         context['categories'] = Categoria.objects.filter(state=True)
         context['parameters'] = ParametrosGeneral.objects.filter(parameter=parametro.id)
         cycle = Ciclo.objects.filter(is_active=True).first()
