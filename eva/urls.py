@@ -83,4 +83,10 @@ urlpatterns = [
     # resultados
     url(r'^proceso/resultados', login_required(Resultado.as_view()), name='resultados-procesos'),
     url(r'^reporte/individual/(?P<pk>\d+)', login_required(Resultado.reporte_individual), name='reporte_individual'),
+    
+    #NUEVO GRUPO REPOSITORIO COE Y EVA
+    url(r'^store/ciclo/(?P<cicloId>\d+)', schange_ciclo, name='store_change_ciclo'),
+    #NUEVO GRUPO REPOSITORIO COE Y EVA
+    url(r'^actual/ciclo', gchange_ciclo, name='gchange_ciclo'),
+
 ]
