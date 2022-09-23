@@ -9,8 +9,8 @@ from django.db import models
 #Carpeta
 class Carpeta(models.Model): #luego de crear este modelo enla bd, hayq ue migrar, se creara una tabla en la bd, con el nombre libreria_libro
     idcarpeta=models.AutoField(primary_key=True)
-    nombre=models.CharField(max_length=700, null=False)
-    nombre_anterior=models.CharField(max_length=700, null=True)
+    nombre=models.TextField(null=False)
+    nombre_anterior=models.TextField(null=True)
     descripcion=models.TextField(null=True)
     fechacreacion=models.DateTimeField(auto_now_add=True, verbose_name="Fecha de creacion", null=True ) #para crear por primera vez
     fechamodificacion=models.DateTimeField(auto_now=True, verbose_name="Fecha de modificacion", null=True) #para ver las fechas modificadas
@@ -24,8 +24,8 @@ class Carpeta(models.Model): #luego de crear este modelo enla bd, hayq ue migrar
 class Archivo(models.Model): #luego de crear este modelo enla bd, hayq ue migrar, se creara una tabla en la bd, con el nombre libreria_libro
     idarchivo=models.AutoField(primary_key=True)
     carpeta=models.ForeignKey(Carpeta, null=False, blank=False, on_delete=models.CASCADE)#clave foranea, relacion entre la carpeta que contiene varios archivos
-    nombre=models.CharField(max_length=700)
-    archivo=models.FileField(upload_to="repositorio_archivos", verbose_name="Archivo", null=False)
+    nombre=models.TextField(null=False)
+    archivo=models.FileField(max_length=7000, upload_to="repositorio_archivos", verbose_name="Archivo", null=False)
     descripcion=models.TextField(null=True)
     fechacreacion=models.DateField(auto_now_add=True, verbose_name="Fecha de creacion", null=True)
     fechamodificacion=models.DateTimeField(auto_now=True, verbose_name="Fecha de modificacion", null=True)
