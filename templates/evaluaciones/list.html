@@ -11,7 +11,13 @@
         <tr>
             <td>{{ docente.id }}</td>
             <td>
-                 <a href="{% url 'eva:create-coevaluation' %}?docente={{ docente.pk }}" >{{ docente.nombres }} {{ docente.apellidos }}</a>
+                <!--GRUPO REPOSITORIO COE Y EVA-->
+                {% if request.user.usuario_administrador == False %}
+                <a href="{% url 'eva:create-coevaluation' %}?docente={{ docente.pk }}" >{{ docente.nombres }} {{ docente.apellidos }}</a>
+                {% else %}
+                    {{ docente.nombres }} {{ docente.apellidos }}
+                {% endif %}
+                <!--GRUPO REPOSITORIO COE Y EVA-->
             </td>
             <td>{{ docente.email }}</td>
             <td>{{ docente.identificacion }}</td>
