@@ -116,3 +116,12 @@ class CycleDeleteView(DeleteView):
             return response
         else:
             return redirect('eva:list-cycle')
+
+#GRUPO REPOSITORIO COE Y EVA
+def schange_ciclo(request,cicloId):
+    request.session['ciclo_id'] = cicloId
+    return JsonResponse({'success':True})
+
+#GRUPO REPOSITORIO COE Y EVA
+def gchange_ciclo(request):
+    return JsonResponse({'ciclo_id':request.session.get('ciclo_id',0)})
