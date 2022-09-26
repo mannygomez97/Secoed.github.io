@@ -38,7 +38,7 @@ class valorationToAcademicManagerFilter(django_filters.FilterSet):
     course = django_filters.ModelChoiceFilter(queryset=CoursesMoodle.objects.all(), label='Curso', empty_label='Curso')
     cicle = django_filters.ModelChoiceFilter(queryset=Ciclo2.objects.all(), label='Ciclo', empty_label='Ciclo')
     carrer = django_filters.ModelChoiceFilter(queryset=Carrera.objects.filter(facultad = 1), label='Carrera', empty_label='Carrera')
-    asesor = django_filters.ModelChoiceFilter(queryset=Usuario.objects.filter(roluser__rol = 4), label='Asesor', empty_label='Asesores')
+    userCreated = django_filters.ModelChoiceFilter(queryset=Usuario.objects.filter(roluser__rol = 4), label='Asesor', empty_label='Asesores')
     class Meta:
         model = ValorationsCourses
         fields = [
@@ -47,7 +47,7 @@ class valorationToAcademicManagerFilter(django_filters.FilterSet):
             'cicle', 
             'carrer', 
             'studentName',
-            'asesor',
+            'userCreated',
             'scoreCourse__gt',
             'scoreCourse__lt'
         ]
