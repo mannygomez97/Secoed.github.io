@@ -36,9 +36,7 @@ def getAsesorInfo(request):
     return user
 
 def getCoursesByActuallyCicle(request):
-    """ cicle = Ciclo2.objects.filter(username__icontains=request.session['cicle']).values('id')
-    cicleId = cicle[0]['id'] """
-    cicleId = 1
+    cicleId = request.session['activeCicle']
 
     secoedCourses = CourseCicleCarrer.objects.filter(cicle = cicleId).values('course')
     moodleCourses = CoursesMoodle.objects.all().values('id','moodleId')

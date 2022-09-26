@@ -17,6 +17,7 @@ from django.db.models.query_utils import Q
 from authentication.models import Usuario, RolUser, HistoricoUsers
 from authentication.forms import UserRegisterForm
 from secoed.settings import TOKEN_MOODLE, API_BASE, CONTEXT_ID
+from eva.models import Ciclo2
 
 #DRF
 from authentication import serializers
@@ -29,6 +30,10 @@ from rest_framework import permissions
 
 
 username = '';
+
+def getActualCicle(request):
+    cicle = Ciclo2.objects.filter(is_active = True).values('id')[0]['id']
+    return cicle
 
 class GetRolUser(APIView):
     permissions_classes = [permissions.AllowAny]
@@ -66,6 +71,7 @@ class PagesLoginView(View):
                     if user.usuario_activo:
                         request.session['username'] = username
                         request.session['isModulo'] = False
+                        request.session['activeCicle'] = getActualCicle(request)
                         auth.login(request, user)
                         return redirect('dashboard')
                     else:
