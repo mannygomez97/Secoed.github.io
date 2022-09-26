@@ -503,7 +503,7 @@ def deleteCourseCicle(request, id):
             return redirect('course_cicle_carrer')
         else:
             messages.add_message(request, messages.WARNING,
-                            message = "El curso no se puede desvincular debido a que tiene notas vinculadas!")
+                            message = "El curso no se puede desvincular debido a que tiene notas asociadas!")
     except Exception as e:
         print(e)
     return redirect('course_cicle_carrer')
@@ -561,21 +561,27 @@ def updateCourseAsesor(request, id):
 def deleteCourseAsesor(request, id):
     try:
         courseCicle = CourseAsesor.objects.filter(id = id).values('course')[0]['course']
-        courseStatus = CourseAsesor.objects.filter(id = id).values('status')[0]['status']
+        courseAsesor = CourseAsesor.objects.filter(id = id).values('asesor')[0]['asesor']
+        
+        coursesValCount = ValorationsCourses.objects.filter(userCreated = courseAsesor, courseCicleCarrer =  courseCicle).count()
+        print(coursesValCount)
         course_asesor = CourseAsesor.objects.get(id = id)
 
-        if courseStatus == False:
+        if coursesValCount == 0:
+            print('en cero para ser borrado')
             course_asesor.delete()
             messages.add_message(request, messages.SUCCESS,
                             message = "Curso desasociado del asesor de manera exitosa!")
+
             courseSecoed = CourseCicleCarrer.objects.get(id = courseCicle)
             courseSecoed.assigned = False
             courseSecoed.save()
+
             return redirect('course_asesor')
             pass
         else:
             messages.add_message(request, messages.WARNING,
-                message = "El asesor no puede ser desvinculado ya que la relación se encuentra activa!")
+                message = "El asesor no se puede desvincular debido a que tiene notas asociadas!")
     except Exception as e:
         print(e)
     return redirect('course_asesor')
