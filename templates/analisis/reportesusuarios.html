@@ -36,11 +36,11 @@
                         <th>{{ usuario.nombres }} {{usuario.apellidos}}</th>            
                         <th>
                             <div class="btn-group"  aria-label="Basic mixed styles example">
-                                <a href="{% url "reporteusuariopregunta" data_id=usuario.id %}" class="btn btn-success" >
+                                <a href="{% url "reporteusuariopregunta" data_id=usuario.id %}" class="btn btn-success" data-placement="top" title="Ver Respuestas">
                                     <i class="mdi mdi-eye"></i>
                                 </a>&nbsp;
                                
-                                <a href="{% url "reportesporusuario" data_id=usuario.id %}" class="btn btn-success" >
+                                <a href="{% url "reportesporusuario" data_id=usuario.id %}" class="btn btn-success" data-placement="top" title="Ver Grafico">
                                     <i class="mdi mdi-chart-pie"></i>
                                 </a>&nbsp;
                                 <a href="{% url "reportes_pdf" data_id=usuario.id %}" class="btn btn-primary" >
