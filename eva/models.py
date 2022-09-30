@@ -29,7 +29,7 @@ class Ciclo2(models.Model):
                                        help_text='Fecha de edición del registro')
     nombre = models.CharField(max_length=100, unique=True, db_column='nombre')
     identificador = models.CharField(max_length=100, unique=True, db_column='identificador')
-    periodo = models.ForeignKey(Ciclo, db_column='periodo_id', null=False, blank=False, on_delete=models.CASCADE)
+    periodo = models.ForeignKey(Ciclo, db_column='periodo_id', on_delete=models.CASCADE)
 
 
     def __str__(self):

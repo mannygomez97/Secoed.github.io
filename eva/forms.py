@@ -3,6 +3,7 @@ from django.forms import *
 from conf.models import Rol, RolMoodle
 from eva.models import *
 from django import forms
+from eva.models import Ciclo2
 
 class DocenteForm(ModelForm):
     def __init__(self, *args, **kwargs):
@@ -84,6 +85,33 @@ class CicloForm(ModelForm):
         widgets = {
             'name': TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre del ciclo ejemplo: C1-2021'}),
             'ciclo_activo': CheckboxInput(attrs={'class': 'form-check-input'})
+        }
+
+    def save(self, commit=True):
+        data = {}
+        form = super()
+        try:
+            if form.is_valid():
+                form.save()
+            else:
+                data['error'] = form.errors
+        except Exception as e:
+            data['error'] = str(e)
+        return data
+
+
+class CicloFormCN(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        self.fields['nombre'].widget.attrs['autofocus'] = True
+
+    class Meta:
+        model = Ciclo2
+        fields = '__all__'
+
+        widgets = {
+            'nombre': TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre del ciclo ejemplo: C1-2021'}),
+            'is_active': CheckboxInput(attrs={'class': 'form-check-input'})
         }
 
     def save(self, commit=True):

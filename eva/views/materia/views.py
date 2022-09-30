@@ -36,7 +36,7 @@ class MatterCreateView(CreateView):
                 form = self.form_class(request.POST)
                 if form.is_valid():
                     form.save()                    
-                    MateriaCiclo.objects.create(id = 500,materia_ids=form.id, ciclo_id=1)
+                    MateriaCiclo.objects.create(id = 500,materia_ids=form.id, ciclo_id=self.request.session.get('cicloId'))
                     message = f'{self.model.__name__} registrada correctamente'
                     error = 'No han ocurrido errores'
                     response = JsonResponse({'message': message, 'error': error})

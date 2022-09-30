@@ -3,6 +3,7 @@ from django.urls import reverse_lazy
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from eva.models import Ciclo2
 from eva.forms import CicloForm
+from eva.forms import CicloFormCN
 from django.http import JsonResponse
 
 
@@ -23,9 +24,9 @@ class CycleListView(ListView):
 
 class CycleCreateView(CreateView):
     model = Ciclo2
-    form_class = CicloForm
+    form_class = CicloFormCN
     template_name = "ciclo/create.html"
-    success_urls = reverse_lazy('eva:list-cycle')
+    success_url = reverse_lazy('eva:list-cycle')
     
     def post(self, request, *args, **kwargs):
         data = {}
@@ -35,8 +36,8 @@ class CycleCreateView(CreateView):
                 if form.is_valid():
                     ciclo = Ciclo2.objects.filter(is_active=True).first()
                     if ciclo is not None and ciclo.is_active and request.POST['option'] == 'true':
-                        message = f'El ciclo {ciclo.name} se encuentra altualmente activo '
-                        error = {'Error ': 'El ciclo ' + ciclo.name + ' se encuentra activo'}
+                        message = f'El periodo {ciclo.name} se encuentra altualmente activo '
+                        error = {'Error ': 'El periodo ' + ciclo.name + ' se encuentra activo'}
                         response = JsonResponse({'message': message, 'error': error})
                         response.status_code = 409
                     else:
@@ -63,10 +64,9 @@ class CycleCreateView(CreateView):
         context['list_url'] = reverse_lazy('eva:list-cycle')
         return context
     
-
 class CycleUpdateView(UpdateView):
     model = Ciclo2
-    form_class = CicloForm
+    form_class = CicloFormCN
     template_name = "ciclo/update.html"
     success_url = reverse_lazy('eva:list-cycle')
 
