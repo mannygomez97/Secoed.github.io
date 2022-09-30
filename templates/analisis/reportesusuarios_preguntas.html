@@ -16,20 +16,6 @@
 {% for user in db_usuario %}
 <h3> {{ user.nombres }} {{ user.apellidos }}</h3>
 {% endfor %}
-<div class="row">
-    <div class="col-12">
-        <form method="GET">
-            <label>Criterios</label>
-            <select class="form-control" id="exampleFormControlSelect1" name="buscarnivel" required selected>
-                <option value=""> Buscar criterios ... </option>
-                {% for data in db_nivel %}
-                    <option value="{{data.nivel}}"> {{data.nivel}} </option>
-                {% endfor %}
-            </select>
-            <button type="submit" class="btn btn-success mt-2">Buscar</button>   
-        </form>
-    </div>
-</div>
 
 <div class="row">
     <div class="col-12">
@@ -40,7 +26,7 @@
                         <tr role="row">
                             {% block cols %}
                             <th>Usuario</th>
-                            <th>Numero</th>
+                            <th>Número</th>
                             <th>Respuestas</th>
                             <th>Criterios</th>
                             {% endblock %}
