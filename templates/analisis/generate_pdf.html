@@ -125,7 +125,23 @@
             <tbody>
                 <th colspan="3">{{ usuario.pregunta.pregunta }}</th> 
                 <th class="respuestas" colspan="1">{{ usuario.respuesta }}</th>    
-                <th colspan="1">{{ usuario.nivel }}</th> 
+                <th colspan="1">
+			{% if usuario.respuesta == '1' %}
+                                Totalmente en desacuerdo
+                                {% endif %}
+                                {% if usuario.respuesta == '2' %}
+                                Algo en desacuerdo
+                                {% endif %}
+                                {% if usuario.respuesta == '3' %}
+                                Ni de acuerdo ni en desacuerdo
+                                {% endif %}
+                                {% if usuario.respuesta == '4' %}
+                                Resuesta: Algo de acuerdo
+                                {% endif %}
+                                {% if usuario.respuesta == '5' %}
+                                Totalmente de acuerdo
+                	{% endif %} 
+		</th> 
             </tbody>
             {% endfor %}
         </table>
