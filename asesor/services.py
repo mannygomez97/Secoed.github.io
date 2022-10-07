@@ -11,5 +11,5 @@ def obtener_datos(params:Dict,verb:str = "GET")-> Any:
         "moodlewsrestformat": "json"
     }
     defaultParams.update(params)
-    response:Any=generate_request("http://academyec.com/moodle/webservice/rest/server.php",defaultParams, verb)
+    response:Any=generate_request("http://secoed.com/moodle/webservice/rest/server.php",defaultParams, verb)
     return response
