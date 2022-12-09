@@ -1,8 +1,13 @@
-FROM python:3.9-alpine
+FROM python:3.9-buster
 
 ENV PYTHONUNBUFFERED=1
+ENV PYTHONDONTWRITEBYTECODE=1
 
 WORKDIR /usr/src/app
+
+RUN apt-get update && apt-get -y install \
+	python-pip python-dev
+
 COPY requirements.txt ./
-RUN apk add --update --no-cache --virtual .tmp gcc libc-dev linux-headers
+
 RUN pip install -r requirements.txt
