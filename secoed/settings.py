@@ -13,7 +13,7 @@ SECRET_KEY = 'd!m50t)w$$&ff(*pn7%oqw-1yxo+eub*xcxd^8pzo=*2)ynq=w'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['95.216.216.98', '127.0.0.1', 'localhost', '194.163.151.250']
+ALLOWED_HOSTS = ['95.216.216.98', '127.0.0.1', 'localhost', '194.163.151.250', '5.161.135.79']
 
 # Base APP
 
@@ -207,7 +207,7 @@ CHANNEL_LAYERS = {
     },
 }
 
-SERVER_HOST = 'http://95.216.216.98:8086/'
+SERVER_HOST = 'http://5.161.135.79:8086/'
 
 # CELERY SETTINGS
 CELERY_BROKER_URL = 'redis://127.0.0.1:6379'
