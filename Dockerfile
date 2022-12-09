@@ -5,7 +5,7 @@ ENV PYTHONDONTWRITEBYTECODE=1
 
 WORKDIR /usr/src/app
   
-RUN python -m pip install --upgrade pip
+RUN python3 -m pip install --upgrade pip
 
 COPY requirements.txt ./
 RUN pip install -r requirements.txt
