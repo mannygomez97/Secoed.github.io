@@ -4,8 +4,8 @@ ENV PYTHONUNBUFFERED=1
 ENV PYTHONDONTWRITEBYTECODE=1
 
 WORKDIR /usr/src/app
-RUN apt-get update && apt-get -y install \
-	python-pip python-dev default-libmysqlclient-dev
+RUN yum update && yum -y install \
+	python-pip python-dev
   
 RUN python -m pip install --upgrade pip && \
     pip install --upgrade setuptools && \
