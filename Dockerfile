@@ -5,7 +5,7 @@ ENV PYTHONDONTWRITEBYTECODE=1
 
 WORKDIR /usr/src/app
 
-RUN ak update && apk -y add \
+RUN apk update && apk -y add \
 	python3-devel postgresql-devel
 
 COPY requirements.txt ./
