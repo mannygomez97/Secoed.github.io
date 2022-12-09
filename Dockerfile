@@ -5,7 +5,7 @@ ENV PYTHONDONTWRITEBYTECODE=1
 
 WORKDIR /usr/src/app
 
-RUN yum install python3-devel postgresql-devel
+RUN yum update -y
 
 COPY requirements.txt ./
 RUN pip install -r requirements.txt
