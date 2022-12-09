@@ -5,9 +5,7 @@ ENV PYTHONDONTWRITEBYTECODE=1
 
 WORKDIR /usr/src/app
   
-RUN python -m pip install --upgrade pip && \
-    pip install --upgrade setuptools && \
-    pip install ez_setup --user
+RUN python -m pip install --upgrade pip
 
 COPY requirements.txt ./
 RUN pip install -r requirements.txt
