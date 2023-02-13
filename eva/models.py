@@ -7,6 +7,7 @@ from conf.models import Carrera
 
 # Migración
 class Ciclo(models.Model):
+    carrera = models.ForeignKey(Carrera, db_column=u'carrera',  on_delete=models.CASCADE)
     name = models.CharField(max_length=100, unique=True, db_column='nombre')
     is_active = models.BooleanField(default=False, db_column='es_activo')
     date_created = models.DateTimeField(auto_now_add=True, db_column='fecha_creacion',
@@ -14,12 +15,14 @@ class Ciclo(models.Model):
     date_update = models.DateTimeField(auto_now=True, db_column='fecha_edicion',
                                        help_text='Fecha de edición del registro')
 
+
     def __str__(self):
         txt = "{0} "
         return txt.format(self.name)
 
     class Meta:
         db_table = "pt_ciclo"
+
 
 class Ciclo2(models.Model):
     is_active = models.BooleanField(default=False, db_column='activo')
@@ -31,9 +34,8 @@ class Ciclo2(models.Model):
     identificador = models.CharField(max_length=100, unique=True, db_column='identificador')
     periodo = models.ForeignKey(Ciclo, db_column='periodo_id', on_delete=models.CASCADE)
 
-
     def __str__(self):
-        return str(self.periodo.name)+ " " + str(self.nombre)
+        return str(self.nombre) + " " + str(self.periodo.name) + " (" + str(self.periodo.carrera.descripcion) + ")"
 
     class Meta:
         db_table = "ciclo"

@@ -1,43 +1,45 @@
 {% extends 'parciales/list.html' %}
 {% block btn_creacion %}
-    <div class="mb-2">
+    <!--<div class="mb-2">
         <button class="rounded-circle btn btn-outline-info" new-register type="button" onclick="openModal('{% url 'eva:create-periodo' %}', 'createModal')" title="Nuevo registro: {{ entity }}" >
             <i class="fas fa-plus"></i>
         </button>
+    </div>-->
+    <div class="mb-2">
+        <a href="/eva/periodo?action=add_periodo" class="rounded-circle btn btn-outline-info "><i class="fas fa-plus"></i></a>
     </div>
 {% endblock %}
 <!--Columnas de la tabla-->
 {% block cols %}
-    <th>N°</th>
-    <th>Nombre</th>
-    <th>Estado</th>
-    <th>Acción</th>
+    <th style="align-items: center">Nombre</th>
+    <th style="align-items: center" >Carrera</th>
+    <th style="align-items: center">Estado</th>
+    <th style="align-items: center">Acción</th>
 {% endblock %}
 <!--Filas de la tabla-->
 {% block filas %}
     {% for item in object_list %}
         <tr>
-            <td>{{ item.id }}</td>
-            <td>{{ item.name }}</td>
-            <td>
+            <td >{{ item.name }}</td>
+            <td>{{ item.carrera }} - {{ item.carrera.facultad }}</td>
+            <td style="align-items: center">
                 {% if item.is_active %}
-                    <span class="rounded-circle btn btn-outline-success btn-sm "><i class="bx bx-check-circle" ></i></span>
+                    <span style="align-items: center" class="rounded-circle btn btn-outline-success btn-sm "><i class="bx bx-check-circle" ></i></span>
                 {%else %}
-                    <span class="rounded-circle btn btn-outline-danger btn-sm"><i class="far fa-times-circle" ></i></span>
+                    <span style="align-items: center" class="rounded-circle btn btn-outline-danger btn-sm"><i class="far fa-times-circle" ></i></span>
                 {% endif %}
             </td>
             <td>
-                <button onclick="openModal('{% url 'eva:update-periodo' item.pk %}', 'updateModal')" class="rounded-circle btn btn-outline-secondary btn-sm edit" title="Editar">
+                <a href="/eva/periodo?action=ciclo&id={{ item.pk }}" class="rounded-circle btn btn-outline-info btn-sm trash" title="Ciclos">
+                        <i class="fas fa-list-alt"></i>
+                </a>
+                <a  href="/eva/periodo?action=edit_periodo&id={{ item.pk }}" class="rounded-circle btn btn-outline-secondary btn-sm formulariomodal" title="Editar">
                     <i class="fas fa-pencil-alt"></i>
-                </button>
+                </a>
                 <button onclick="confirmDelete('{% url 'eva:delete-periodo' item.pk %}')" class="rounded-circle btn btn-outline-danger btn-sm trash" title="Borrar">
                     <i class="fas fa-trash"></i>
                 </button>
-                <a href="/eva/ciclo/lista">
-                    <button   class="fa-solid fa-circle-arrow-up-right" title="Ver Ciclos">
-                        <i class="fas fa-draw-circle">Ver Ciclos</i>
-                    </button>
-                </a> 
+
                 {% csrf_token %}
             </td>
         </tr>

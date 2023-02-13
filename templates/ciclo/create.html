@@ -1,8 +1,19 @@
-{% extends 'parciales/form_modal.html' %}
-{% block action %}{% url 'eva:create-cycle' %}{% endblock %}
-{% block id_error %}error_create{% endblock %}
-{% block id_form %}form_create_ciclo{% endblock %}
-{% block btn %}
-    <button id="btn_cancel_create" class="btn btn-danger" type="button" onclick="closeModal('createModal');">Cancelar</button>
-    <button id="btn_create" class="btn btn-primary" type="button" onclick="ajaxRequest('form_create_ciclo', 'error_create', 'btn_create');">Confirmar</button>
+{% extends "formbs.html" %}
+{% block extrajavascript %}
+    <script type="text/javascript">
+        $(function() {
+            $("#id_nombre").addClass("validate[required]");
+
+        });
+    </script>
 {% endblock %}
+{% block atras %}/th_contratos{% endblock %}
+{% block titulo %}{{ title }}{% endblock %}
+{% block formdestination %}/th_contratos?action=contratos&docente={{ id }}&id={% endblock %}
+{% block formaction %}/th_contratos{% endblock %}
+{% block formextra %}
+    <input type='hidden' name='action' value='add'/>
+    <input type='hidden' name='id' value='{{id}}'/>
+{% endblock %}
+{% block formback %}/th_contratos{% endblock %}
+{% block buttonname %}Guardar{% endblock %}
