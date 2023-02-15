@@ -4,8 +4,10 @@ from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 from eva.models import Ciclo
 from eva.forms import CicloForm
 from django.http import JsonResponse
+from auditoria.apps import GeneradorAuditoria
 
-
+#Constantes
+m_NombreTabla = "pt_ciclo"
 class PeriodListView(ListView):
     model = Ciclo
     template_name = 'periodo/list.html'
@@ -48,6 +50,7 @@ class PeriodCreateView(CreateView):
                         error = 'No han ocurrido errores'
                         response = JsonResponse({'message': message, 'error': error})
                         response.status_code = 201
+                        GeneradorAuditoria().GenerarAuditoriaCrear(m_NombreTabla, "json create", 1)
                     return response
                 else:
                     message = f'{self.model.__name__} no se pudo registrar!'
@@ -84,6 +87,7 @@ class PeriodUpdateView(UpdateView):
                 error = 'No hay error'
                 response = JsonResponse({'message': message, 'error': error})
                 response.status_code = 201
+                GeneradorAuditoria().GenerarAuditoriaActualizar(m_NombreTabla, "json new", "json old", 1)
                 return response
             else:
                 message = f'{self.model.__name__} no se pudo actualizar!'
@@ -116,6 +120,7 @@ class PeriodDeleteView(DeleteView):
             errors = 'No se encontraron errores'
             response = JsonResponse({'message': message, 'error': errors})
             response.status_code = 201
+            GeneradorAuditoria().GenerarAuditoriaBorrar(m_NombreTabla, "json old", 1)
             return response
         else:
             return redirect('eva:list-periodo')
