@@ -12,3 +12,5 @@ class Auditoria(models.Model):
 
     class Meta:
         db_table = "TB_AUDITORIA"
+
+#ejemplo
