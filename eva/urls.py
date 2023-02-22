@@ -1,5 +1,6 @@
 from django.conf.urls import url
 
+import eva.periodo
 from eva.views.cursos.views import CursosEva
 from eva.views.evaluaciones.views import *
 from eva.views.reportes.views import ProcessResultEvaluations
@@ -88,5 +89,7 @@ urlpatterns = [
     url(r'^store/ciclo/(?P<cicloId>\d+)', schange_ciclo, name='store_change_ciclo'),
     #NUEVO GRUPO REPOSITORIO COE Y EVA
     url(r'^actual/ciclo', gchange_ciclo, name='gchange_ciclo'),
+
+    url(r'^periodo', eva.periodo.view, name='periodo'),
 
 ]

@@ -83,6 +83,7 @@ class CicloForm(ModelForm):
         fields = '__all__'
 
         widgets = {
+            'carrera': Select(attrs={'class': 'form-control select2'}),
             'name': TextInput(attrs={'class': 'form-control', 'placeholder': 'Nombre del ciclo ejemplo: C1-2021'}),
             'ciclo_activo': CheckboxInput(attrs={'class': 'form-check-input'})
         }
