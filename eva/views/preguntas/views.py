@@ -16,7 +16,7 @@ class QuestionsListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['heading'] = 'Mantenimiento Pregunta'
+        context['heading'] = 'Mantenimiento Pregunta1'
         cycle = Ciclo.objects.filter(is_active=True).first()
         context['pageview'] = cycle.name
         context['create_url'] = reverse_lazy('eva:create-questions')
