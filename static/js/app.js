@@ -444,18 +444,26 @@ function getPeriodos() {
         dataType: "json",
         type: 'POST',
         headers: {"X-CSRFToken": csrftoken},
-        success: function (data) {
-            $("#periodoAcademico").empty();
-            // $("#comboCategorias").append('<option value="0">RAIZ</option>');
-            data.context.forEach( function(valor, indice, array) {
-                if(valor.id == data.periodoId)
-                {
-                    $("#periodoAcademico").append('<option value="' + valor.id + '"selected>' + valor.name + '</option>');
-
-                }else{
-                    $("#periodoAcademico").append('<option value="' + valor.id + '">' + valor.name + '</option>');
-                }
+        success: function (resp) {            
+            let options ='';
+            let varios ='';
+            resp.validation.forEach(listrol => {                 
+            if  (listrol.es_administrador === true){
+                resp.context.forEach(period => {
+                                varios+='<option value='+period.id+'>'+period.name+'</option>';
+                                $("#periodoAcademico").append('<option value='+period.id+'>'+period.name+'</option>');
+                });
+            }
+            else {
+                resp.data.forEach(listcarrera => {
+                    options+='<option value='+listcarrera.id+'>'+listcarrera.name+'</option>';         
+                    resp.context.forEach(period => {
+                            varios+='<option value='+period.id+'>'+period.name+'</option>';
+                            $("#periodoAcademico").append('<option value='+listcarrera.id+'>'+listcarrera.name+'/'+period.name+'</option>');
+            })
             });
+            }
+           });
             $("#periodoAcademico").val("1").change();
 
          
