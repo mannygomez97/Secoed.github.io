@@ -1,3 +1,26 @@
+import argparse
+#import json
+import simplejson
+
+import logging
+import os
+import re
+import shlex
+import subprocess
+import sys
+import warnings
+from typing import (
+    Any,
+    Callable,
+    Dict,
+    Iterable,
+    Optional,
+    Sequence,
+    TextIO,
+    Tuple,
+    Type,
+)
+#import sys as json
 from builtins import print
 import delorean
 from django.http import JsonResponse
@@ -9,11 +32,12 @@ from datetime import datetime, date, timedelta, time
 from conf.models import Carrera, Facultad
 from django.core import serializers
 from conf.models import Carrera
-from authentication.models import Usuario, FacultyUser
+from authentication.models import Usuario, FacultyUser,RolUser
 from django.core.serializers import json
 from django.core import serializers
 # Create your views here.
 from django.views import View
+from django.http import HttpResponse
 
 from secoed.settings import TOKEN_MOODLE, API_BASE
 class CursoView(View):
@@ -93,11 +117,32 @@ class CursoView(View):
             print(e)
         return redirect('categoria')
 
-
     def getPeriod(request):
         period = list(Ciclo.objects.filter(is_active=True).values())
         periodoId = request.session.get('periodoId')
-        return JsonResponse({'context': period, 'periodoId' : periodoId})
+        variable = Usuario.objects.filter(username__icontains=request.session['username']).values()[0]['id']        
+        listcarrera = []
+        esadm = Usuario.objects.filter(username__icontains=request.session['username']).values('usuario_administrador')        
+        listrol=[]
+        
+        for i in Usuario.objects.filter(id=variable):
+            if request.is_ajax():
+                esadm=i.usuario_administrador 
+                desrol = {}
+                desrol['es_administrador']= i.usuario_administrador 
+                listrol.append(desrol)                     
+            if(esadm ==True):
+                return JsonResponse({'context':period, 'periodoId' : periodoId,'validation':list(listrol)})
+            else:
+                for i in FacultyUser.objects.filter(user=variable):
+                    if request.is_ajax():
+                        test = {}
+                        test['id']= i.carrera_id
+                        test['name']=i.carrera.descripcion
+                        listcarrera.append(test)             
+                        return JsonResponse({'data':list(listcarrera),'context':list(period), 'periodoId' : periodoId, 'validation':list(listrol)})
+                return HttpResponse ('Wrong request')
+       
 
     def getCycle(request,periodoId): 
         request.session['periodoId'] = periodoId       

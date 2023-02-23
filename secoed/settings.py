@@ -56,6 +56,7 @@ LOCAL_APPS = [
     'notify',
     'repositorio',
     'analisis'
+    
 ]
 
 INSTALLED_APPS = BASE_APPS + LOCAL_APPS + THIRD_APPS
@@ -110,11 +111,11 @@ CONEXION_HOST = ''
 CONEXION_PORT = 5432
 
 # CONEXION DEVELOPER
-""" CONEXION_NAME = 'localhost'
-CONEXION_USER = 'secoed'
+""" CONEXION_USER = 'secoed'
 CONEXION_PASSWORD = 'secoed2021'
 CONEXION_HOST = 'pgdb'
 CONEXION_PORT = 5432 """
+
 
 DATABASES = {
     'default': {
@@ -177,7 +178,7 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'secoed.web@gmail.com'
-EMAIL_HOST_PASSWORD = 'lV0G1b7xRLII&D$x1*xK'
+EMAIL_HOST_PASSWORD = 'ovlmxrmaqfayaewb'
 DEFAULT_FROM_EMAIL = 'secoed.web@gmail.com'
 
 LOGIN_REDIRECT_URL = '/authentication/pages-login'

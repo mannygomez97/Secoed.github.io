@@ -2,6 +2,7 @@ from django.contrib.auth.models import AbstractBaseUser, BaseUserManager
 from django.db import models
 
 from conf.models import Facultad, Rol, RolMoodle
+from conf.models import Carrera
 
 # Utils
 from django.utils import timezone
@@ -66,6 +67,8 @@ class Usuario(AbstractBaseUser):
     moodle_user = models.IntegerField('Id del usuario de moodle', null=True)
     USERNAME_FIELD = 'username'
     REQUIRED_FIELDS = ['email', 'nombres', 'apellidos', 'identificacion', 'telefono']
+    carrera = models.ManyToManyField(Carrera, blank=False, through='FacultyUser')
+
 
     def __str__(self):
         return f'{self.nombres} {self.apellidos}'
@@ -95,12 +98,16 @@ class RolUser(models.Model):
     class Meta:
         db_table = 'conf_rol_user'
 
+
 class FacultyUser(models.Model):
-    user = models.ForeignKey(Usuario, on_delete=models.SET_NULL, null=True)
+    user = models.ForeignKey(Usuario, on_delete=models.SET_NULL, null=True,)
     faculty = models.ForeignKey(Facultad, on_delete=models.SET_NULL, null=True)
+    carrera = models.ForeignKey(Carrera, on_delete=models.SET_NULL, null=True)
 
     def __str__(self):
-        return f'{self.user} {self.faculty}'
+        
+        #return f'{self.user} {self.faculty} {self.carrera.descripcion}'
+        return f'{self.carrera.descripcion}'
 
     class Meta:
         db_table = 'conf_faculty_user'
