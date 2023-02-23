@@ -107,7 +107,7 @@ ASGI_APPLICATION = 'secoed.asgi.application'
 CONEXION_NAME = 'secoed_v3'
 CONEXION_USER = 'secoed'
 CONEXION_PASSWORD = 'secoed'
-CONEXION_HOST = ''
+CONEXION_HOST = 'localhost'
 CONEXION_PORT = 5432
 
 # CONEXION DEVELOPER
