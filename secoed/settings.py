@@ -103,7 +103,7 @@ ASGI_APPLICATION = 'secoed.asgi.application'
 
 
 # CONEXION PRODUCCION
-CONEXION_NAME = 'secoed'
+CONEXION_NAME = 'secoed_v3'
 CONEXION_USER = 'secoed'
 CONEXION_PASSWORD = 'secoed'
 CONEXION_HOST = ''
