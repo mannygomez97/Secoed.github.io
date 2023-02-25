@@ -38,8 +38,12 @@ from django.core import serializers
 # Create your views here.
 from django.views import View
 from django.http import HttpResponse
+from auditoria.apps import GeneradorAuditoria
 
 from secoed.settings import TOKEN_MOODLE, API_BASE
+
+m_ProcesoCurso = "CURSOS"
+m_NombreTablaCurso = "pt_curso"
 class CursoView(View):
     def categoria(request):
         params = {"wstoken": TOKEN_MOODLE,
@@ -154,8 +158,6 @@ class CursoView(View):
         request.session['cicloId'] = cycleId
         return JsonResponse({'context': request.session['cicloId']})
 
-   
-            
     def get(self, request):
         params = {"wstoken": TOKEN_MOODLE,
                   "wsfunction": "core_course_get_courses_by_field ",
@@ -170,6 +172,7 @@ class CursoView(View):
                 cursos = {"cursos": response.json()}
         except Exception as e:
             print(e)
+            GeneradorAuditoria().CrearAuditoriaError(m_ProcesoCurso, str(e), request.user.id)
         return render(request, 'cursos/mantenimientoCursos.html', cursos)
 
     def allCategorias(request):
@@ -187,6 +190,7 @@ class CursoView(View):
                 context = {"context": r}
         except Exception as e:
             print(e)
+            GeneradorAuditoria().CrearAuditoriaError(m_ProcesoCurso, str(e), request.user.id)
         return JsonResponse(context)
 
     def crearEditarCurso(request):
@@ -285,9 +289,11 @@ class CursoView(View):
                 if response.status_code == 400:
                     print("ENTRA AL IF 400 " + str(response))
                     print("400")
+                    GeneradorAuditoria().CrearAuditoriaError(m_ProcesoCurso, "ENTRA AL IF 400 " + str(response), request.user.id)
                 if response.status_code == 500:
                     print("ENTRA AL IF 500 " + str(response))
                     print("500")
+                    GeneradorAuditoria().CrearAuditoriaError(m_ProcesoCurso, "ENTRA AL IF 500 " + str(response), request.user.id)
                 if response.status_code == 200:
                     curso = r[0]['id']
 
@@ -300,13 +306,18 @@ class CursoView(View):
                         enddate = end_date,
                         status = False,
                         userCreated = Usuario.objects.get(id = user))
-                    print(courseSecoed)
 
+                    newJson = GeneradorAuditoria().GenerarJSONNuevo(m_NombreTablaCurso)
+                    GeneradorAuditoria().GenerarAuditoriaCrear(m_NombreTablaCurso, newJson, request.user.id)
+
+                    print(courseSecoed)
                     print("ENTRA AL IF 200 " + str(response))
             else:
                 print("NO ENTRA al if")
+                GeneradorAuditoria().CrearAuditoriaError(m_ProcesoCurso, "NO ENTRA al if", request.user.id)
         except Exception as e:
             print("error " + str(e))
+            GeneradorAuditoria().CrearAuditoriaError(m_ProcesoCurso, str(e), request.user.id)
         return redirect('cursos')
 
     def deleteCourse(request, idCourse):
@@ -317,13 +328,18 @@ class CursoView(View):
             "courseids[0]": idCourse,
         }
         try:
+            kwargs = {'pk':idCourse}
+            oldJson = GeneradorAuditoria().GenerarJSONExistente(m_NombreTablaCurso, kwargs)
             respuesta = requests.post(API_BASE, params)
             if respuesta:
                 r = respuesta.json()
             if respuesta.status_code == 400:
                 print(r.message)
+                GeneradorAuditoria().CrearAuditoriaAdvertencia(m_ProcesoCurso, str(r.message), request.user.id)
             else:
+                GeneradorAuditoria().GenerarAuditoriaBorrar(m_NombreTablaCurso, kwargs["pk"], oldJson, request.user.id)
                 print("si se borro")
         except Exception as e:
             print(e)
+            GeneradorAuditoria().CrearAuditoriaError(m_ProcesoCurso, str(e), request.user.id)
         return redirect('cursos')
