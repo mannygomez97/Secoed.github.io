@@ -103,16 +103,16 @@ ASGI_APPLICATION = 'secoed.asgi.application'
 
 
 # CONEXION PRODUCCION
-CONEXION_NAME = 'db_secoedv2'
-CONEXION_USER = 'secoed'
-CONEXION_PASSWORD = 'secoed2021'
-CONEXION_HOST = 'pgdb'
+CONEXION_NAME = 'local_secoed'
+CONEXION_USER = 'postgres'
+CONEXION_PASSWORD = 'ruben12345'
+CONEXION_HOST = 'localhost'
 CONEXION_PORT = 5432
 
 # CONEXION DEVELOPER
-""" CONEXION_NAME = 'db_secoedv2'
-CONEXION_USER = 'secoed'
-CONEXION_PASSWORD = 'secoed2021'
+""" CONEXION_NAME = 'local_secoed'
+CONEXION_USER = 'postgres'
+CONEXION_PASSWORD = 'postgres'
 CONEXION_HOST = 'pgdb'
 CONEXION_PORT = 5432 """
 

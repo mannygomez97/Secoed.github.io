@@ -70,7 +70,6 @@ class Materia(models.Model):
     date_update = models.DateTimeField(auto_now=True, db_column='fecha_edicion',
                                        help_text='Fecha de edición del registro')
 
-
     def __str__(self):
         txt = "{0} "
         return txt.format(self.name)
@@ -78,6 +77,8 @@ class Materia(models.Model):
     class Meta:
         db_table = "pt_materia"
 
+    def esta_asignadaesta_asignada(self):
+        return self.materiaciclo_set.exists()
 
 
 # Migración
@@ -89,10 +90,8 @@ class MateriaCiclo(models.Model):
     date_update = models.DateTimeField(auto_now=True, db_column='fecha_edicion',
                                        help_text='Fecha de edición del registro')
 
-
     def __str__(self):
-        txt = "{0} "
-        return txt.format(self.name)
+        return self.materia.name
 
     class Meta:
         db_table = "materia_ciclo"
@@ -122,7 +121,7 @@ class MateriaDocente(models.Model):
 class Categoria(models.Model):
     name = models.CharField(max_length=100, unique=True, db_column='nombre')
     state = models.BooleanField(default=True, db_column='estado')
-    ciclo_id = models.IntegerField(db_column='ciclo_id', null=False, blank=False)
+    #ciclo_id = models.IntegerField(db_column='ciclo_id', null=False, blank=False)
     date_created = models.DateTimeField(auto_now_add=True, db_column='fecha_creacion',
                                         help_text='Registra la fecha de creación de un valor')
     date_update = models.DateTimeField(auto_now=True, db_column='fecha_edicion',
@@ -138,6 +137,9 @@ class Categoria(models.Model):
 
     class Meta:
         db_table = "pt_categoria"
+
+    def tiene_pregutna(self):
+        return self.pregunta_set.exists()
 
 
 # Desarrollo Nuevo FCI-016
@@ -193,7 +195,7 @@ class ParametrosGeneral(models.Model):
         db_table = "pt_parametro_general"
 
 
-# Desarrollo Nuevo FCI-016
+
 class Pregunta(models.Model):
     title = models.CharField(max_length=1000, db_column='titulo', help_text='registra el titulo de la pregunta')
     description = models.CharField(db_column='description', max_length=255,
@@ -205,8 +207,6 @@ class Pregunta(models.Model):
                                         help_text='Registra la fecha de creación de un valor')
     date_update = models.DateTimeField(db_column='fecha_edicion', auto_now=True,
                                        help_text='Fecha de edición del registro')
-    ciclo = models.ForeignKey(Ciclo2, on_delete=models.CASCADE,null=False, blank=False, default=1)
-
 
     def __str__(self):
         txt = "{0} "
@@ -219,6 +219,23 @@ class Pregunta(models.Model):
     class Meta:
         db_table = "pt_pregunta"
         ordering = ['title']
+
+
+class PreguntaCiclo(models.Model):
+    pregunta = models.ForeignKey(Pregunta, on_delete=models.CASCADE)
+    ciclo = models.ForeignKey(Ciclo2, on_delete=models.CASCADE)
+
+    def __str__(self):
+        txt = "{0} "
+        return txt.format(self.pregunta.title)
+
+    def to_json(self):
+        item = model_to_dict(self, exclude=['date_created', 'date_update'])
+        return item
+
+    class Meta:
+        db_table = "pt_preguntaciclo"
+        ordering = ['-id']
 
 
 # Migración

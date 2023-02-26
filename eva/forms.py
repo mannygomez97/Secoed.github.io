@@ -1,9 +1,89 @@
+from django.db.models.lookups import In
 from django.forms import *
-
+import os
 from conf.models import Rol, RolMoodle
 from eva.models import *
 from django import forms
 from eva.models import Ciclo2
+class BaseForm(forms.Form):
+    # form_s = '450'
+    # form_m = '650'
+    # form_l = '850'
+    # form_xl = '1024'
+    formbase = forms.CharField(widget=forms.HiddenInput(), required=False)
+    formtype = forms.CharField(widget=forms.HiddenInput(), required=False)
+    formwidth = forms.IntegerField(widget=forms.HiddenInput(), required=False)
+    screenwidth = forms.IntegerField(widget=forms.HiddenInput(), required=False)
+    labelwidth = forms.IntegerField(widget=forms.HiddenInput(), required=False)
+
+    def __init__(self, *args, **kwargs):
+        # ajaxformdinamicbs.html / ajaxformbs.html
+        formbase = kwargs.pop('formbase', 'ajaxformbs.html')
+        formtype = kwargs.pop('formtype', 'horizontal')
+        formwidth = kwargs.pop('formwidth', 850)
+        screenwidth = kwargs.pop('screenwidth', 1024)
+        labelwidth = kwargs.pop('labelwidth', 160)
+        super(BaseForm, self).__init__(*args, **kwargs)
+        self.fields['formbase'].initial = formbase
+        self.fields['formtype'].initial = formtype
+        self.fields['formwidth'].initial = formwidth
+        self.fields['screenwidth'].initial = screenwidth
+        self.fields['labelwidth'].initial = labelwidth
+        if self.form_real_width() < 550:
+            self.fields['formtype'].initial = 'vertical'
+
+    def form_base(self):
+        return self.fields['formbase'].initial
+
+    def form_width(self):
+        return self.fields['formwidth'].initial
+
+    def screenwidth_width(self):
+        return self.fields['screenwidth'].initial
+
+    def form_real_width(self):
+        if self.screenwidth_width() < self.form_width():
+            return self.screenwidth_width()
+        return self.form_width()
+
+
+class ExtFileField(forms.FileField):
+    """
+    * max_upload_size - a number indicating the maximum file size allowed for upload.
+            500Kb - 524288
+            1MB - 1048576
+            2.5MB - 2621440
+            5MB - 5242880
+            10MB - 10485760
+            20MB - 20971520
+            50MB - 5242880
+            100MB 104857600
+            250MB - 214958080
+            500MB - 429916160
+    t = ExtFileField(ext_whitelist=(".pdf", ".txt"), max_upload_size=)
+    """
+    def __init__(self, *args, **kwargs):
+        ext_whitelist = kwargs.pop("ext_whitelist")
+        self.ext_whitelist = [i.lower() for i in ext_whitelist]
+        self.max_upload_size = kwargs.pop("max_upload_size")
+        super(ExtFileField, self).__init__(*args, **kwargs)
+
+    def clean(self, *args, **kwargs):
+        upload = super(ExtFileField, self).clean(*args, **kwargs)
+        if upload:
+            size = upload.size
+            filename = upload.name
+            ext = os.path.splitext(filename)[1]
+            ext = ext.lower()
+            if size == 0 or ext not in self.ext_whitelist or size > self.max_upload_size:
+                raise forms.ValidationError("Tipo de fichero o tamaño no permitido!")
+
+
+class PeriodoForm(BaseForm):
+    carrera = forms.ModelChoiceField(label=u"Carrera", queryset=Carrera.objects, required=False, widget=forms.Select())
+    name = forms.CharField(label=u"Nombre", max_length=200, required=False, widget=forms.TextInput())
+    ciclo_activo = forms.BooleanField(label=u'Activo', required=False)
+
 
 class DocenteForm(ModelForm):
     def __init__(self, *args, **kwargs):
@@ -203,6 +283,48 @@ class PreguntaForm(ModelForm):
             'title': TextInput(attrs={'class': 'form-control', 'placeholder': 'Aquí un título para la pregunta'}),
             'description': TextInput(attrs={'class': 'form-control', 'placeholder': 'Descripción de la pregunta'}),
             'type': Select(attrs={'class': 'form-control select2'}),
+            'ciclo': forms.HiddenInput()
+        }
+
+
+class PreguntaAutoForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(self.__class__, self).__init__(*args, **kwargs)
+        self.fields['pregunta'] = forms.ModelMultipleChoiceField(queryset=Pregunta.objects.filter(type=1), widget=forms.CheckboxSelectMultiple)
+        #self.fields['pregunta'].queryset = Pregunta.objects.filter(type=1)
+
+    class Meta:
+        model = PreguntaCiclo
+        fields = '__all__'
+
+        #labels = {
+        #    'pregunta': 'Preguntas'
+        #}
+
+        widgets = {
+            'pregunta': forms.CheckboxSelectMultiple(),
+            #'pregunta': Select(attrs={'class': 'form-select select2'}),
+            'ciclo': forms.HiddenInput()
+        }
+
+
+class PreguntaCoeForm(ModelForm):
+    def __init__(self, *args, **kwargs):
+        super(self.__class__, self).__init__(*args, **kwargs)
+        self.fields['pregunta'] = forms.ModelMultipleChoiceField(queryset=Pregunta.objects.filter(type=2), widget=forms.CheckboxSelectMultiple)
+        #self.fields['pregunta'].queryset = Pregunta.objects.filter(type=1)
+
+    class Meta:
+        model = PreguntaCiclo
+        fields = '__all__'
+
+        #labels = {
+        #    'pregunta': 'Preguntas'
+        #}
+
+        widgets = {
+            'pregunta': forms.CheckboxSelectMultiple(),
+            #'pregunta': Select(attrs={'class': 'form-select select2'}),
             'ciclo': forms.HiddenInput()
         }
 

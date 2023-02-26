@@ -14,9 +14,9 @@ class CategoryListView(ListView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['heading'] = 'Matenimiento Categorias'
-        cycle = Ciclo.objects.filter(is_active=True).first()      
-        context['pageview'] = cycle.name
-        context['object_list'] = Categoria.objects.filter(ciclo_id=self.request.session.get('cicloId'))
+        #cycle = Ciclo.objects.filter(is_active=True).first()
+        #context['pageview'] = cycle.name
+        context['object_list'] = Categoria.objects.all()
         context['create_url'] = reverse_lazy('eva:create-category')
         context['url_list'] = reverse_lazy('eva:list-category')
         return context
