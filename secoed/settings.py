@@ -117,9 +117,6 @@ CONEXION_PASSWORD = '123456'
 CONEXION_HOST = 'localhost'
 CONEXION_PORT = 5432
 
-
-
-
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
