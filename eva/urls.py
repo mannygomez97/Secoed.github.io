@@ -68,11 +68,16 @@ urlpatterns = [
         name='delete-parameter-grl'),
     # Questions routes
     url(r'^pregunta/lista/', login_required(QuestionsListView.as_view()), name='list-questions'),
-    url(r'^pregunta/autoevaluacion/', login_required(PreguntasAutoView.as_view()), name='auto-questions'),
-    url(r'^pregunta/coevaluacion/', login_required(PreguntasCoeView.as_view()), name='coe-questions'),
     url(r'^pregunta/crear/', login_required(QuestionsCreateView.as_view()), name='create-questions'),
     url(r'^pregunta/editar/(?P<pk>\d+)/$', login_required(QuestionsUpdateView.as_view()), name='update-questions'),
     url(r'^pregunta/eliminar/(?P<pk>\d+)/$', login_required(QuestionsDeleteView.as_view()), name='delete-questions'),
+    # Union Pregunta con ciclo
+    url(r'^autoevaluacion/lista/', login_required(PreguntasAutoView.as_view()), name='auto-questions'),
+    url(r'^autoevaluacion/crear/', login_required(PreguntasAutoCreateView.as_view()), name='create-questions-auto'),
+    url(r'^autoevaluacion/eliminar/(?P<pk>\d+)/$', login_required(QuestionsDeleteView.as_view()), name='delete-questions-auto'),
+    url(r'^coevaluacion/lista/', login_required(PreguntasCoeView.as_view()), name='coe-questions'),
+    url(r'^coevaluacion/crear/', login_required(PreguntasAutoCreateView.as_view()), name='create-questions-coe'),
+    url(r'^coevaluacion/eliminar/(?P<pk>\d+)/$', login_required(QuestionsDeleteView.as_view()), name='delete-questions-coe'),
     # eva
     url(r'^evaluacion/lista/', login_required(TeachersPendingEvaluationList.as_view()), name='list-coevaluar'),
     url(r'^evaluacion/autoevaluar', login_required(AutoEvaluacionCreateView.as_view()), name='create-auto-evaluation'),
@@ -90,6 +95,6 @@ urlpatterns = [
     #NUEVO GRUPO REPOSITORIO COE Y EVA
     url(r'^actual/ciclo', gchange_ciclo, name='gchange_ciclo'),
 
-    url(r'^periodo', eva.periodo.view, name='periodo'),
+    #url(r'^periodo', eva.periodo.view, name='periodo'),
 
 ]

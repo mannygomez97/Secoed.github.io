@@ -25,13 +25,15 @@
             <td>{{ item.name }}</td>
             <td>{{ item.teacher }}</td>
             <td>
-                <button onclick="openModal('{% url 'eva:update-matter' item.pk %}', 'updateModal')" class="rounded-circle btn btn-outline-secondary btn-sm edit" title="Editar">
-                    <i class="fas fa-pencil-alt"></i>
-                </button>
-                <button onclick="confirmDelete('{% url 'eva:delete-matter' item.pk %}')" class="rounded-circle btn btn-outline-danger btn-sm trash" title="Borrar">
-                    <i class="fas fa-trash"></i>
-                </button>
-                {% csrf_token %}
+                {% if not item.item %}
+                    <button onclick="openModal('{% url 'eva:update-matter' item.pk %}', 'updateModal')" class="rounded-circle btn btn-outline-secondary btn-sm edit" title="Editar">
+                        <i class="fas fa-pencil-alt"></i>
+                    </button>
+                    <button onclick="confirmDelete('{% url 'eva:delete-matter' item.pk %}')" class="rounded-circle btn btn-outline-danger btn-sm trash" title="Borrar">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                    {% csrf_token %}
+                {% endif %}
             </td>
         </tr>
     {% endfor %}

@@ -88,6 +88,16 @@
                                 <th scope="row">Teléfono :</th>
                                 <td>{{ user.telefono }}</td>
                             </tr>
+                            <tr>
+                                <th scope="row">Carrera :</th>
+                            {%for c in carrera%}    
+                                
+                                <td>{{ c.carrera.descripcion }}</td>
+                                <tr>
+                                <th scope="row"></th>
+                            {%endfor%}
+                                </tr>
+                            </tr>
                             </tbody>
                         </table>
                     </div>
@@ -147,6 +157,11 @@
 
     <!--SWEET-ALERT -->
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Datatable init js -->
+    <script src="{% static 'js/pages/datatables.init.js' %}"></script>
+
+    <script src="{% static 'js/app.js' %}"></script>
 
     <!-- message success-->
     {% if messages %}
