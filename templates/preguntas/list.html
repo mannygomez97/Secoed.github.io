@@ -9,7 +9,6 @@
 {% endblock %}
 
 {% block cols %}
-    <th>N°</th>
     <th style="width: 50px;">Título</th>
     <th>Acción</th>
 {% endblock %}
@@ -17,7 +16,6 @@
 {% block filas %}
     {% for item in object_list %}
         <tr>
-            <td>{{ item.id }}</td>
             <td style="width: 50px;">{{ item.title }}</td>
             <td>
                 <button onclick="openModal('{% url 'eva:update-questions' item.pk %}', 'updateModal')" class="rounded-circle btn btn-outline-secondary btn-sm edit" title="Editar">

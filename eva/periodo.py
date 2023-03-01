@@ -80,7 +80,7 @@ def view(request):
 
             if action == 'add_periodo':
                 try:
-                    data['title'] = u'Adicionar tipo de evidencia'
+                    data['title'] = u'Adicionar Periodo'
                     data['form'] = CicloForm
                     return render(request, "periodo/create.html", data)
                 except Exception as ex:

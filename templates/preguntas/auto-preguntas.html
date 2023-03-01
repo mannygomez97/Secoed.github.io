@@ -1,19 +1,36 @@
-{% extends 'parciales/questions.html' %}
-{% block preguntas_opciones %}
-    {% for category in categories %}
-        <tr class="table-info">
-            <td class="titulos" style="text-align: center" colspan="2">
-                <h5>{{ category.name|upper }}</h5>
+{% extends 'parciales/list.html' %}
+
+{% block btn_creacion %}
+    <div class="mb-2">
+        <button class="rounded-circle btn btn-outline-info" new-register type="button" onclick="openModal('{% url 'eva:create-questions-auto' %}', 'createModal')" title="Nuevo registro: {{ entity }}" >
+            <i class="fas fa-plus"></i>
+        </button>
+    </div>
+{% endblock %}
+
+<!--Columnas de la tabla-->
+{% block cols %}
+    <th>Pregunta</th>
+    <th>Categoria</th>
+    <th>Acción</th>
+{% endblock %}
+<!--Filas de la tabla-->
+{% block filas %}
+    {% for item in object_list %}
+        <tr>
+            <td>{{ item.pregunta.title }}</td>
+            <td>{{ item.pregunta.category }}</td>
+            <td>
+                {% if not item.item %}
+                    <button onclick="openModal('{% url 'eva:update-matter' item.pk %}', 'updateModal')" class="rounded-circle btn btn-outline-secondary btn-sm edit" title="Editar">
+                        <i class="fas fa-pencil-alt"></i>
+                    </button>
+                    <button onclick="confirmDelete('{% url 'eva:delete-matter' item.pk %}')" class="rounded-circle btn btn-outline-danger btn-sm trash" title="Borrar">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                    {% csrf_token %}
+                {% endif %}
             </td>
         </tr>
-        {% for question in questions %}
-            {% ifequal question.category_id category.id %}
-                <tr>
-                    <td style="max-width: 100%" >
-                        {{ question.title }}
-                    </td>
-                </tr>
-            {% endifequal %}
-        {% endfor %}
     {% endfor %}
-{% endblock %}
+ {% endblock %}

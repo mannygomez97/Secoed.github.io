@@ -1,0 +1,234 @@
+{% extends form.form_base %}
+{% block javascript %}
+    <script type="text/javascript">
+        var cargardestino = true;
+        var cerrarformulario = true;
+        $(function() {
+            $(".selectorfecha").datepicker({format:"dd-mm-yyyy"});
+
+            $("form").validationEngine({validateNonVisibleFields: true, autoHidePrompt:true, autoHideDelay:1000 });
+
+            envioformulario = function(){
+                var valid = $("form").validationEngine('validate');
+                if (valid){
+                    $('.datepicker').css({"display": "none"});
+                    $('.bootstrap-timepicker-widget').css({"display": "none"});
+                    bloqueointerface();
+                    $('.controls input').each(function(){
+                        if ($(this).attr('type') === 'text'){
+                            $(this).val($(this).val().trim());
+                        }
+                        if ($(this).attr('type') !== 'file'){
+                            if ($(this).css('text-transform') === 'uppercase'){
+                                if ($(this).attr('type') !== 'password'){
+                                    $(this).val($(this).val().toUpperCase());
+                                }
+                            }
+                        }
+                    });
+                    var formdata = new FormData($("#formulario3")[0]);
+                    try {
+                        pre_envio_formulario();
+                    } catch (err){
+                        console.log(err.message);
+                    }
+                    try {
+                        formdata.append("lista_items1", JSON.stringify(lista_items1));
+                    } catch (err){
+                        console.log(err.message);
+                    }
+                    try {
+                        formdata.append("lista_items2", JSON.stringify(lista_items2));
+                    } catch (err){
+                        console.log(err.message);
+                    }
+                    try {
+                        formdata.append("lista_items3", JSON.stringify(lista_items3));
+                    } catch (err){
+                        console.log(err.message);
+                    }
+
+                    $.ajax({
+                        type: "POST",
+                        url: "{% block formaction %}/{% endblock %}",
+                        data: formdata,
+                        success: function(data) {
+                            if (data.result === 'ok') {
+                                location.href = "{% block formdestination %}/{% endblock %}" + ((data.id)?data.id:"");
+                            } else {
+                                if (cargardestino){
+                                    if (data.reloadpage){
+                                        sysend.broadcast('', {message: 'reload', token: data.sessionid});
+                                    }
+                                    desbloqueointerface();
+                                    smoke.alert(data.mensaje);
+                                }else{
+                                    desbloqueointerface();
+                                    if (cerrarformulario){
+                                        $("#formulariomodaldinamico").html('');
+                                        $('#formulariomodaldinamico').modal('hide');
+                                    }
+
+                                    post_formulario(data);
+                                }
+                            }
+                        },
+                        error: function() {
+                            desbloqueointerface();
+                            smoke.alert("Error de conexión.");
+                        },
+                        dataType: "json",
+                        cache: false,
+                        contentType: false,
+                        processData: false
+                    });
+                } else {
+                    eliminar_alertas();
+                }
+            };
+
+            $("#formbutton").click(function(){
+                envioformulario();
+            });
+
+            $(":file").filestyle({"input": false});
+
+            eliminar_alertas = function(){
+                setInterval(function() {
+                    $('.help-text').each(function () {
+                        if ($(this).attr('alert')){
+                            $(this).html($(this).attr('alert'));
+                        } else {
+                            $(this).empty();
+                        }
+                    });
+                }, 800000);
+                desbloqueointerface();
+            };
+
+            eliminar_alertas();
+
+            $(".select2advance").select2({minimumResultsForSearch: 20, width: 'resolve' });
+
+            actualizar_campos_select2 = function () {
+                $(".select2hidden ").each(function () {
+                    var id = $(this).attr("id");
+                    if ($(this).attr('descripcion')){
+                        $("#"+id+"_select2").html('<option>'+$(this).attr("descripcion")+'</option>');
+                        $("#select2-"+id+"_select2-container").html('<span>'+$(this).attr("descripcion")+'</span><span class="select2-selection__clear">×</span>');
+                    }else{
+                        $("#"+id+"_select2").html('<option>---------</option>');
+                        $("#select2-"+id+"_select2-container").html('<span>---------</span>');
+                    }
+                });
+            };
+
+            inicializar_campos_select2 = function () {
+                $(".select2hidden ").each(function () {
+                    var id = $(this).attr("id");
+                    if ($(this).val() > 0){
+
+                    } else {
+                        limpiar_select2($(this).attr("id"));
+                    }
+                });
+            };
+
+            {% if not permite_modificar %}
+                $('.control').children().attr({'disabled': 'disabled'});
+                $('.control input').attr({'disabled': 'disabled'});
+            {% endif %}
+
+            $(".control input").keyup(function(e) {
+                if(e.keyCode === 13) {
+                    envioformulario();
+                }
+            });
+
+            $(".bootstrap-filestyle span").css({'margin-left': '0'});
+
+        });
+    </script>
+
+    {% block extrajavascript %}
+    {% endblock %}
+{% endblock %}
+{% block form %}
+    <div id="formbs"></div>
+    <form action="javascript:;" method="post" id="formulario3" {% block formtagextra %}{% endblock %} style="width: 100%; margin-bottom: 0">
+        {% block formextra %}{% endblock %}
+        {% block formprefix %}{% endblock %}
+        {% if form.fields.formtype.initial  == 'horizontal' %}
+            {% for field in form %}
+                {% if not field.field.widget.is_hidden %}
+                    {% if field.field.widget.attrs.separator %}
+                        <div style="width: 100%; height: 1px; float: left;"></div>
+                    {% endif %}
+                    {% if field.field.widget.attrs.separador %}
+                        <div class="separador" style="width: 100%; height: 50px; float: left">
+                            <div class="alert alert-info" style="background-color: #F5F5F7; border-color: lightgrey;"><b>{{ field.field.widget.attrs.separador|upper }}</b></div>
+                        </div>
+                    {% endif %}
+                    <fieldset id="fieldset_{{ field.name }}" class="control-group nomargins" style="min-height:{% if field.field.widget.attrs.fieldheight %}{{ field.field.widget.attrs.fieldheight }}px{% else %}35px{% endif %}; float: left; width: {% if field.field.widget.attrs.formwidth %}{{ field.field.widget.attrs.formwidth }}px{% else %}100%{% endif %}" >
+                        <div class="control-label label-text" style="float: left; text-align: right;display: table;height: 30px; {% if field.field.widget.attrs.labelwidth %}width:{{ field.field.widget.attrs.labelwidth }}px{% else %}width:{{ form.fields.labelwidth.initial }}px{% endif %}" >
+                            <div style="display: table-cell; vertical-align: middle; line-height: 11px">
+                                <label for="id_{{ field.name }}" style="padding-right: 20px">{{ field.label }}</label>
+                            </div>
+                        </div>
+                        <div class="control" id="control_{{ field.name }}" name="{{ field.name }}" style="float: left; width:{% if field.field.widget.attrs.controlwidth %}{{ field.field.widget.attrs.controlwidth }}px{% endif %}" {% if field.field.ext_whitelist %}filetypes="{{ field.field.ext_whitelist }}"{% endif %} {% if field.field.max_upload_size %}filesize="{{ field.field.max_upload_size }}"{% endif %}>
+                            {% if field.field.widget.attrs.select2search %}
+                                <select id="id_{{ field.name }}_select2" {% if field.field.widget.attrs.disabled %}disabled=""{% endif %} >
+                                    <option value="0" selected="selected">---------</option>
+                                </select>
+                                <input style="display: none" type="text" name="{{ field.name }}" id="id_{{ field.name }}" value="{{ field.value }}" hidden="hidden" {% if field.field.widget.attrs.descripcion %}descripcion="{{ field.field.widget.attrs.descripcion }}"{% endif %} class="select2hidden">
+                            {% else %}
+                                {{ field }}
+                            {% endif %}
+                            <p class="help-text" alert="{% if field.field.widget.attrs.help_text %}{{ field.field.widget.attrs.help_text }}{% else %}{{ field.help_text }}{% endif %}" style="font-size: xx-small; margin-bottom: 0; height: 13px; line-height: 13px; float: left; width: 100%"><span style='color: #0e90d2'>{% if field.field.widget.attrs.help_text %}{{ field.field.widget.attrs.help_text }}{% else %}{{ field.help_text }}{% endif %}</span></p>
+                        </div>
+                    </fieldset>
+                {% endif %}
+            {% endfor %}
+        {% else %}
+            {% for field in form %}
+                {% if not field.field.widget.is_hidden %}
+                    {% if field.field.widget.attrs.separator %}
+                        <div style="width: 100%; height: 1px; float: left;"></div>
+                    {% endif %}
+                    <fieldset id="fieldset_{{ field.name }}" class="control-group nomargins" style="min-height:70px; float: left; width: {% if field.field.widget.attrs.formwidth %}{{ field.field.widget.attrs.formwidth }}px{% else %}100%{% endif %}" >
+                        <div class="control-label label-text" style="float: left; text-align: left;display: table;height: 30px; {% if field.field.widget.attrs.formwidth %}width:{{ field.field.widget.attrs.formwidth }}px{% endif %}">
+                            <div style="display: table-cell; vertical-align: middle; line-height: 11px">
+                                <label for="id_{{ field.name }}" style="padding-right: 20px">{{ field.label }}</label>
+                            </div>
+                        </div>
+                        <div class="control" id="control_{{ field.name }}" name="{{ field.name }}" style="float: left; {% if field.field.widget.attrs.formwidth %}width:{{ field.field.widget.attrs.formwidth }}px{% endif %}" {% if field.field.ext_whitelist %}filetypes="{{ field.field.ext_whitelist }}"{% endif %} {% if field.field.max_upload_size %}filesize="{{ field.field.max_upload_size }}"{% endif %}>
+                            {% if field.field.widget.attrs.select2search %}
+                                <select id="id_{{ field.name }}_select2" {% if field.field.widget.attrs.disabled %}disabled=""{% endif %} >
+                                    <option value="0" selected="selected">---------</option>
+                                </select>
+                                <input style="display: none" type="text" name="{{ field.name }}" id="id_{{ field.name }}" value="{{ field.value }}" hidden="hidden" {% if field.field.widget.attrs.descripcion %}descripcion="{{ field.field.widget.attrs.descripcion }}"{% endif %} class="select2hidden">
+                            {% else %}
+                                {{ field }}
+                            {% endif %}
+                            <p class="help-text" alert="{% if field.field.widget.attrs.help_text %}{{ field.field.widget.attrs.help_text }}{% else %}{{ field.help_text }}{% endif %}" style="font-size: xx-small; margin-bottom: 0; height: 13px; line-height: 13px; float: left; width: 100%"><span style='color: #0e90d2'>{% if field.field.widget.attrs.help_text %}{{ field.field.widget.attrs.help_text }}{% else %}{{ field.help_text }}{% endif %}</span></p>
+                        </div>
+                    </fieldset>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+        {% block formsuffix %}
+        {% endblock %}
+        <div style="float: left; width: 100%; margin-top: 10px">
+            <p style="text-align: right; margin-bottom: 0; padding-right: 0px">
+                {% block preextrabuttons %}
+                {% endblock %}
+                {% if permite_modificar %}
+                    <a href="javascript:;" class="btn btn-success" id="formbutton">{% block buttonname %}Guardar{% endblock %}</a>
+                {% endif %}
+                {% block extrabuttons %}
+                {% endblock %}
+                <a href="javascript:;" id="formcancelbutton" nhref="{% block formback %}/{% endblock %}" class="btn {% if permite_modificar %}btn-danger{% else %}btn-info{% endif %}">{% if permite_modificar %}Cancelar{% else %}Aceptar{% endif %}</a>
+            </p>
+        </div>
+    </form>
+{% endblock %}

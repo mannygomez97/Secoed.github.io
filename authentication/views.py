@@ -53,8 +53,8 @@ class GetCarreraUser(APIView):
         if request.method == 'GET':
             carrerauser = FacultyUser.objects.all()
             serializer = FacultyUserSerializer(carrerauser, many=True)
-            print('entra carrera')
-            print(serializer)
+           # print('entra carrera')
+            #print(serializer)
             return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -391,7 +391,8 @@ class UsuarioPerfilView(View):
     def get(self, request):
         usuario = get_object_or_404(Usuario, pk=request.user.id)
         usuarioPerfilForm = UsuarioPerfilForm(instance=usuario)
-        greeting = {'heading': "Perfil", 'pageview': "Perfil", "form": usuarioPerfilForm, "usuario": usuario}
+        carrera=FacultyUser.objects.filter(user=request.user.id)
+        greeting = {'heading': "Perfil", 'pageview': "Perfil", "form": usuarioPerfilForm, "usuario": usuario, "carrera": carrera}
         return render(request, self.template_name, greeting)
 
     def editUsuarioPerfil(request, pk):

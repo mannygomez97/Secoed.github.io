@@ -1,0 +1,20 @@
+<script type="text/javascript">
+    $(function() {
+        $("#formcancelbutton").click(function(){
+            $('#formulariomodaldinamico').html('').modal('hide');
+        });
+
+    });
+</script>
+{% block javascript %}
+{% endblock %}
+<div id="ajaxformdinamicbs" nwidth="{{ form.form_real_width }}px"></div>
+<div class="modal-header">
+    <h4>{% block titulo %}{% endblock %}</h4>
+</div>
+<div class="modal-body" id="ajaxformdinamicbs-modal-body" style="min-height: 60px; display:inline-block; width: {{ form.form_real_width|resta:35 }}px" >
+    <div style="max-height: 800px; width: 100%">
+        {% block form %}
+        {% endblock %}
+    </div>
+</div>
