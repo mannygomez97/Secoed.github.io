@@ -565,6 +565,11 @@ def deleteCourseCicle(request, id):
     return redirect('course_cicle_carrer')
 
 
+
+# Constantes
+m_ProcesoCursoAsesor = "CURSO-ASESOR"
+m_NombreTablaCursoAsesor = "components_courseciclecarrer"
+
 def courseAsesorList(request):
     t = "Mantenimientos"
     u = "Parametrización curso asesor "
@@ -591,10 +596,15 @@ def addCourseAsesor(request):
                 courseSecoed = CourseCicleCarrer.objects.get(id=request.POST['course'])
                 courseSecoed.assigned = True
                 courseSecoed.save()
+                newJson = GeneradorAuditoria().GenerarJSONNuevo(m_NombreTablaCursoAsesor)
+                GeneradorAuditoria().GenerarAuditoriaCrear(m_NombreTablaCursoAsesor, newJson, request.user.id)
                 return redirect('course_asesor')
             else:
                 messages.add_message(request, messages.WARNING,
                                      message="Curso ya se encuentra asociado asesor!")
+                GeneradorAuditoria().CrearAuditoriaAdvertencia(m_ProcesoCursoAsesor, "Curso ya se encuentra asociado "
+                                                                                      "asesor!",
+                                                               request.user.id)
                 return redirect('course_asesor')
     else:
         form = CourseAsesorForm()
@@ -606,12 +616,17 @@ def updateCourseAsesor(request, id):
     if request.method == 'POST':
         form = CourseAsesorEditForm(request.POST, instance=courseAsesor)
         if form.is_valid():
+            kwargs = {'pk': id}
+            oldJson = GeneradorAuditoria().GenerarJSONExistente(m_NombreTablaCursoAsesor, kwargs)
             userId = Usuario.objects.filter(username__icontains=request.session['username']).values('id')[0]['id']
             updated = form.save(commit=False)
             updated.userCreated = Usuario.objects.get(id=int(userId))
             updated.save()
+            newJson = GeneradorAuditoria().GenerarJSONNuevo(m_NombreTablaCursoAsesor)
             messages.add_message(request, messages.SUCCESS,
                                  message="Relación editada de manera exitosa!")
+            GeneradorAuditoria().GenerarAuditoriaActualizar(m_NombreTablaCursoAsesor, kwargs["pk"], newJson, oldJson,
+                                                            request.user.id)
             return redirect('course_asesor')
     else:
         form = CourseAsesorEditForm(instance=courseAsesor)
@@ -630,6 +645,8 @@ def deleteCourseAsesor(request, id):
 
         if coursesValCount == 0:
             print('en cero para ser borrado')
+            kwargs = {'pk': id}
+            oldJson = GeneradorAuditoria().GenerarJSONExistente(m_NombreTablaCursoAsesor, kwargs)
             course_asesor.delete()
             messages.add_message(request, messages.SUCCESS,
                                  message="Curso desasociado del asesor de manera exitosa!")
@@ -638,11 +655,16 @@ def deleteCourseAsesor(request, id):
             courseSecoed.assigned = False
             courseSecoed.save()
 
+            GeneradorAuditoria().GenerarAuditoriaBorrar(m_NombreTablaCursoAsesor, kwargs["pk"], oldJson, request.user.id)
             return redirect('course_asesor')
             pass
         else:
             messages.add_message(request, messages.WARNING,
                                  message="El asesor no se puede desvincular debido a que tiene notas asociadas!")
+            GeneradorAuditoria().CrearAuditoriaAdvertencia(m_ProcesoCursoAsesor, "El asesor no se puede desvincular"
+                                                                                 " debido a que tiene notas asociadas!",
+                                                           request.user.id)
     except Exception as e:
         print(e)
+        GeneradorAuditoria().CrearAuditoriaError(m_ProcesoCursoAsesor, str(e), request.user.id)
     return redirect('course_asesor')
