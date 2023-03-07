@@ -90,11 +90,16 @@ function cargarlista() {
         headers: {"X-CSRFToken": csrftoken},
 /*        async:false,*/
         success: function (data) {
+            console.log(data.context)
             $("#comboCategorias").empty();
             // $("#comboCategorias").append('<option value="0">RAIZ</option>');
-            for (var i=0; i <= data.context.length; i++) {
-                $("#comboCategorias").append('<option value="' + data.context[i].id + '">' + data.context[i].name + '</option>');
-            }
+            $.each(data.context, function(indice,valor) 
+            {              
+                $("#comboCategorias").append('<option value="' + valor.id + '">' + valor.name + '</option>');
+            });
+           // for (var i=0; i <= data.context.length; i++) {
+           //     $("#comboCategorias").append('<option value="' + data.context[i].id + '">' + data.context[i].name + '</option>');
+           // }
         }, error: function (xhr, status, error) {
             console.log(xhr);
         }

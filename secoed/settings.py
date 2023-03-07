@@ -194,9 +194,9 @@ DJANGO_EASY_AUDIT_ADMIN_SHOW_MODEL_EVENTS = False
 DJANGO_EASY_AUDIT_ADMIN_SHOW_AUTH_EVENTS = False
 DJANGO_EASY_AUDIT_ADMIN_SHOW_REQUEST_EVENTS = False
 
-TOKEN_MOODLE = 'cae40824ddd52a292888f736c8843929'
+TOKEN_MOODLE = 'f3daa936736c02613b285fe50f4616a5'
 TOKEN_ROOT = '2fb3df9ba2006ef257f072651b547b3d'
-API_BASE = 'http://secoed.com/moodle/webservice/rest/server.php'
+API_BASE = 'https://secoed.com/aula-virtual/webservice/rest/server.php'
 CONTEXT_ID = 116
 
 CHANNEL_LAYERS = {

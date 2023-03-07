@@ -24,11 +24,13 @@ import json
 from eva.models import Ciclo2
 
 def getAsesorLogin(request):
+    print('getAsesorLogin')  
     user = Usuario.objects.filter(username__icontains=request.session['username']).values('id')
     userId = user[0]['id']
     return userId
 
 def getAsesorInfo(request):
+    print('getAsesorInfo')   
     login = Usuario.objects.filter(username__icontains=request.session['username'])
     nombre = login.values('nombres')[0]['nombres']
     apellido = login.values('apellidos')[0]['apellidos']
@@ -36,8 +38,9 @@ def getAsesorInfo(request):
     return user
 
 def getCoursesByActuallyCicle(request):
+    print('entro en getCoursesByActuallyCicle')
     cicleId = request.session['activeCicle']
-
+    print('getCoursesByActuallyCicle')   
     secoedCourses = CourseCicleCarrer.objects.filter(cicle = cicleId).values('course')
     moodleCourses = CoursesMoodle.objects.all().values('id','moodleId')
     
@@ -54,16 +57,24 @@ def getCourses(request):
             "wsfunction":"core_course_get_courses",
             "moodlewsrestformat":"json",                                    
             }
+    print('getCourses')   
     courses = []
     response = requests.post(API_BASE, params)
+    print(response) 
     if response.status_code == 400:
         courses = []
     elif response:
         courses = response.json()
+        print('despues de course') 
         for y in courses:
-                timestamp = datetime.fromtimestamp(y["startdate"])                
+                print('primer for')
+                print(courses)               
+                timestamp = datetime.fromtimestamp(y["startdate"]) 
+                print(timestamp)               
                 y["startdate"]=timestamp.strftime('%Y-%m-%d')
-        for v in courses:                
+                
+        for v in courses:  
+                print('segundo for')              
                 timestamp = datetime.fromtimestamp(v["enddate"])                
                 v["enddate"]=timestamp.strftime('%Y-%m-%d')
     return courses
@@ -74,6 +85,7 @@ def getCalendarEvents(request, id):
             "moodlewsrestformat":"json",
             "events[courseids][0]":id
             }
+    print('getCalendarEvents')   
     response=requests.post(API_BASE, params)
     if response.status_code==400:
             return render(request,'utility/utility-404error.html',context={"context":"Bad request"})
@@ -85,7 +97,7 @@ def getAsesorCourses(request, user):
     asesorList = CourseAsesor.objects.filter(asesor=user).values('course')
     secoedCourses = CourseCicleCarrer.objects.all().values('id','course' )
     cursos_asesor = []
-
+    print('getAsesorCourses')   
     for secoed in secoedCourses:
         for asesor in asesorList:
             if secoed['id'] == asesor['course']:
@@ -95,7 +107,7 @@ def getAsesorCourses(request, user):
 
 def getAsesorCoursesMoodle(request, user):
     courses = CourseAsesor.objects.filter(asesor = user).values('id')
-    
+    print('getAsesorCoursesMoodle')   
     courses_asesor = []
     for i in range(len(courses)):
         courses_asesor.append(courses[i]['id'])
@@ -107,6 +119,7 @@ def getStudentList(request, id):
             "moodlewsrestformat":"json",
             "courseid":id                                   
             }
+    print('getStudentList')   
     student_list = []
     response = requests.post(API_BASE, params)
     if response.status_code != 200:
@@ -121,6 +134,7 @@ def getCourseMoodleInfo(request, id):
             "moodlewsrestformat":"json",
             "courseid":id                                   
             }
+    print('getCourseMoodleInfo')   
     courseInfo = []
     response = requests.post(API_BASE, params)
     if response.status_code != 200:
@@ -136,6 +150,7 @@ def getUsers(request, id):
             "criteria[0][key]": "id",
             "criteria[0][value]": id                               
     }
+    print('getUsers')   
     response = requests.post(API_BASE, params)
     if response.status_code==400:
             return render(request,'utility/utility-404error.html',context={"context":"Bad request"})
@@ -146,6 +161,7 @@ def getUsers(request, id):
 def getActiveCourseList(request):
     actualCoursesList = CoursesMoodle.objects.filter(status = True).values('moodleId')
     actualCourses = []
+    print('getActiveCourseList')   
     for i in range(len(actualCoursesList)):
         actualCourses.append(actualCoursesList[i]['moodleId'])
     return actualCoursesList
@@ -157,6 +173,7 @@ def getUserActivities(request, id, idest):
             "courseid":id,
             "userid":idest
     }
+    print('getUserActivities')   
     response=requests.post(API_BASE, params)
     if response.status_code==400:
             return render(request,'utility/utility-404error.html',context={"context":"Bad request"})
@@ -182,7 +199,7 @@ def coursesSecoedView(request):
     u="Cursos asignados"
     user = getAsesorLogin(request)
     asesorCourses = getAsesorCourses(request, user)
-
+    print('coursesSecoedView')   
     allCourses = getCourses(request)
     courseList = getCoursesByActuallyCicle(request)
 
@@ -198,7 +215,7 @@ def coursesSecoedView(request):
 def inactiveCourses(request):
     t="Detalle cursos inactivos" 
     u=datetime.today().strftime('%Y')
-    
+    print('inactiveCourses')   
     courses = []
     allCourses = getCourses(request)
     asesorLogin = getAsesorCourses(request)
@@ -214,7 +231,7 @@ def inactiveCourses(request):
 def listadoEstudiante(request, id, fullname):
     t="Seguimiento" 
     u=fullname
-
+    print('listadoEstudiante')        
     courseMoodle = CoursesMoodle.objects.filter(moodleId = id).values('id')[0]['id']
     infoCourse = CourseCicleCarrer.objects.filter(course = courseMoodle)
     evalStatus = infoCourse.values('evaluated')[0]['evaluated']  
@@ -225,7 +242,8 @@ def listadoEstudiante(request, id, fullname):
     return render(request,'asesor/seguimiento_docente/lista_Estudiantes.html',context)
 
 def userActivities(request, id, nombre, idest):   
-    nombre_Estudiante=nombre         
+    nombre_Estudiante=nombre 
+    print('userActivities')        
     try:
         user_activities =  getUserActivities(request, id, idest)                     
         context={"context":user_activities,'nombre':nombre_Estudiante}
@@ -235,6 +253,7 @@ def userActivities(request, id, nombre, idest):
 
 def courseNotes(request):
     u="Detalle de notas"
+    print('courseNotes')
     t="Cursos"
     notes = ValorationsCourses.objects.filter(cicle__is_active = True)
     myFilter = valorationCourseStudentFilter(request.GET, queryset = notes)

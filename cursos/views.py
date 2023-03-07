@@ -176,20 +176,21 @@ class CursoView(View):
         return render(request, 'cursos/mantenimientoCursos.html', cursos)
 
     def allCategorias(request):
+        print('entro aqui1')
         params = {"wstoken": TOKEN_MOODLE,
                   "wsfunction": "core_course_get_categories",
                   "moodlewsrestformat": "json",
                   }
         context = {}
         try:
-            response = requests.post(API_BASE, params)
+            response = requests.post(API_BASE, params)          
             if response.status_code == 400:
                 return response.status_code
-            if response:
-                r = response.json()
+            if response:               
+                r = response.json()               
                 context = {"context": r}
         except Exception as e:
-            print(e)
+            print(e)           
             GeneradorAuditoria().CrearAuditoriaError(m_ProcesoCurso, str(e), request.user.id)
         return JsonResponse(context)
 
