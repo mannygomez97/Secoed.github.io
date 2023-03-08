@@ -5,7 +5,7 @@ import pandas as pq
 
 class AuditoriaConfig(AppConfig):
     default_auto_field = 'django.db.models.BigAutoField'
-    name = 'auditoria'
+    name = 'audit'
 
 # Métodos para el registro de auditorías
 m_CreateAccion = "CREATE"
