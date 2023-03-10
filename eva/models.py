@@ -8,17 +8,15 @@ from conf.models import Carrera
 # Migración
 class Ciclo(models.Model):
     carrera = models.ForeignKey(Carrera, db_column=u'carrera',  on_delete=models.CASCADE)
-    name = models.CharField(max_length=100, unique=True, db_column='nombre')
+    name = models.CharField(max_length=100, db_column='nombre')
     is_active = models.BooleanField(default=False, db_column='es_activo')
     date_created = models.DateTimeField(auto_now_add=True, db_column='fecha_creacion',
                                         help_text='Registra la fecha de creación de un valor')
     date_update = models.DateTimeField(auto_now=True, db_column='fecha_edicion',
                                        help_text='Fecha de edición del registro')
 
-
     def __str__(self):
-        txt = "{0} "
-        return txt.format(self.name)
+        return str(self.name)
 
     class Meta:
         db_table = "pt_ciclo"
@@ -219,6 +217,9 @@ class Pregunta(models.Model):
     class Meta:
         db_table = "pt_pregunta"
         ordering = ['title']
+
+    def en_uso(self):
+        return self.preguntaciclo_set.exists()
 
 
 class PreguntaCiclo(models.Model):

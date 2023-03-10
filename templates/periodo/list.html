@@ -1,19 +1,5 @@
 {% extends 'parciales/list.html' %}
 {% block btn_creacion %}
-    <!--<div class="mb-2">
-        <button class="rounded-circle btn btn-outline-info" new-register type="button" onclick="openModal('{% url 'eva:create-periodo' %}', 'createModal')" title="Nuevo registro: {{ entity }}" >
-            <i class="fas fa-plus"></i>
-        </button>
-    </div>
-    <div class="mb-2">
-        <a href="/eva/periodo?action=add_periodo" class="rounded-circle btn btn-outline-info " new-register onclick="openModal('createModal')"><i class="fas fa-plus"></i></a>
-    </div>
-    <div class="mb-2">
-        <a href="/eva/periodo?action=add_periodo" class="rounded-circle btn btn-outline-info "><i class="fas fa-plus"></i></a>
-    </div>
-    <div class="col-sm-6">
-        <a onclick="CicloForm(openModal('createModal'));" href="/eva/periodo?action=add_periodo" class="rounded-circle btn btn-outline-info " data-toggle="modal"><span><i class="fas fa-plus"></i></span></a>
-    </div>-->
     <div class="mb-2">
     <button class="rounded-circle btn btn-outline-info" new-register type="button" onclick="openModal('{% url 'eva:create-periodo' %}', 'createModal')" title="Nuevo registro: {{ entity }}" >
         <i class="fas fa-plus"></i>
@@ -41,9 +27,10 @@
                 {% endif %}
             </td>
             <td>
-                <a href="/eva/periodo?action=ciclo&id={{ item.pk }}" class="rounded-circle btn btn-outline-info btn-sm trash" title="Ciclos">
-                        <i class="fas fa-list-alt"></i>
-                </a>
+                <!--<button onclick="openBrowser('{% url 'eva:update-periodo' item.pk %}', 'openBrowser')" class="rounded-circle btn btn-outline-secondary btn-sm edit" title="Ciclos">
+                    <i class="fas fa-list-alt"></i>
+                </button>-->
+                <a class=" rounded-circle btn btn-outline-secondary btn-sm trash " href="/eva/periodociclo/lista/?id={{ item.pk }}"><i class="fas fa-list-alt"></i></a>
                 <button onclick="openModal('{% url 'eva:update-periodo' item.pk %}', 'updateModal')" class="rounded-circle btn btn-outline-secondary btn-sm edit" title="Editar">
                     <i class="fas fa-pencil-alt"></i>
                 </button>
