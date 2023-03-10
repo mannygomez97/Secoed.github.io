@@ -1,6 +1,5 @@
 from django.conf.urls import url
 
-import eva.periodo
 from eva.views.cursos.views import CursosEva
 from eva.views.evaluaciones.views import *
 from eva.views.reportes.views import ProcessResultEvaluations
@@ -28,17 +27,20 @@ urlpatterns = [
     url(r'^tipo/crear/', login_required(TypeCreateView.as_view()), name='create-type'),
     url(r'^tipo/editar/(?P<pk>\d+)/$', login_required(TypeUpdateView.as_view()), name='update-type'),
     url(r'^tipo/eliminar/(?P<pk>\d+)/$', login_required(TypeDeleteView.as_view()), name='delete-type'),
-    # CYCLE routes
-    url(r'^ciclo/crear/', login_required(CycleCreateView.as_view()), name='create-cycle'),
-    path(r'ciclo/lista/', views.ciclo.views.CycleListView.as_view(), name='list-cycle'),
 
-    url(r'^ciclo/editar/(?P<pk>\d+)/$', login_required(CycleUpdateView.as_view()), name='update-cycle'),
-    url(r'^ciclo/eliminar/(?P<pk>\d+)/$', login_required(CycleDeleteView.as_view()), name='delete-cycle'),
      # PERIODS routes
     url(r'^periodo/lista/', login_required(PeriodListView.as_view()), name='list-periodo'),
     url(r'^periodo/crear/', login_required(PeriodCreateView.as_view()), name='create-periodo'),
     url(r'^periodo/editar/(?P<pk>\d+)/$', login_required(PeriodUpdateView.as_view()), name='update-periodo'),
     url(r'^periodo/eliminar/(?P<pk>\d+)/$', login_required(PeriodDeleteView.as_view()), name='delete-periodo'),
+    url(r'^periodociclo/lista/', login_required(periodociclo), name='list-periodociclo'),
+
+    # CYCLE routes
+    #path(r'ciclo/lista/<int:pk>', views.periodo.views.PeriodoCiclo.as_view(), name='list-cycle'),
+    url(r'^ciclo/crear/', login_required(CycleCreateView.as_view()), name='create-cycle'),
+    url(r'^ciclo/editar/(?P<pk>\d+)/$', login_required(CycleUpdateView.as_view()), name='update-cycle'),
+    url(r'^ciclo/eliminar/(?P<pk>\d+)/$', login_required(CycleDeleteView.as_view()), name='delete-cycle'),
+
     # MATTER routes
     url(r'^materia/lista/', login_required(MatterListView.as_view()), name='list-matter'),
     url(r'^materia/crear/', login_required(MatterCreateView.as_view()), name='create-matter'),
@@ -73,19 +75,21 @@ urlpatterns = [
     url(r'^pregunta/eliminar/(?P<pk>\d+)/$', login_required(QuestionsDeleteView.as_view()), name='delete-questions'),
     # Union Pregunta con ciclo
     url(r'^autoevaluacion/lista/', login_required(PreguntasAutoView.as_view()), name='auto-questions'),
-    url(r'^autoevaluacion/crear/', login_required(PreguntasAutoCreateView.as_view()), name='create-questions-auto'),
-    url(r'^autoevaluacion/eliminar/(?P<pk>\d+)/$', login_required(QuestionsDeleteView.as_view()), name='delete-questions-auto'),
+    url(r'^autoevaluacion/crear/', login_required(view), name='create-questions-auto'),
+    url(r'^autoevaluacion/eliminar/(?P<pk>\d+)/$', login_required(PreguntasAutoDeleteView.as_view()), name='delete-questions-auto'),
     url(r'^coevaluacion/lista/', login_required(PreguntasCoeView.as_view()), name='coe-questions'),
-    url(r'^coevaluacion/crear/', login_required(PreguntasAutoCreateView.as_view()), name='create-questions-coe'),
-    url(r'^coevaluacion/eliminar/(?P<pk>\d+)/$', login_required(QuestionsDeleteView.as_view()), name='delete-questions-coe'),
+    url(r'^coevaluacion/crear/', login_required(coeview), name='create-questions-coe'),
+    url(r'^coevaluacion/eliminar/(?P<pk>\d+)/$', login_required(PreguntasCoeDeleteView.as_view()), name='delete-questions-coe'),
     # eva
     url(r'^evaluacion/lista/', login_required(TeachersPendingEvaluationList.as_view()), name='list-coevaluar'),
     url(r'^evaluacion/autoevaluar', login_required(AutoEvaluacionCreateView.as_view()), name='create-auto-evaluation'),
     url(r'^evaluacion/co-evaluacion', login_required(CoevaluacionCreateView.as_view()), name='create-coevaluation'),
     # Reports Auto y Co Evaluation
     url(r'^evaluacion/reportes', login_required(ProcessResultEvaluations.as_view()), name='report-evaluation'),
+
     # Cursos routes
     url(r'^cursos/lista', login_required(CursosEva.as_view()), name='cursos-evaluation'),
+
     # resultados
     url(r'^proceso/resultados', login_required(Resultado.as_view()), name='resultados-procesos'),
     url(r'^reporte/individual/(?P<pk>\d+)', login_required(Resultado.reporte_individual), name='reporte_individual'),
@@ -95,6 +99,6 @@ urlpatterns = [
     #NUEVO GRUPO REPOSITORIO COE Y EVA
     url(r'^actual/ciclo', gchange_ciclo, name='gchange_ciclo'),
 
-    #url(r'^periodo', eva.periodo.view, name='periodo'),
+
 
 ]

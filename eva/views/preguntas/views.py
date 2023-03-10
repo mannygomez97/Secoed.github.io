@@ -1,12 +1,16 @@
+import json
 from pprint import pp
+
+import requests
 from django.contrib.auth.decorators import login_required
-from django.shortcuts import redirect
+from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView, TemplateView
 from eva.models import Pregunta, Categoria, Ciclo, PreguntaCiclo
-from eva.forms import PreguntaForm, PreguntaAutoForm
-from django.http import JsonResponse
+from eva.forms import PreguntaForm, PreguntaAutoForm, PreguntaCoeForm
+from django.http import JsonResponse, HttpResponseRedirect, HttpResponse
 from auditoria.apps import GeneradorAuditoria
 
 #Constantes
@@ -147,6 +151,8 @@ class PreguntasAutoView(ListView):
     except Exception as ex:
         pass
 
+
+
 @method_decorator(login_required, name='dispatch')
 class PreguntasAutoCreateView(CreateView):
     model = PreguntaCiclo
@@ -169,6 +175,9 @@ class PreguntasAutoCreateView(CreateView):
                         response = JsonResponse({'message': message, 'error': error})
                         response.status_code = 409
                     else:
+                        #p = PreguntaCiclo(pregunta=form.cleaned_data['pregunta'],
+                        #                  ciclo=self.request.POST['cicloID'])
+                        #p.save()
                         form.save()
                         message = f'{self.model.__name__} registrado correctamente'
                         error = 'No han ocurrido errores'
@@ -194,7 +203,7 @@ class PreguntasAutoCreateView(CreateView):
 
 
 class PreguntasAutoDeleteView(DeleteView):
-    model = Pregunta
+    model = PreguntaCiclo
     success_url = reverse_lazy('eva:list-questions')
 
     def delete(self, request, *args, **kwargs):
@@ -248,9 +257,9 @@ class PreguntasAutoDeleteView(DeleteView):
 
 
 @method_decorator(login_required, name='dispatch')
-class PreguntasAutoCreateView(CreateView):
+class PreguntasCoeCreateView(CreateView):
     model = PreguntaCiclo
-    form_class = PreguntaAutoForm
+    form_class = PreguntaCoeForm
     template_name = "preguntas/create_coe.html"
     success_url = reverse_lazy('eva:coe-questions')
 
@@ -291,3 +300,83 @@ class PreguntasAutoCreateView(CreateView):
         context['action'] = 'add'
         context['list_url'] = reverse_lazy('eva:coe-questions')
         return context
+
+
+class PreguntasCoeDeleteView(DeleteView):
+    model = PreguntaCiclo
+    success_url = reverse_lazy('eva:list-questions')
+
+    def delete(self, request, *args, **kwargs):
+        if request.is_ajax():
+            questions = self.get_object()
+            questions.delete()
+            message = f'{self.model.__name__} eliminada correctamente!'
+            errors = 'No se encontraron errores'
+            response = JsonResponse({'message': message, 'error': errors})
+            response.status_code = 201
+            return response
+        else:
+            return redirect('eva:list-questions')
+
+
+@csrf_exempt
+def view(request):
+    global ex
+    data = {}
+    if request.method == 'POST':
+        action = request.POST['action']
+        if action == 'guardar':
+            try:
+                lista = json.loads(request.POST['lista'])
+                for item in lista:
+                    preguntacliclo = PreguntaCiclo(pregunta_id=int(item),
+                                                   ciclo_id=request.session['cicloId'])
+                    preguntacliclo.save()
+                return HttpResponse(json.dumps({"result": "ok"}), content_type="application/json")
+            except Exception as ex:
+                return HttpResponse(json.dumps({"mensaje": "Error al guardar los datos", "result": "bad"}), content_type="application/json")
+    else:
+        if 'action' in request.GET:
+            action = request.GET['action']
+        else:
+            try:
+                list = []
+                data['title'] = u'Agregar Preguntas Autoevaluación'
+                pc = PreguntaCiclo.objects.filter(pregunta__type=1)
+                for p in pc:
+                    list.append(p.pregunta_id)
+                data['object_list'] = Pregunta.objects.filter(type=1).exclude(id__in=list)
+                return render(request, 'preguntas/create_auto.html', data)
+            except Exception as ex:
+                return HttpResponseRedirect('/')
+
+@csrf_exempt
+def coeview(request):
+    global ex
+    data = {}
+    if request.method == 'POST':
+        action = request.POST['action']
+        if action == 'guardar':
+            try:
+                lista = json.loads(request.POST['lista'])
+                for item in lista:
+                    preguntacliclo = PreguntaCiclo(pregunta_id=int(item),
+                                                   ciclo_id=request.session['cicloId'])
+                    preguntacliclo.save()
+                return HttpResponse(json.dumps({"result": "ok"}), content_type="application/json")
+            except Exception as ex:
+                return HttpResponse(json.dumps({"mensaje": "Error al guardar los datos", "result": "bad"}), content_type="application/json")
+    else:
+        if 'action' in request.GET:
+            action = request.GET['action']
+        else:
+            try:
+                list = []
+                data['title'] = u'Agregar Preguntas Coevaluación'
+                pc = PreguntaCiclo.objects.filter(pregunta__type=2)
+                for p in pc:
+                    list.append(p.pregunta_id)
+                data['object_list'] = Pregunta.objects.filter(type=2).exclude(id__in=list)
+                return render(request, 'preguntas/create_coe.html', data)
+            except Exception as ex:
+                return HttpResponseRedirect('/')
