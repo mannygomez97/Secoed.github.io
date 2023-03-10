@@ -105,8 +105,7 @@ class CategoryDeleteView(DeleteView):
     def delete(self, request, *args, **kwargs):
         if request.is_ajax():
             category = self.get_object()
-            category.state = False
-            category.save()
+            category.delete()
             message = f'{self.model.__name__} eliminada correctamente!'
             errors = 'No se encontraron errores'
             response = JsonResponse({'message': message, 'error': errors})

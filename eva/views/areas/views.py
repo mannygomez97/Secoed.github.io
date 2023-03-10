@@ -16,7 +16,7 @@ class KnowledgeAreasListView(ListView):
         context['heading'] = 'Matenimiento Áreas de Conocimiento'
         cycle = Ciclo.objects.filter(is_active=True).first()
         context['pageview'] = cycle.name
-        context['object_list'] = AreasConocimiento.objects.filter(id_ciclo=self.request.session.get('cicloId'))
+        context['object_list'] = AreasConocimiento.objects.all()
         context['action'] = 'add'
         context['create_url'] = reverse_lazy('eva:create-area')
         context['url_list'] = reverse_lazy('eva:list-area')

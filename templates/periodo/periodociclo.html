@@ -1,42 +1,141 @@
-{% extends 'parciales/list.html' %}
-{% block btn_creacion %}
-    <!--<div class="mb-2">
-        <a href="/eva/periodo/periodociclo/lista?action=add_ciclo&id={{ periodo.id }}" class="rounded-circle btn btn-outline-info "><i class="fas fa-plus"></i></a>
-    </div>-->
-    <div class="mb-2">
-        <a href="/eva/periodo?action=add_ciclo&periodo={{ periodo.id }}" class="rounded-circle btn btn-outline-info "><i class="fas fa-plus"></i></a>
-    </div>
+{% extends 'partials/base.html' %}
+
+{% load static %}
+
+{% block css%}
+    {% include 'partials/css.html' %}
+{% endblock %}
+
+{% block extra_css %}
+    <link href="{% static 'libs/sweetalert2/sweetalert2.min.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'evaluations/libs/datatables/datatables.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'libs/select2/css/select2.min.css' %}" rel="stylesheet" type="text/css" />
+
+{% endblock %}
+
+{% block contents %}
+<div>
     <div>
-        <h2></h2>
+        <h4>Periodo: {{ periodo }}</h4>
+        <h4>Carrera: {{ periodo.carrera }}</h4>
     </div>
+</div>
+<div class="row">
+    <div class="col-12">
+        <form class="form-inline">
+            <div class="form-group mb-2">
+                <label  for="staticEmail2" class="sr-only" >Ingrese un nuevo ciclo</label>
+                <input   type="text" readonly class="form-control-plaintext" id="staticEmail2" value="Ingrese un nuevo ciclo">
+            </div>
+            <div class="form-group mx-sm-3 mb-2">
+                <label for="inputPassword2" class="sr-only">Password</label>
+                <input type="Nombre ciclo" class="form-control" id="ciclo" placeholder="Ciclo nuevo">
+            </div>
+            <a href="javascript:;" id="btnguardar" class="btn btn-primary">Guardar</a>
+        </form>
+    </div>
+    <div class='row-fluid'>
+        <div class='span12'>
+            <div style="overflow:auto;" id="contenidoasistencia">
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th style="width: 900px">Nombre</th>
+                        <th style="width: 80px; text-align: center">Activo</th>
+                        <th style="width: 80px; text-align: center"></th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    {% for ciclo in object_list %}
+                        <tr>
+                            <td>{{ ciclo.nombre }}</td>
+                            <td>
+                                {% if ciclo.is_active %}
+                                    <span style="align-items: center; text-align: center" class="rounded-circle btn btn-outline-success btn-sm "><i class="bx bx-check-circle" ></i></span>
+                                {% else %}
+                                    <span style="align-items: center; text-align: center" class="rounded-circle btn btn-outline-danger btn-sm"><i class="far fa-times-circle" ></i></span>
+                                {% endif %}
+                            </td>
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="20">NO EXISTEN DATOS</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    </div>
+
+    <!--<div>
+        <a href="javascript:;" id="btnguardar" class="btn btn-primary">Guardar</a>
+
+        <a type="submit" class="btn btn-danger" href="/eva/autoevaluacion/lista/">Atras</a>
+    </div>-->
+</div>
 {% endblock %}
-<!--Columnas de la tabla-->
-{% block cols %}
-    <th>Nombre</th>
-    <th>Estado</th>
-    <th>Acción</th>
+{% block notification %}
+    <input type="hidden" name="url_list" value="{{ url_list }}">
+
+    <div id="createModal" class="modal fade" tabindex="-1" aria-hidden="true"></div>
+    <div id="updateModal" class="modal fade" tabindex="-1" aria-hidden="true"></div>
+    <div id="deleteModal" class="modal fade" tabindex="-1" aria-hidden="true"></div>
+
 {% endblock %}
-<!--Filas de la tabla-->
-{% block filas %}
-    {% for item in object_list %}
-        <tr>
-            <td>{{ item.nombre }}</td>
-            <td>
-                {% if item.is_active %}
-                    <span class="rounded-circle btn btn-outline-success btn-sm "><i class="bx bx-check-circle" ></i></span>
-                {%else %}
-                    <span class="rounded-circle btn btn-outline-danger btn-sm"><i class="far fa-times-circle" ></i></span>
-                {% endif %}
-            </td>
-            <td>
-                <button onclick="openModal('{% url 'eva:update-cycle' item.pk %}', 'updateModal')" class="rounded-circle btn btn-outline-secondary btn-sm edit" title="Editar">
-                    <i class="fas fa-pencil-alt"></i>
-                </button>
-                <button onclick="confirmDelete('{% url 'eva:delete-cycle' item.pk %}')" class="rounded-circle btn btn-outline-danger btn-sm trash" title="Borrar">
-                    <i class="fas fa-trash"></i>
-                </button>
-                {% csrf_token %}
-            </td>
-        </tr>
-    {% endfor %}
- {% endblock %}
+{% block r_sidebar %}
+    {% include 'partials/rightsidebar.html' %}
+{% endblock %}
+{% block footer %}
+    {% include 'partials/footer.html' %}
+{% endblock %}
+{% block javascript %}
+        <!-- JAVASCRIPT -->
+        <script src="{% static 'libs/jquery/jquery.min.js' %}"></script>
+        <script src="{% static 'libs/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+        <script src="{% static 'libs/metismenu/metisMenu.min.js' %}"></script>
+        <script src="{% static 'libs/simplebar/simplebar.min.js' %}"></script>
+        <script src="{% static 'libs/node-waves/waves.min.js' %}"></script>
+
+        <script src="{% static 'js/app.js' %}"></script>
+         <!-- sweetalert2 -->
+        <script src="{% static 'libs/sweetalert2/sweetalert2.all.min.js' %}"></script>
+        <script src="{% static 'js/eva.js' %}"></script>
+        <script src="{% static 'evaluations/libs/datatables/datatables.js' %}"></script>
+        <script src="{% static 'evaluations/datatables.init.js' %}"></script>
+        <script src="{% static 'libs/select2/js/select2.full.min.js' %}"></script>
+
+    <script type="text/javascript">
+           $(function() {
+
+
+               $('#btnguardar').click(function (){
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/eva/periodociclo/lista/",
+                        data: {'action': 'add', ('id':{{ periodo.id }}, 'nombre': $('#ciclo'))  },
+                        success: function(data) {
+                            if (data.result === 'ok') {
+                                Swal.fire("ALerta", 'Guardado con éxito', 'success');
+
+                                location.href = "/eva/periodociclo/lista/";
+                            } else {
+                                Swal.fire("ALerta", data.mensaje, 'warning');
+                            }
+                        },
+                        error: function() {
+                            Swal.fire("ALerta", 'Error de conexión', 'error');
+                        },
+                        dataType: "json",
+                    });
+
+               });
+
+           });
+        </script>
+
+
+{% endblock %}
