@@ -321,11 +321,22 @@ class CursosUserView(View):
 
 class CalificacionesProceso(View):
     def get(self, request):
+        print('CalificacionesProceso')
         notas_evaluacion = ResultadoProceso.objects.order_by('-cycle').filter(user=request.user.id)
+        print('*********notas_evaluacion**********')
+        print(notas_evaluacion)
         result = []
         for obj in notas_evaluacion:
+            print('entro a un for')
+            print(Ciclo)
+            print(obj.cycle)
             ciclo = get_object_or_404(Ciclo, pk=obj.cycle)
+            print('*********ciclo**********')
+            print(ciclo)
+            print(obj)            
             temp = ResultadoProcesoModel(obj, ciclo);
+            print('*********temp**********')
+            print(temp)
             result.append(temp)
         greeting = {'heading': 'PROCESO DE COEVALUACIÓN - AUTOEVALUACIÓN',
                     'pageview': 'Docentes',

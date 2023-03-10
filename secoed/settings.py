@@ -46,6 +46,7 @@ THIRD_APPS = [
 LOCAL_APPS = [
     'layout',
     'authentication',
+    'auditoria',
     'conf',
     'cursos',
     'eva',
@@ -111,9 +112,9 @@ CONEXION_HOST = 'pgdb'
 CONEXION_PORT = 5432 """
 
 # CONEXION DEVELOPER
-CONEXION_NAME = 'secoed_v3'
-CONEXION_USER = 'secoed'
-CONEXION_PASSWORD = 'secoed'
+CONEXION_NAME = 'db_secoed_v3'
+CONEXION_USER = 'postgres'
+CONEXION_PASSWORD = '123456'
 CONEXION_HOST = 'localhost'
 CONEXION_PORT = 5432
 

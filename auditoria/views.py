@@ -1,5 +1,7 @@
 from django.views import View
 from auditoria.models import *
+#from auditoria.models import ErrorAuditoria
+
 from django.shortcuts import render
 
 # Create your views here.
