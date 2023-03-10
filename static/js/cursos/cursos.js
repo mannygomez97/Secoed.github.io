@@ -3,6 +3,7 @@ $(document).ready ( function(){
     cargarlista();
    $("#divCategoria").hide();
    $("#divCursos").hide();
+   $("#divCursos1").hide();
     $("#botonesCategoria").show();
 });
 
@@ -57,18 +58,21 @@ function eliminarCategoria(item) {
 
 /*metodos para cursos*/
 function visualizarCurso(item) {
+    console.log(item);
     llenarModalCurso(item);
     $("#botonesCursos").hide();
 }
 
 function llenarModalCurso(item) {
+    var datos = JSON.parse(item);
+    console.log(datos);
     var fechaactual=new Date(0);
     var fechaactual2=new Date(0);
     fechaactual.setUTCSeconds(item.startdate);
     fechaactual2.setUTCSeconds(item.enddate);
     var descripcion = item.summary.replace(/(<([^>]+)>)/gi, "");
-    $("#idCurso").val(item.id);
-    $("#nombreCurso").val(item.fullname);
+    $("#idCurso").val(datos.id);
+    $("#nombreCurso").val(datos.fullname);    
     $("#nombreCorto").val(item.shortname);
     $("#resumen").val(descripcion);
     $("#calificaciones").prop("checked", item.showgrades === 1 ? true : false);
@@ -90,7 +94,7 @@ function cargarlista() {
         headers: {"X-CSRFToken": csrftoken},
 /*        async:false,*/
         success: function (data) {
-            console.log(data.context)
+            //console.log(data.context)
             $("#comboCategorias").empty();
             // $("#comboCategorias").append('<option value="0">RAIZ</option>');
             $.each(data.context, function(indice,valor) 

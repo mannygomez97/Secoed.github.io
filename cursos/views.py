@@ -160,23 +160,53 @@ class CursoView(View):
 
     def get(self, request):
         params = {"wstoken": TOKEN_MOODLE,
-                  "wsfunction": "core_course_get_courses_by_field ",
+                  "wsfunction": "core_course_get_courses_by_field",
                   "moodlewsrestformat": "json",
                   }
-        cursos = {}
+        cursos = {}        
         try:
             response = requests.post(API_BASE, params)
             if response.status_code == 400:
                 return render(request, 'cursos/mantenimientoCursos.html', context={"context": "Bad request"})
-            if response:
+            if response:                                                                           
                 cursos = {"cursos": response.json()}
         except Exception as e:
             print(e)
             GeneradorAuditoria().CrearAuditoriaError(m_ProcesoCurso, str(e), request.user.id)
         return render(request, 'cursos/mantenimientoCursos.html', cursos)
+    
+    def viewModalCurso(request, pk):
+        params = {"wstoken": TOKEN_MOODLE,
+                  "wsfunction": "core_course_get_courses_by_field",
+                  "moodlewsrestformat": "json",
+                  }
+        cursos = []
+        aList=[]        
+        try:
+            response = requests.post(API_BASE, params)
+            if response.status_code == 400:
+                return render(request, 'cursos/mantenimientoCursos.html', context={"context": "Bad request"})
+            if response:                                           
+                variable= response.json()  
+                aList = variable['courses']                                            
+                for entrada in aList:
+                 print(entrada["id"])
+                 print(pk)            
+                 if( entrada["id"]==pk):
+                    print('encontro coincidencia')
+                    print(entrada)
+                    cursos.append(entrada)                  
+                    break                                
+        except Exception as e:
+            print(e)
+            GeneradorAuditoria().CrearAuditoriaError(m_ProcesoCurso, str(e), request.user.id)
+        print('********encontro coincidencia*******')
+        print(cursos)
+        context = {'cursos': cursos}
+        return render(request, 'cursos/MantenimientoEditForm.html', context)
 
     def allCategorias(request):
-        print('entro aqui1')
+       #print('entro aqui1')
         params = {"wstoken": TOKEN_MOODLE,
                   "wsfunction": "core_course_get_categories",
                   "moodlewsrestformat": "json",

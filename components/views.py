@@ -443,7 +443,7 @@ def course_list(request):
         curso_asesor.append(i['id_curso'])
 
     apiBase = API_BASE
-
+    print('siguiendo listado_estudiantes modulo components')
     params = {"wstoken": TOKEN_MOODLE,
               "wsfunction": "core_course_get_courses",
               "moodlewsrestformat": "json",

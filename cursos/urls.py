@@ -12,4 +12,5 @@ urlpatterns = [
     path(r'', views.CursoView.as_view(), name='cursos'),
     path(r'crearEditarCurso', views.CursoView.crearEditarCurso, name='crearEditarCurso'),
     path(r'deleteCourse/<int:idCourse>', views.CursoView.deleteCourse, name='deleteCourse'),
+    path(r'viewModalCurso/<int:pk>',views.CursoView.viewModalCurso, name='viewModalCurso'),
 ]

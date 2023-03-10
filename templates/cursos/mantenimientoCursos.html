@@ -47,15 +47,22 @@
                                             <td>{{ item.categoryname }}</td>
                                             <td>{{ item.summary |striptags }}</td>
                                             <td style="align-items: center; text-align: center">
-                                                <button title="Visualizar" type="button"
-                                                        onclick="visualizarCurso({{ item }})"
+                                                {% comment %} <button title="Visualizar" type="button"
+                                                        onclick="visualizarCurso(JSON.stringify({{ item }}))"
                                                         class="btn btn-outline-success"
-                                                        data-bs-target="#modal-categoria"
+                                                        data-bs-target="#modal-categoria1"
                                                         data-bs-toggle="modal">
                                                     <i class="fas fa-eye"></i>
-                                                </button>
+                                                </button>         viewModalCurso                                        {% endcomment %}
+                                                <button title="Visualizar" type="button"
+                                                onclick="openModal('{% url 'viewModalCurso' item.id %}','#viewModalCursoEdit')"
+                                                class="btn btn-outline-success"                                                
+                                                data-bs-toggle="modal">
+                                                <i class="fas fa-eye"></i>
+                                                </button>      
+
                                                 <button title="Editar" type="button"
-                                                        onclick="editarCursos({{ item }})"
+                                                        onclick="editarCursos(JSON.stringify({{ item }}))"
                                                         class="btn btn-outline-warning"
                                                         data-bs-target="#modal-categoria"
                                                         data-bs-toggle="modal">
@@ -196,6 +203,11 @@
             </div>
         </div>
     </div>
+
+     <!-- viewModal -->
+     <div class="modal fade" id="viewModalCursoEdit" role="dialog">
+    </div>
+</div>    
 {% endblock %}
 
 {% block r_sidebar %}
@@ -235,4 +247,17 @@
     <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script src="{% static 'js/app.js' %}"></script>
+
+    
+    <!-- Modal View -->
+    <script type="text/javascript">
+        var $ = jQuery.noConflict();
+
+        function openModal(url, idModal) {
+            $(idModal).load(url, function () {
+                $(this).modal('show')
+            });
+        }
+
+    </script>
 {% endblock %}

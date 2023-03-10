@@ -5,7 +5,7 @@ from turtle import update
 from django.conf import settings
 import requests
 from asesor.utils import render_to_pdf
-from secoed.settings import TOKEN_ROOT, API_BASE, TOKEN_ROOT
+from secoed.settings import TOKEN_MOODLE, API_BASE, TOKEN_MOODLE
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import  ValorationsCourses
@@ -53,7 +53,7 @@ def getCoursesByActuallyCicle(request):
     return courses
 
 def getCourses(request):
-    params={"wstoken":TOKEN_ROOT,
+    params={"wstoken":TOKEN_MOODLE,
             "wsfunction":"core_course_get_courses",
             "moodlewsrestformat":"json",                                    
             }
@@ -67,12 +67,9 @@ def getCourses(request):
         courses = response.json()
         print('despues de course') 
         for y in courses:
-                print('primer for')
-                print(courses)               
-                timestamp = datetime.fromtimestamp(y["startdate"]) 
-                print(timestamp)               
-                y["startdate"]=timestamp.strftime('%Y-%m-%d')
-                
+                print('primer for')                             
+                timestamp = datetime.fromtimestamp(y["startdate"])                              
+                y["startdate"]=timestamp.strftime('%Y-%m-%d')                
         for v in courses:  
                 print('segundo for')              
                 timestamp = datetime.fromtimestamp(v["enddate"])                
@@ -80,7 +77,7 @@ def getCourses(request):
     return courses
 
 def getCalendarEvents(request, id):
-    params={"wstoken":TOKEN_ROOT,
+    params={"wstoken":TOKEN_MOODLE,
             "wsfunction":"core_calendar_get_calendar_events",
             "moodlewsrestformat":"json",
             "events[courseids][0]":id
@@ -97,7 +94,11 @@ def getAsesorCourses(request, user):
     asesorList = CourseAsesor.objects.filter(asesor=user).values('course')
     secoedCourses = CourseCicleCarrer.objects.all().values('id','course' )
     cursos_asesor = []
-    print('getAsesorCourses')   
+    print('********getAsesorCourses*******')   
+    print('********asesorList*******')   
+    print(asesorList)  
+    print('********secoedCourses*******')   
+    print(secoedCourses)   
     for secoed in secoedCourses:
         for asesor in asesorList:
             if secoed['id'] == asesor['course']:
@@ -114,7 +115,7 @@ def getAsesorCoursesMoodle(request, user):
     return courses_asesor
 
 def getStudentList(request, id):
-    params={"wstoken":TOKEN_ROOT,
+    params={"wstoken":TOKEN_MOODLE,
             "wsfunction":"gradereport_user_get_grade_items",
             "moodlewsrestformat":"json",
             "courseid":id                                   
@@ -129,7 +130,7 @@ def getStudentList(request, id):
     return student_list
 
 def getCourseMoodleInfo(request, id):
-    params={"wstoken":TOKEN_ROOT,
+    params={"wstoken":TOKEN_MOODLE,
             "wsfunction":"gradereport_user_get_grade_items",
             "moodlewsrestformat":"json",
             "courseid":id                                   
@@ -144,7 +145,7 @@ def getCourseMoodleInfo(request, id):
     return courseInfo
 
 def getUsers(request, id):
-    params = {"wstoken":TOKEN_ROOT,
+    params = {"wstoken":TOKEN_MOODLE,
             "wsfunction":"core_user_get_users",
             "moodlewsrestformat":"json",
             "criteria[0][key]": "id",
@@ -167,7 +168,7 @@ def getActiveCourseList(request):
     return actualCoursesList
 
 def getUserActivities(request, id, idest):
-    params={"wstoken":TOKEN_ROOT,
+    params={"wstoken":TOKEN_MOODLE,
             "wsfunction":"gradereport_user_get_grade_items",
             "moodlewsrestformat":"json",
             "courseid":id,
@@ -182,7 +183,7 @@ def getUserActivities(request, id, idest):
             return userActivities
 
 def getContentsCourse(request, id):
-    params={"wstoken":TOKEN_ROOT,
+    params={"wstoken":TOKEN_MOODLE,
             "wsfunction":"core_course_get_contents",
             "moodlewsrestformat":"json",
             "courseid":id
@@ -196,19 +197,34 @@ def getContentsCourse(request, id):
 
 def coursesSecoedView(request):
     t="Cursos" 
-    u="Cursos asignados"
+    u="Cursos asignados1"
     user = getAsesorLogin(request)
+    print('coursesSecoedView tittle')
+    print(user)
     asesorCourses = getAsesorCourses(request, user)
-    print('coursesSecoedView')   
+    print('***asesorCourses response****')
+    print(asesorCourses)
     allCourses = getCourses(request)
+    print('*****allCourses response*****') 
+    print(allCourses) 
     courseList = getCoursesByActuallyCicle(request)
-
+    print('****courseList response****') 
+    print(courseList) 
     courses = []
-
     for course in allCourses:
+        #print('*******course["id"]*******')
+        #print(course["id"])   
+        #print(asesorCourses)     
         for activeCourse in courseList:
-            if course["id"] == activeCourse["moodleId"] and activeCourse["id"] in asesorCourses:
-                    courses.append(course)
+         #print('*******activeCourse["moodleId"]*******')
+         #print(activeCourse["moodleId"])
+         #print('*******activeCourse["id"]*******')
+         #print(activeCourse["id"])                  
+         if course["id"] ==  activeCourse["id"] in asesorCourses:
+          #print('*********grabo***********')   
+          courses.append(course)
+    #print('******courses****')
+    #print(courses)
     context = {'context': courses, 'heading': u,'pageview': t, 'status': 'A'}
     return render(request,'asesor/seguimiento_docente/courses_list.html',context)
 
@@ -219,7 +235,7 @@ def inactiveCourses(request):
     courses = []
     allCourses = getCourses(request)
     asesorLogin = getAsesorCourses(request)
-    
+    print('siguiendo listado_estudiantes modulo asesor')
     for course in allCourses:
         if datetime.strptime(course["enddate"], '%Y-%m-%d').date() < date.today():
             if course["id"] in asesorLogin:
@@ -231,11 +247,20 @@ def inactiveCourses(request):
 def listadoEstudiante(request, id, fullname):
     t="Seguimiento" 
     u=fullname
-    print('listadoEstudiante')        
-    courseMoodle = CoursesMoodle.objects.filter(moodleId = id).values('id')[0]['id']
-    infoCourse = CourseCicleCarrer.objects.filter(course = courseMoodle)
-    evalStatus = infoCourse.values('evaluated')[0]['evaluated']  
+    print('listadoEstudiante modulo encontrado')        
+    print(fullname)  
+    print(id)  
+    print(request)  
+    
     try:
+        courseMoodle = CoursesMoodle.objects.filter(moodleId = id).values('id')[0]['id']
+        print('*******courseMoodle**********')
+        print(courseMoodle)
+        infoCourse = CourseCicleCarrer.objects.filter(course = courseMoodle)
+        print('*******infoCourse**********')
+        print(infoCourse)
+        evalStatus = infoCourse.values('evaluated')[0]['evaluated']  
+        print(evalStatus)
         context={"context": getStudentList(request, id),'heading': u,'pageview': t,'fullname': fullname, 'course': id, 'evalStatus': evalStatus}
     except Exception as e:
         print(e)
@@ -329,7 +354,7 @@ def saveScheduleEvent(request):
 
     try:
         params = {
-            "wstoken": TOKEN_ROOT,
+            "wstoken": TOKEN_MOODLE,
             "wsfunction": "core_calendar_create_calendar_events",
             "moodlewsrestformat": "json",
             "events[0][name]":name,
@@ -370,7 +395,7 @@ def delScheduleEvent(request,courseid, id, repeatid, fullname):
         nrepeat = 0
     else:
         nrepeat = int(repeatid)
-    params={"wstoken":TOKEN_ROOT,
+    params={"wstoken":TOKEN_MOODLE,
             "wsfunction":"core_calendar_delete_calendar_events",
             "moodlewsrestformat":"json",
             "events[0][eventid]":id,
@@ -394,7 +419,7 @@ def createModule(request,course, section):
     u="Modulos del curso: "
     t="Cursos"
     apiBase=API_BASE
-    params={"wstoken":TOKEN_ROOT,
+    params={"wstoken":TOKEN_MOODLE,
             "wsfunction":"core_course_get_course_content_items",
             "moodlewsrestformat":"json",
             "courseid":course         
