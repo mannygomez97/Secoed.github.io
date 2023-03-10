@@ -14,14 +14,14 @@ from django.utils.http import urlsafe_base64_encode
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.encoding import force_bytes
 from django.db.models.query_utils import Q
-from authentication.models import Usuario, RolUser, HistoricoUsers
+from authentication.models import Usuario, RolUser, HistoricoUsers,FacultyUser
 from authentication.forms import UserRegisterForm
 from secoed.settings import TOKEN_MOODLE, API_BASE, CONTEXT_ID
 from eva.models import Ciclo2
 
 #DRF
 from authentication import serializers
-from authentication.serializers import RolUserSerializer, UsuarioSerializer
+from authentication.serializers import RolUserSerializer, UsuarioSerializer,FacultyUserSerializer
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
@@ -42,6 +42,19 @@ class GetRolUser(APIView):
         if request.method == 'GET':
             roluser = RolUser.objects.all()
             serializer = RolUserSerializer(roluser, many=True)
+            print('entra roles')
+            print(serializer)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        
+class GetCarreraUser(APIView):
+    permissions_classes = [permissions.AllowAny]
+    @api_view(['GET'])
+    def CarreraUser(request):
+        if request.method == 'GET':
+            carrerauser = FacultyUser.objects.all()
+            serializer = FacultyUserSerializer(carrerauser, many=True)
+           # print('entra carrera')
+            #print(serializer)
             return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -65,21 +78,27 @@ class PagesLoginView(View):
                 messages.error(request, 'Ingrese su contraseña')
                 return redirect('pages-login')
             else:
-                user = auth.authenticate(username=username, password=password)
-                
+                user = auth.authenticate(username=username, password=password)                         
+                Rol_user= RolUser.objects.filter(user_id=user.id).values('rol')
+                Carrera_user= FacultyUser.objects.filter(user_id=user.id).values('carrera')                
                 if user is not None:
                     if user.usuario_activo:
-                        request.session['username'] = username
-                        request.session['isModulo'] = False
-                        request.session['activeCicle'] = getActualCicle(request)
-                        auth.login(request, user)
-                        return redirect('dashboard')
-                    else:
+                        if Rol_user != 2 and Carrera_user.count() == 0 :
+                         user = None     
+                         messages.error(request, 'Usuario no cuenta con carrera asignada')
+                         return redirect('pages-login')                                                  
+                        else :
+                         request.session['username'] = username
+                         request.session['isModulo'] = False
+                         request.session['activeCicle'] = getActualCicle(request)
+                         auth.login(request, user)
+                         return redirect('dashboard')                                           
+                    else :                        
                         user = None
                         messages.error(request, 'Usuario inactivo')
-                        return redirect('pages-login')
+                        return redirect('pages-login') 
                 else:
-                    messages.error(request, 'Credenciales invalidas')
+                    messages.error(request, 'Credenciales invalidas seguimiento')
                     return redirect('pages-login')
         else:
             return render(request, self.template_name)
@@ -293,6 +312,8 @@ class UsuarioView(View):
                 email_1 = render_to_string(email_template_name, c)
                 send_mail(subject, email_1, 'secoed.web@gmail.com',
                           [emailUser], fail_silently=False)
+                #print('entra')
+                #print(userForm)
                 userForm.save()
                 messages.success(request, "Se registro correctamente", "success")
             else:
@@ -355,7 +376,9 @@ class UsuarioView(View):
 
     # Elimina un registro del usuario
     def deleteUsuario(request, pk):
+        print(pk)
         usuario = get_object_or_404(Usuario, pk=pk)
+        print(usuario)
         if usuario:
             usuario.delete()
             messages.success(request, "Se ha eliminado correctamente", "success")
@@ -368,7 +391,8 @@ class UsuarioPerfilView(View):
     def get(self, request):
         usuario = get_object_or_404(Usuario, pk=request.user.id)
         usuarioPerfilForm = UsuarioPerfilForm(instance=usuario)
-        greeting = {'heading': "Perfil", 'pageview': "Perfil", "form": usuarioPerfilForm, "usuario": usuario}
+        carrera=FacultyUser.objects.filter(user=request.user.id)
+        greeting = {'heading': "Perfil", 'pageview': "Perfil", "form": usuarioPerfilForm, "usuario": usuario, "carrera": carrera}
         return render(request, self.template_name, greeting)
 
     def editUsuarioPerfil(request, pk):

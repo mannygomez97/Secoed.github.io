@@ -83,9 +83,9 @@ class Materia(models.Model):
 class MateriaCiclo(models.Model):
     materia = models.ForeignKey(Materia, db_column='materia_id', null=False, blank=False, on_delete=models.CASCADE)
     ciclo = models.ForeignKey(Ciclo2, on_delete=models.CASCADE,null=False, blank=False, default=1)
-    date_created = models.DateTimeField(auto_now_add=True, db_column='fecha_creacion',
+    date_created = models.DateTimeField(auto_now_add=True, db_column='create_at',
                                         help_text='Registra la fecha de creación de un valor')
-    date_update = models.DateTimeField(auto_now=True, db_column='fecha_edicion',
+    date_update = models.DateTimeField(auto_now=True, db_column='update_at',
                                        help_text='Fecha de edición del registro')
 
     def __str__(self):
@@ -97,7 +97,7 @@ class MateriaCiclo(models.Model):
 
 # Migración
 class MateriaDocente(models.Model):
-    matter = models.ForeignKey(Materia, null=False, blank=False, on_delete=models.CASCADE, db_column='materia')
+    matter = models.ForeignKey(Materia, null=False, blank=False, on_delete=models.CASCADE, db_column='materia_ciclo_id')
     docente = models.ForeignKey(Usuario, null=False, blank=False, on_delete=models.CASCADE, db_column='tutor')
     date_created = models.DateTimeField(auto_now_add=True, db_column='fecha_creacion',
                                         help_text='Registra la fecha de creación de un valor')

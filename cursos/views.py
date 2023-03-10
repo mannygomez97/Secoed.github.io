@@ -1,3 +1,26 @@
+import argparse
+#import json
+import simplejson
+
+import logging
+import os
+import re
+import shlex
+import subprocess
+import sys
+import warnings
+from typing import (
+    Any,
+    Callable,
+    Dict,
+    Iterable,
+    Optional,
+    Sequence,
+    TextIO,
+    Tuple,
+    Type,
+)
+#import sys as json
 from builtins import print
 import delorean
 from django.http import JsonResponse
@@ -9,13 +32,18 @@ from datetime import datetime, date, timedelta, time
 from conf.models import Carrera, Facultad
 from django.core import serializers
 from conf.models import Carrera
-from authentication.models import Usuario, FacultyUser
+from authentication.models import Usuario, FacultyUser,RolUser
 from django.core.serializers import json
 from django.core import serializers
 # Create your views here.
 from django.views import View
+from django.http import HttpResponse
+from auditoria.apps import GeneradorAuditoria
 
 from secoed.settings import TOKEN_MOODLE, API_BASE
+
+m_ProcesoCurso = "CURSOS"
+m_NombreTablaCurso = "pt_curso"
 class CursoView(View):
     def categoria(request):
         params = {"wstoken": TOKEN_MOODLE,
@@ -93,11 +121,32 @@ class CursoView(View):
             print(e)
         return redirect('categoria')
 
-
     def getPeriod(request):
         period = list(Ciclo.objects.filter(is_active=True).values())
         periodoId = request.session.get('periodoId')
-        return JsonResponse({'context': period, 'periodoId' : periodoId})
+        variable = Usuario.objects.filter(username__icontains=request.session['username']).values()[0]['id']        
+        listcarrera = []
+        esadm = Usuario.objects.filter(username__icontains=request.session['username']).values('usuario_administrador')        
+        listrol=[]
+        
+        for i in Usuario.objects.filter(id=variable):
+            if request.is_ajax():
+                esadm=i.usuario_administrador 
+                desrol = {}
+                desrol['es_administrador']= i.usuario_administrador 
+                listrol.append(desrol)                     
+            if(esadm ==True):
+                return JsonResponse({'context':period, 'periodoId' : periodoId,'validation':list(listrol)})
+            else:
+                for i in FacultyUser.objects.filter(user=variable):
+                    if request.is_ajax():
+                        test = {}
+                        test['id']= i.carrera_id
+                        test['name']=i.carrera.descripcion
+                        listcarrera.append(test)             
+                        return JsonResponse({'data':list(listcarrera),'context':list(period), 'periodoId' : periodoId, 'validation':list(listrol)})
+                return HttpResponse ('Wrong request')
+       
 
     def getCycle(request,periodoId): 
         request.session['periodoId'] = periodoId       
@@ -109,8 +158,6 @@ class CursoView(View):
         request.session['cicloId'] = cycleId
         return JsonResponse({'context': request.session['cicloId']})
 
-   
-            
     def get(self, request):
         params = {"wstoken": TOKEN_MOODLE,
                   "wsfunction": "core_course_get_courses_by_field ",
@@ -125,6 +172,7 @@ class CursoView(View):
                 cursos = {"cursos": response.json()}
         except Exception as e:
             print(e)
+            GeneradorAuditoria().CrearAuditoriaError(m_ProcesoCurso, str(e), request.user.id)
         return render(request, 'cursos/mantenimientoCursos.html', cursos)
 
     def allCategorias(request):
@@ -142,6 +190,7 @@ class CursoView(View):
                 context = {"context": r}
         except Exception as e:
             print(e)
+            GeneradorAuditoria().CrearAuditoriaError(m_ProcesoCurso, str(e), request.user.id)
         return JsonResponse(context)
 
     def crearEditarCurso(request):
@@ -240,9 +289,11 @@ class CursoView(View):
                 if response.status_code == 400:
                     print("ENTRA AL IF 400 " + str(response))
                     print("400")
+                    GeneradorAuditoria().CrearAuditoriaError(m_ProcesoCurso, "ENTRA AL IF 400 " + str(response), request.user.id)
                 if response.status_code == 500:
                     print("ENTRA AL IF 500 " + str(response))
                     print("500")
+                    GeneradorAuditoria().CrearAuditoriaError(m_ProcesoCurso, "ENTRA AL IF 500 " + str(response), request.user.id)
                 if response.status_code == 200:
                     curso = r[0]['id']
 
@@ -255,13 +306,18 @@ class CursoView(View):
                         enddate = end_date,
                         status = False,
                         userCreated = Usuario.objects.get(id = user))
-                    print(courseSecoed)
 
+                    newJson = GeneradorAuditoria().GenerarJSONNuevo(m_NombreTablaCurso)
+                    GeneradorAuditoria().GenerarAuditoriaCrear(m_NombreTablaCurso, newJson, request.user.id)
+
+                    print(courseSecoed)
                     print("ENTRA AL IF 200 " + str(response))
             else:
                 print("NO ENTRA al if")
+                GeneradorAuditoria().CrearAuditoriaError(m_ProcesoCurso, "NO ENTRA al if", request.user.id)
         except Exception as e:
             print("error " + str(e))
+            GeneradorAuditoria().CrearAuditoriaError(m_ProcesoCurso, str(e), request.user.id)
         return redirect('cursos')
 
     def deleteCourse(request, idCourse):
@@ -272,13 +328,18 @@ class CursoView(View):
             "courseids[0]": idCourse,
         }
         try:
+            kwargs = {'pk':idCourse}
+            oldJson = GeneradorAuditoria().GenerarJSONExistente(m_NombreTablaCurso, kwargs)
             respuesta = requests.post(API_BASE, params)
             if respuesta:
                 r = respuesta.json()
             if respuesta.status_code == 400:
                 print(r.message)
+                GeneradorAuditoria().CrearAuditoriaAdvertencia(m_ProcesoCurso, str(r.message), request.user.id)
             else:
+                GeneradorAuditoria().GenerarAuditoriaBorrar(m_NombreTablaCurso, kwargs["pk"], oldJson, request.user.id)
                 print("si se borro")
         except Exception as e:
             print(e)
+            GeneradorAuditoria().CrearAuditoriaError(m_ProcesoCurso, str(e), request.user.id)
         return redirect('cursos')

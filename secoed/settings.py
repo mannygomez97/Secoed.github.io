@@ -56,6 +56,7 @@ LOCAL_APPS = [
     'notify',
     'repositorio',
     'analisis'
+    
 ]
 
 INSTALLED_APPS = BASE_APPS + LOCAL_APPS + THIRD_APPS
@@ -103,18 +104,18 @@ ASGI_APPLICATION = 'secoed.asgi.application'
 
 
 # CONEXION PRODUCCION
-CONEXION_NAME = 'local_secoed'
-CONEXION_USER = 'postgres'
-CONEXION_PASSWORD = 'ruben12345'
-CONEXION_HOST = 'localhost'
-CONEXION_PORT = 5432
-
-# CONEXION DEVELOPER
-""" CONEXION_NAME = 'local_secoed'
-CONEXION_USER = 'postgres'
-CONEXION_PASSWORD = 'postgres'
+""" CONEXION_NAME = 'db_secoedv2'
+CONEXION_USER = 'secoed'
+CONEXION_PASSWORD = 'secoed2021'
 CONEXION_HOST = 'pgdb'
 CONEXION_PORT = 5432 """
+
+# CONEXION DEVELOPER
+CONEXION_NAME = 'db_secoed_v3'
+CONEXION_USER = 'postgres'
+CONEXION_PASSWORD = '123456'
+CONEXION_HOST = 'localhost'
+CONEXION_PORT = 5432
 
 DATABASES = {
     'default': {
@@ -177,7 +178,7 @@ EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
 EMAIL_HOST_USER = 'secoed.web@gmail.com'
-EMAIL_HOST_PASSWORD = 'lV0G1b7xRLII&D$x1*xK'
+EMAIL_HOST_PASSWORD = 'ovlmxrmaqfayaewb'
 DEFAULT_FROM_EMAIL = 'secoed.web@gmail.com'
 
 LOGIN_REDIRECT_URL = '/authentication/pages-login'
