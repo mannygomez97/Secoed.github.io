@@ -27,6 +27,7 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import permissions
+from auditoria.apps import GeneradorAuditoria
 
 
 username = '';
@@ -233,7 +234,9 @@ def __validar_ced_ruc(nro, tipo):
     val = base - mod if mod != 0 else 0
     return val == d_ver
 
-
+# CONSTANTES
+m_NombreTablaUsuario = "conf_user"
+m_ProcesoUsuario = "USUARIO"
 class UsuarioView(View):
     # Carga los datos iniciales del HTML
     def get(self, request):
@@ -271,6 +274,7 @@ class UsuarioView(View):
                     r = respuesta.json()
                     if respuesta.status_code == 400:
                         messages.success(request, "Error 400", "error")
+                        GeneradorAuditoria().CrearAuditoriaError(m_ProcesoUsuario,  "Error 400", request.user.id)
                         return redirect('usuario')
                     else:
                         mutable = request.POST._mutable
@@ -280,6 +284,7 @@ class UsuarioView(View):
                         request.POST._mutable = mutable
             except Exception as e:
                 messages.success(request, "Error al registrar el usuario en el moodle", "error")
+                GeneradorAuditoria().CrearAuditoriaAdvertencia(m_ProcesoUsuario, str(e), request.user.id)
                 return redirect('usuario')
             # crear rol-usuario en moodle
             parameters = {
@@ -297,10 +302,12 @@ class UsuarioView(View):
                     print(r)
                     if result.status_code == 400:
                         messages.success(request, "Error 400", "error")
+                        GeneradorAuditoria().CrearAuditoriaError(m_ProcesoUsuario,  "Error 400", request.user.id)
                         return redirect('usuario')
             except Exception as e:
                 print(e)
                 messages.success(request, "Error al registrar el rol-usuario en el moodle", "error")
+                GeneradorAuditoria().CrearAuditoriaAdvertencia(m_ProcesoUsuario, str(e), request.user.id)
                 return redirect('usuario')
             if userForm.is_valid():
                 subject = "USUARIO DE INGRESO PARA EL SECOED"
@@ -318,6 +325,8 @@ class UsuarioView(View):
                 #print('entra')
                 #print(userForm)
                 userForm.save()
+                newJson = GeneradorAuditoria().GenerarJSONNuevo(m_NombreTablaUsuario)
+                GeneradorAuditoria().GenerarAuditoriaCrear(m_NombreTablaUsuario, newJson, request.user.id)
                 messages.success(request, "Se registro correctamente", "success")
             else:
                 # validar email existente
@@ -328,6 +337,8 @@ class UsuarioView(View):
                 aux = Usuario.objects.filter(identificacion=request.POST['identificacion'])
                 if aux:
                     messages.warning(request, "Ya exite un usuario con esta identificación", "warning")
+                    GeneradorAuditoria().CrearAuditoriaAdvertencia(m_ProcesoUsuario, "Ya exite un usuario con esta"
+                                                                                     " identificación", request.user.id)
             return redirect('usuario')
         else:
             usuarioFormView = UserRegisterForm();
@@ -365,10 +376,17 @@ class UsuarioView(View):
             identificacion = request.POST['identificacion']
             if not verificar(identificacion):
                 messages.warning(request, "El número de identificación es invalida", "warning")
+                GeneradorAuditoria().CrearAuditoriaAdvertencia(m_ProcesoUsuario, "El número de identificación"
+                                                                                 " es invalida", request.user.id)
                 return redirect('usuario')
             form = UserRegisterForm(request.POST, instance=usuario)
             if form.is_valid():
+                kwargs = {'pk': pk}
+                oldJson = GeneradorAuditoria().GenerarJSONExistente(m_NombreTablaUsuario, kwargs)
                 form.save()
+                newJson = GeneradorAuditoria().GenerarJSONExistente(m_NombreTablaUsuario, kwargs)
+                GeneradorAuditoria().GenerarAuditoriaActualizar(m_NombreTablaUsuario, kwargs["pk"], newJson,
+                                                                oldJson, request.user.id)
                 messages.success(request, "Se edito correctamente", "success")
                 return redirect('usuario')
         else:
@@ -383,7 +401,10 @@ class UsuarioView(View):
         usuario = get_object_or_404(Usuario, pk=pk)
         print(usuario)
         if usuario:
+            kwargs = {'pk': pk}
+            oldJson = GeneradorAuditoria().GenerarJSONExistente(m_NombreTablaUsuario, kwargs)
             usuario.delete()
+            GeneradorAuditoria().GenerarAuditoriaBorrar(m_NombreTablaUsuario, kwargs["pk"], oldJson, request.user.id)
             messages.success(request, "Se ha eliminado correctamente", "success")
         return redirect('usuario')
 
