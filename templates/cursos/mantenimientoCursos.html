@@ -46,14 +46,7 @@
                                             <td>{{ item.fullname }}</td>
                                             <td>{{ item.categoryname }}</td>
                                             <td>{{ item.summary |striptags }}</td>
-                                            <td style="align-items: center; text-align: center">
-                                                {% comment %} <button title="Visualizar" type="button"
-                                                        onclick="visualizarCurso(JSON.stringify({{ item }}))"
-                                                        class="btn btn-outline-success"
-                                                        data-bs-target="#modal-categoria1"
-                                                        data-bs-toggle="modal">
-                                                    <i class="fas fa-eye"></i>
-                                                </button>         viewModalCurso                                        {% endcomment %}
+                                            <td style="align-items: center; text-align: center">                                               
                                                 <button title="Visualizar" type="button"
                                                 onclick="openModal('{% url 'viewModalCurso' item.id %}','#viewModalCursoEdit')"
                                                 class="btn btn-outline-success"                                                
@@ -62,9 +55,8 @@
                                                 </button>      
 
                                                 <button title="Editar" type="button"
-                                                        onclick="editarCursos(JSON.stringify({{ item }}))"
-                                                        class="btn btn-outline-warning"
-                                                        data-bs-target="#modal-categoria"
+                                                        onclick="openModal('{% url 'viewEdithModalCurso' item.id %}','#viewModalCursoEdit1')"
+                                                        class="btn btn-outline-warning"                                                        
                                                         data-bs-toggle="modal">
                                                     <i class="bx bx-pencil"></i>
                                                 </button>
@@ -205,7 +197,11 @@
     </div>
 
      <!-- viewModal -->
-     <div class="modal fade" id="viewModalCursoEdit" role="dialog">
+    <div class="modal fade" id="viewModalCursoEdit" role="dialog">
+    </div>
+
+    <!-- viewModal -->
+    <div class="modal fade" id="viewModalCursoEdit1" role="dialog">
     </div>
 </div>    
 {% endblock %}

@@ -13,4 +13,5 @@ urlpatterns = [
     path(r'crearEditarCurso', views.CursoView.crearEditarCurso, name='crearEditarCurso'),
     path(r'deleteCourse/<int:idCourse>', views.CursoView.deleteCourse, name='deleteCourse'),
     path(r'viewModalCurso/<int:pk>',views.CursoView.viewModalCurso, name='viewModalCurso'),
+    path(r'viewEdithModalCurso/<int:pk>',views.CursoView.viewEdithModalCurso, name='viewEdithModalCurso'),
 ]
