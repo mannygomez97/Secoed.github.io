@@ -330,7 +330,7 @@ class CalificacionesProceso(View):
             print('entro a un for')
             print(Ciclo)
             print(obj.cycle)
-            ciclo = get_object_or_404(Ciclo, pk=obj.cycle)
+            ciclo = get_object_or_404(Ciclo2, pk=obj.cycle)
             print('*********ciclo**********')
             print(ciclo)
             print(obj)            

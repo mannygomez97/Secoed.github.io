@@ -1,7 +1,7 @@
 import argparse
 #import json
 import simplejson
-
+from datetime import datetime
 import logging
 import os
 import re
@@ -175,35 +175,84 @@ class CursoView(View):
             GeneradorAuditoria().CrearAuditoriaError(m_ProcesoCurso, str(e), request.user.id)
         return render(request, 'cursos/mantenimientoCursos.html', cursos)
     
-    def viewModalCurso(request, pk):
+    def viewEdithModalCurso(request, pk):
         params = {"wstoken": TOKEN_MOODLE,
                   "wsfunction": "core_course_get_courses_by_field",
                   "moodlewsrestformat": "json",
                   }
+        
+        paramsCategoria = {"wstoken": TOKEN_MOODLE,
+                  "wsfunction": "core_course_get_categories",
+                  "moodlewsrestformat": "json",
+                  }
+        context = {}
+        contextCategoria = []
         cursos = []
-        aList=[]        
+        aList=[] 
+        heading="Editar Curso"
+        TiempoInicio=""   
+        TiempoFin=""    
         try:
             response = requests.post(API_BASE, params)
+            responseCategoria = requests.post(API_BASE, paramsCategoria)   
             if response.status_code == 400:
                 return render(request, 'cursos/mantenimientoCursos.html', context={"context": "Bad request"})
-            if response:                                           
+            if response and responseCategoria:                                           
                 variable= response.json()  
+                contextCategoria = responseCategoria.json()
                 aList = variable['courses']                                            
-                for entrada in aList:
-                 print(entrada["id"])
-                 print(pk)            
-                 if( entrada["id"]==pk):
-                    print('encontro coincidencia')
-                    print(entrada)
+                for entrada in aList:                         
+                 if( entrada["id"]==pk):                    
+                    TiempoInicio=datetime.utcfromtimestamp(entrada["startdate"]).strftime('%d-%m-%Y ')
+                    TiempoFin=datetime.utcfromtimestamp(entrada["enddate"]).strftime('%d-%m-%Y ')
+                    entrada["startdate"]=TiempoInicio
+                    entrada["enddate"]=TiempoFin                    
                     cursos.append(entrada)                  
                     break                                
         except Exception as e:
             print(e)
-            GeneradorAuditoria().CrearAuditoriaError(m_ProcesoCurso, str(e), request.user.id)
-        print('********encontro coincidencia*******')
-        print(cursos)
-        context = {'cursos': cursos}
-        return render(request, 'cursos/MantenimientoEditForm.html', context)
+            GeneradorAuditoria().CrearAuditoriaError(m_ProcesoCurso, str(e), request.user.id)       
+        context = {'cursos': cursos,"categoria": contextCategoria,"heading":heading}
+        return render(request, 'cursos/MantenimientoEditForm.html', context,)
+
+    def viewModalCurso(request, pk):
+        params = {"wstoken": TOKEN_MOODLE,
+                  "wsfunction": "core_course_get_courses_by_field",
+                  "moodlewsrestformat": "json",
+                  }        
+        paramsCategoria = {"wstoken": TOKEN_MOODLE,
+                  "wsfunction": "core_course_get_categories",
+                  "moodlewsrestformat": "json",
+                  }
+        context = {}
+        contextCategoria = []
+        cursos = []
+        aList=[] 
+        heading="Visualizar Curso"
+        TiempoInicio=""   
+        TiempoFin=""    
+        try:
+            response = requests.post(API_BASE, params)
+            responseCategoria = requests.post(API_BASE, paramsCategoria)   
+            if response.status_code == 400:
+                return render(request, 'cursos/mantenimientoCursos.html', context={"context": "Bad request"})
+            if response and responseCategoria:                                           
+                variable= response.json()  
+                contextCategoria = responseCategoria.json()
+                aList = variable['courses']                                            
+                for entrada in aList:                            
+                 if( entrada["id"]==pk):                    
+                    TiempoInicio=datetime.utcfromtimestamp(entrada["startdate"]).strftime('%d-%m-%Y ')
+                    TiempoFin=datetime.utcfromtimestamp(entrada["enddate"]).strftime('%d-%m-%Y ')
+                    entrada["startdate"]=TiempoInicio
+                    entrada["enddate"]=TiempoFin                    
+                    cursos.append(entrada)                  
+                    break                                
+        except Exception as e:
+            print(e)
+            GeneradorAuditoria().CrearAuditoriaError(m_ProcesoCurso, str(e), request.user.id)        
+        context = {'cursos': cursos,"categoria": contextCategoria,"heading":heading}
+        return render(request, 'cursos/MantenimientoViewForm.html', context)    
 
     def allCategorias(request):
        #print('entro aqui1')
