@@ -95,7 +95,7 @@ class AutoEvaluacionCreateView(CreateView):
                     if docente is None:
                         usuario = Usuario.objects.filter(id=request.user.id).first()
                         data['message'] = usuario.nombres + ' Usuario no habilitado para el actual proceso'
-                        data['error'] = 'No se pudo realizar el proceso!'
+                        data['error'] = 'No se pudo realizar el proceso'
                         return JsonResponse(data)
                     else:
                         answer = Respuesta()
@@ -258,16 +258,16 @@ class AutoEvaluacionCreateView(CreateView):
         context['heading'] = 'AutoEvaluación'
         tipo = Tipo.objects.filter(name='Autoevaluación').first()
         parametro = Parametro.objects.filter(name='Autoevaluación').first()
-        ciclo = self.request.session.get('ciclo_id')
+        ciclo = self.request.session.get('cicloId')
         if ciclo is not None:
             #context['object_list'] = Pregunta.objects.filter(type=tipo.id, ciclo__pk=ciclo, state=True)
-            context['object_list'] = PreguntaCiclo.objects.filter(pregunta__type=tipo.id, pregunta__ciclo__pk=ciclo, pregunta__state=True)
+            context['object_list'] = PreguntaCiclo.objects.filter(pregunta__type=tipo.id, ciclo__periodo__id=ciclo)
         else:
             #context['object_list'] = Pregunta.objects.filter(type=tipo.id, state=True)
             context['object_list'] = PreguntaCiclo.objects.filter(pregunta__type=tipo.id, pregunta__state=True)
         context['categories'] = Categoria.objects.filter(state=True)
         context['parameters'] = ParametrosGeneral.objects.filter(parameter=parametro.id)
-        cycle = Ciclo.objects.filter(is_active=True).first()
+        cycle = Ciclo.objects.filter(pk=ciclo).first()
         context['cycle'] = cycle
         teacher = Usuario.objects.filter(id=self.request.user.id).first()
         flag = False

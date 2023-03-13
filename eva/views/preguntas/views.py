@@ -129,14 +129,14 @@ class PreguntasAutoView(ListView):
         def get_context_data(self, **kwargs):
             context = super().get_context_data(**kwargs)
             context['heading'] = 'Preguntas de Autoevaluación'
-            pregunta = PreguntaCiclo.objects.filter(pregunta__type=1, ciclo=int(self.request.session.get('cicloId')))
-            context['object_list'] = PreguntaCiclo.objects.filter(pregunta__type=1, ciclo=int(self.request.session.get('cicloId')))
+            if PreguntaCiclo.objects.filter(pregunta__type=1, ciclo=int(self.request.session.get('cicloId'))).exists():
+                bar = 'jajajaja'
+            context['object_list'] = pregunta = PreguntaCiclo.objects.filter(pregunta__type=1, ciclo=int(self.request.session.get('cicloId')))
             context['create_url'] = reverse_lazy('eva:create-questions-auto')
             context['url_list'] = reverse_lazy('eva:auto-questions')
             return context
     except Exception as ex:
         pass
-
 
 
 @method_decorator(login_required, name='dispatch')
