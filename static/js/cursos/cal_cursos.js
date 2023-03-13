@@ -53,33 +53,34 @@ function eliminarCategoria(item) {
 
 /*fin metodos para eliminar categorias*/
 
-
-
 /*metodos para cursos*/
-function visualizarCurso(item) {
-    llenarModalCurso(item);
-    $("#botonesCursos").hide();
-}
+// function visualizarCurso(item) {
+//     console.log(item);
+//     llenarModalCurso(item);
+//     $("#botonesCursos").hide();
+// }
 
-function llenarModalCurso(item) {
-    var fechaactual=new Date(0);
-    var fechaactual2=new Date(0);
-    fechaactual.setUTCSeconds(item.startdate);
-    fechaactual2.setUTCSeconds(item.enddate);
-    var descripcion = item.summary.replace(/(<([^>]+)>)/gi, "");
-    $("#idCurso").val(item.id);
-    $("#nombreCurso").val(item.fullname);
-    $("#nombreCorto").val(item.shortname);
-    $("#resumen").val(descripcion);
-    $("#calificaciones").prop("checked", item.showgrades === 1 ? true : false);
-    $("#fechaInicio").datepicker("setDate", fechaactual);
-    $("#fechaFin").datepicker("setDate", fechaactual2);
-    $("#mostrarInforme").prop("checked", item.showreports === 1 ? true : false);
-    $("#mostrarSeccionesOcultas").prop("checked", item.hiddensections === 1 ? true : false);
-    $("#NotificarFinalizar").prop("checked", item.completionnotify === 1 ? true : false);
-    $("#visibleAlumno").prop("checked", item.visible  === 1 ? true : false);
-    $("#comboCategorias").val(item.categoryid)
-}
+// function llenarModalCurso(item) {
+//     var datos = JSON.parse(item);
+//     console.log(datos);
+//     var fechaactual=new Date(0);
+//     var fechaactual2=new Date(0);
+//     fechaactual.setUTCSeconds(item.startdate);
+//     fechaactual2.setUTCSeconds(item.enddate);
+//     var descripcion = item.summary.replace(/(<([^>]+)>)/gi, "");
+//     $("#idCurso").val(datos.id);
+//     $("#nombreCurso").val(datos.fullname);    
+//     $("#nombreCorto").val(item.shortname);
+//     $("#resumen").val(descripcion);
+//     $("#calificaciones").prop("checked", item.showgrades === 1 ? true : false);
+//     $("#fechaInicio").datepicker("setDate", fechaactual);
+//     $("#fechaFin").datepicker("setDate", fechaactual2);
+//     $("#mostrarInforme").prop("checked", item.showreports === 1 ? true : false);
+//     $("#mostrarSeccionesOcultas").prop("checked", item.hiddensections === 1 ? true : false);
+//     $("#NotificarFinalizar").prop("checked", item.completionnotify === 1 ? true : false);
+//     $("#visibleAlumno").prop("checked", item.visible  === 1 ? true : false);
+//     $("#comboCategorias").val(item.categoryid)
+// }
 function cargarlista() {
     const csrftoken = getCookie('csrftoken');
     var url = window.location.href + "allCategorias";
@@ -90,11 +91,16 @@ function cargarlista() {
         headers: {"X-CSRFToken": csrftoken},
 /*        async:false,*/
         success: function (data) {
+           // console.log(data.context)
             $("#comboCategorias").empty();
             // $("#comboCategorias").append('<option value="0">RAIZ</option>');
-            for (var i=0; i <= data.context.length; i++) {
-                $("#comboCategorias").append('<option value="' + data.context[i].id + '">' + data.context[i].name + '</option>');
-            }
+           // for (var i=0; i <= data.context.length; i++) {
+           //     $("#comboCategorias").append('<option value="' + data.context[i].id + '">' + data.context[i].name + '</option>');
+           // }
+            $.each(data.context, function(indice,valor) 
+            {              
+                $("#comboCategorias").append('<option value="' + valor.id + '">' + valor.name + '</option>');
+            });
         }, error: function (xhr, status, error) {
             console.log(xhr);
         }
@@ -116,22 +122,22 @@ function  getCookie(name){
     return cookieValue;
 }
 
-function limpiarCamposCursos(){
-    const fecha = new Date();
-    $("#botonesCursos").show();
-    $("#idCurso").val("");
-    $("#nombreCurso").val("");
-    $("#nombreCorto").val("");
-    $("#resumen").val("");
-    $("#calificaciones").prop("checked", false);
-    $("#fechaInicio").datepicker("setDate", fecha);
-    $("#fechaFin").datepicker("setDate", fecha);
-    $("#mostrarInforme").prop("checked", false);
-    $("#mostrarSeccionesOcultas").prop("checked", false);
-    $("#NotificarFinalizar").prop("checked", false);
-    $("#visibleAlumno").prop("checked", false);
-    $("#comboCategorias").val(0);
-}
+// function limpiarCamposCursos(){
+//     const fecha = new Date();
+//     $("#botonesCursos").show();
+//     $("#idCurso").val("");
+//     $("#nombreCurso").val("");
+//     $("#nombreCorto").val("");
+//     $("#resumen").val("");
+//     $("#calificaciones").prop("checked", false);
+//     $("#fechaInicio").datepicker("setDate", fecha);
+//     $("#fechaFin").datepicker("setDate", fecha);
+//     $("#mostrarInforme").prop("checked", false);
+//     $("#mostrarSeccionesOcultas").prop("checked", false);
+//     $("#NotificarFinalizar").prop("checked", false);
+//     $("#visibleAlumno").prop("checked", false);
+//     $("#comboCategorias").val(0);
+// }
 
 function editarCursos(item) {
     limpiarCamposCursos();

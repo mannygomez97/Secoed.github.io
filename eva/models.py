@@ -4,6 +4,19 @@ from django.forms import model_to_dict
 from authentication.models import Usuario
 from conf.models import Carrera
 
+class Periodo(models.Model):    
+    fecha_inicial = models.DateTimeField(auto_now_add=True, db_column='fecha_inicial',
+                                        help_text='Registra la fecha de creación de un valor')
+    fecha_final = models.DateTimeField(auto_now=True, db_column='fecha_final',
+                                       help_text='Fecha final del registro')
+    nombre = models.CharField(max_length=100, unique=True, db_column='nombre')    
+    carrera_id = models.IntegerField(db_column='periodo_id', null=False, blank=False)
+
+    def __str__(self):
+        return str(self.nombre)
+
+    class Meta:
+        db_table = "periodo"
 
 # Migración
 class Ciclo(models.Model):
@@ -14,12 +27,14 @@ class Ciclo(models.Model):
                                         help_text='Registra la fecha de creación de un valor')
     date_update = models.DateTimeField(auto_now=True, db_column='fecha_edicion',
                                        help_text='Fecha de edición del registro')
+    periodo = models.ForeignKey(Periodo, db_column='periodo_id', on_delete=models.CASCADE)    
 
     def __str__(self):
         return str(self.name)
 
     class Meta:
         db_table = "pt_ciclo"
+
 
 
 class Ciclo2(models.Model):
@@ -83,9 +98,9 @@ class Materia(models.Model):
 class MateriaCiclo(models.Model):
     materia = models.ForeignKey(Materia, db_column='materia_id', null=False, blank=False, on_delete=models.CASCADE)
     ciclo = models.ForeignKey(Ciclo2, on_delete=models.CASCADE,null=False, blank=False, default=1)
-    date_created = models.DateTimeField(auto_now_add=True, db_column='fecha_creacion',
+    date_created = models.DateTimeField(auto_now_add=True, db_column='create_at',
                                         help_text='Registra la fecha de creación de un valor')
-    date_update = models.DateTimeField(auto_now=True, db_column='fecha_edicion',
+    date_update = models.DateTimeField(auto_now=True, db_column='update_at',
                                        help_text='Fecha de edición del registro')
 
     def __str__(self):
@@ -97,7 +112,7 @@ class MateriaCiclo(models.Model):
 
 # Migración
 class MateriaDocente(models.Model):
-    matter = models.ForeignKey(Materia, null=False, blank=False, on_delete=models.CASCADE, db_column='materia')
+    matter = models.ForeignKey(Materia, null=False, blank=False, on_delete=models.CASCADE, db_column='materia_ciclo_id')
     docente = models.ForeignKey(Usuario, null=False, blank=False, on_delete=models.CASCADE, db_column='tutor')
     date_created = models.DateTimeField(auto_now_add=True, db_column='fecha_creacion',
                                         help_text='Registra la fecha de creación de un valor')

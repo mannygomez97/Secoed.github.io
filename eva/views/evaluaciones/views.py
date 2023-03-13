@@ -19,7 +19,14 @@ from eva.models import Respuesta, DetalleRespuesta, ResultadoProceso, Parametros
     Pregunta, Categoria, Tipo, Parametro, Materia, AreasConocimiento, Courses, PreguntaCiclo
 from secoed.settings import TOKEN_MOODLE, API_BASE
 from notify.views import emitirNotificacion
+from auditoria.apps import GeneradorAuditoria
 
+#Constantes
+m_ProcesoCOE = "COEVALUACION"
+m_ProcesoEVA = "AUTOEVALUACION"
+m_NombreTablaRespuesta = "pt_respuesta"
+m_NombreTablaDetalleRespuesta = "pt_detalle_respuesta"
+m_NombreTablaResultadoProceso = "pt_resultado_proceso"
 class TeachersPendingEvaluationList(ListView):
     model = Usuario
     template_name = 'evaluaciones/list.html'
@@ -94,8 +101,10 @@ class AutoEvaluacionCreateView(CreateView):
                     docente = Usuario.objects.filter(rol_moodle__codigo__gte=5, id=self.request.user.id).first()
                     if docente is None:
                         usuario = Usuario.objects.filter(id=request.user.id).first()
-                        data['message'] = usuario.nombres + ' Usuario no habilitado para el actual proceso'
-                        data['error'] = 'No se pudo realizar el proceso'
+                        msgError =  usuario.nombres + ' Usuario no habilitado para el actual proceso'
+                        data['message'] = msgError
+                        data['error'] = 'No se pudo realizar el proceso!'
+                        GeneradorAuditoria().CrearAuditoriaAdvertencia(m_ProcesoEVA, msgError, request.user.id)
                         return JsonResponse(data)
                     else:
                         answer = Respuesta()
@@ -103,6 +112,8 @@ class AutoEvaluacionCreateView(CreateView):
                         answer.cycle = int(question['cycle'])
                         answer.type_evaluation = int(question['type'])
                         answer.save()
+                        newJsonResp = GeneradorAuditoria().GenerarJSONNuevo(m_NombreTablaRespuesta)
+                        GeneradorAuditoria().GenerarAuditoriaCrear(m_NombreTablaRespuesta, newJsonResp, request.user.id)
 
                         for i in question['questions']:
                             resp = DetalleRespuesta()
@@ -111,6 +122,8 @@ class AutoEvaluacionCreateView(CreateView):
                             resp.question = int(i['question'])
                             resp.parameter = int(i['parameter'])
                             resp.save()
+                            newJsonDetResp = GeneradorAuditoria().GenerarJSONNuevo(m_NombreTablaDetalleRespuesta)
+                            GeneradorAuditoria().GenerarAuditoriaCrear(m_NombreTablaDetalleRespuesta, newJsonDetResp, request.user.id)
 
                         details = DetalleRespuesta.objects.filter(answer=answer.id).values('category',
                                                                                            'question',
@@ -167,6 +180,10 @@ class AutoEvaluacionCreateView(CreateView):
                             error = ''
                             response = JsonResponse({'message': message, 'error': error})
                             response.status_code = 201
+
+                            newJsonResProcess = GeneradorAuditoria().GenerarJSONNuevo(m_NombreTablaResultadoProceso)
+                            GeneradorAuditoria().GenerarAuditoriaCrear(m_NombreTablaResultadoProceso, newJsonResProcess,
+                                                                       request.user.id)
                             return response
                         else:
                             result = ResultadoProceso.objects. \
@@ -186,6 +203,12 @@ class AutoEvaluacionCreateView(CreateView):
                                     obj.Total_Proceso = round(auto_subtotal / 2, 2)
 
                                     obj.save()
+
+                                    newJsonResProcess = GeneradorAuditoria().GenerarJSONNuevo(
+                                        m_NombreTablaResultadoProceso)
+                                    GeneradorAuditoria().GenerarAuditoriaCrear(m_NombreTablaResultadoProceso,
+                                                                               newJsonResProcess,
+                                                                               request.user.id)
 
                                     result_ped = (float(obj.auto_result_Ped) + float(obj.coe_result_Ped)) / 2
                                     result_did = (float(obj.auto_result_Did) + float(obj.coe_result_Did)) / 2
@@ -246,6 +269,7 @@ class AutoEvaluacionCreateView(CreateView):
         except Exception as e:
             message = 'Exception'
             response['error'] = {'message': message, 'error': str(e)}
+            GeneradorAuditoria().CrearAuditoriaError(m_ProcesoEVA, str(e), request.user.id)
             transaction.rollback()
             return JsonResponse(response)
         except IntegrityError:
@@ -343,7 +367,9 @@ class CoevaluacionCreateView(CreateView):
                     docente = Usuario.objects.filter(id=int(request.session['docente'])).first()
                     coevaluator = Usuario.objects.filter(id=self.request.user.id).first()
                     if docente is None:
-                        data['message'] = 'usuario no habilitado para está evaluación'
+                        msgError = 'usuario no habilitado para está evaluación'
+                        data['message'] = msgError
+                        GeneradorAuditoria().CrearAuditoriaAdvertencia(m_ProcesoCOE, msgError, request.user.id)
                         return JsonResponse(data)
                     else:
                         answer = Respuesta()
@@ -351,6 +377,9 @@ class CoevaluacionCreateView(CreateView):
                         answer.cycle = int(question['cycle'])
                         answer.type_evaluation = int(question['type'])
                         answer.save()
+                        newJsonResp = GeneradorAuditoria().GenerarJSONNuevo(m_NombreTablaRespuesta)
+                        GeneradorAuditoria().GenerarAuditoriaCrear(m_NombreTablaRespuesta, newJsonResp, request.user.id)
+
                         for i in question['questions']:
                             resp = DetalleRespuesta()
                             resp.answer_id = answer.id
@@ -358,6 +387,9 @@ class CoevaluacionCreateView(CreateView):
                             resp.question = int(i['question'])
                             resp.parameter = int(i['parameter'])
                             resp.save()
+                            newJsonDetResp = GeneradorAuditoria().GenerarJSONNuevo(m_NombreTablaDetalleRespuesta)
+                            GeneradorAuditoria().GenerarAuditoriaCrear(m_NombreTablaDetalleRespuesta, newJsonDetResp,
+                                                                       request.user.id)
 
                         detalle = DetalleRespuesta.objects.filter(answer=answer.id) \
                             .values('category', 'question', 'parameter').order_by('category')
@@ -406,6 +438,10 @@ class CoevaluacionCreateView(CreateView):
                             result.Total_Proceso_Coe = total_coe
 
                             result.save()
+                            newJsonResProce = GeneradorAuditoria().GenerarJSONNuevo(m_NombreTablaResultadoProceso)
+                            GeneradorAuditoria().GenerarAuditoriaCrear(m_NombreTablaResultadoProceso, newJsonResProce,
+                                                                       request.user.id)
+
                             message = 'Coevaluación concluida correctamente'
                             error = ''
                             response = JsonResponse({'message': message, 'error': error})
@@ -485,6 +521,7 @@ class CoevaluacionCreateView(CreateView):
                                 return response
         except Exception as e:
             #response['error'] = str(e) #GRUPO REPOSITORIO ERROR
+            GeneradorAuditoria().CrearAuditoriaError(m_ProcesoCOE, str(e), request.user.id)
             transaction.rollback()
             #return JsonResponse(response) GRUPO REPOSITORIO ERROR
             return JsonResponse({'error':str(e)})

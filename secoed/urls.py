@@ -39,6 +39,9 @@ urlpatterns = [
     # Configuraciones
     path(r'conf/', include('conf.urls')),
 
+    # Auditorias
+    path(r'auditoria/', include('auditoria.urls')),
+
     # Autoevaluacion
     path('eva/', include('eva.urls')),
 
