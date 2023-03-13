@@ -442,13 +442,13 @@ class RespuestaForm(ModelForm):
 
 class CoevaluacionForm(ModelForm):
     class Meta:
-        model = Pregunta
+        model = Pregunta #Cambio referencial rquinto
         fields = ['id']
 
 
 class AutoEvaluacionForm(ModelForm):
     class Meta:
-        model = Pregunta
+        model = Pregunta#Cambio referencial rquinto
         fields = ['id']
 
 

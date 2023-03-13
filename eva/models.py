@@ -38,13 +38,13 @@ class Ciclo(models.Model):
 
 
 class Ciclo2(models.Model):
-    is_active = models.BooleanField(default=False, db_column='activo')
+    is_active = models.BooleanField(default=True, db_column='activo')
     date_created = models.DateTimeField(auto_now_add=True, db_column='created_at',
                                         help_text='Registra la fecha de creación de un valor')
     date_update = models.DateTimeField(auto_now=True, db_column='update_at',
                                        help_text='Fecha de edición del registro')
-    nombre = models.CharField(max_length=100, unique=True, db_column='nombre')
-    identificador = models.CharField(max_length=100, unique=True, db_column='identificador')
+    nombre = models.CharField(max_length=100,  db_column='nombre')
+    identificador = models.CharField(max_length=100, default='', db_column='identificador')
     periodo = models.ForeignKey(Ciclo, db_column='periodo_id', on_delete=models.CASCADE)
 
     def __str__(self):

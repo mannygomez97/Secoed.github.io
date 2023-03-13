@@ -1,11 +1,12 @@
-
+import json
 from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
 
 from eva.models import Ciclo, Ciclo2
 from eva.forms import CicloForm, CicloFormCN
-from django.http import JsonResponse, HttpResponseRedirect
+from django.http import JsonResponse, HttpResponseRedirect, HttpResponse
 from django.utils.decorators import method_decorator
 from auditoria.apps import GeneradorAuditoria
 
@@ -136,7 +137,7 @@ class PeriodDeleteView(DeleteView):
         else:
             return redirect('eva:list-periodo')
 
-
+@csrf_exempt
 def periodociclo(request):
     global ex
     data = {}
@@ -148,8 +149,18 @@ def periodociclo(request):
                                periodo_id=int(request.POST['periodo']),
                                is_active=True)
                 ciclo.save()
+                return HttpResponse(json.dumps({"result": "ok"}), content_type="application/json")
             except Exception as ex:
                 pass
+
+        if action == 'delete':
+            try:
+                ciclo = Ciclo2.objects.get(pk=int(request.POST['ciclo']))
+                ciclo.delete()
+                return HttpResponse(json.dumps({"result": "ok"}), content_type="application/json")
+            except Exception as ex:
+                pass
+
     else:
         if 'action' in request.GET:
             action = request.GET['action']

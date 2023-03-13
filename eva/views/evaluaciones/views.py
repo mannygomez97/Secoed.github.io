@@ -16,7 +16,7 @@ from authentication.models import Usuario
 from conf.models import RolMoodle
 from eva.forms import CoevaluacionForm, AutoEvaluacionForm
 from eva.models import Respuesta, DetalleRespuesta, ResultadoProceso, ParametrosGeneral, Ciclo, \
-    Pregunta, Categoria, Tipo, Parametro, Materia, AreasConocimiento, Courses
+    Pregunta, Categoria, Tipo, Parametro, Materia, AreasConocimiento, Courses, PreguntaCiclo
 from secoed.settings import TOKEN_MOODLE, API_BASE
 from notify.views import emitirNotificacion
 from auditoria.apps import GeneradorAuditoria
@@ -282,14 +282,16 @@ class AutoEvaluacionCreateView(CreateView):
         context['heading'] = 'AutoEvaluación'
         tipo = Tipo.objects.filter(name='Autoevaluación').first()
         parametro = Parametro.objects.filter(name='Autoevaluación').first()
-        ciclo = self.request.session.get('ciclo_id') 
+        ciclo = self.request.session.get('cicloId')
         if ciclo is not None:
-            context['object_list'] = Pregunta.objects.filter(type=tipo.id, ciclo__pk=ciclo, state=True)
+            #context['object_list'] = Pregunta.objects.filter(type=tipo.id, ciclo__pk=ciclo, state=True)
+            context['object_list'] = PreguntaCiclo.objects.filter(pregunta__type=tipo.id, ciclo__periodo__id=ciclo)
         else:
-            context['object_list'] = Pregunta.objects.filter(type=tipo.id, state=True)
+            #context['object_list'] = Pregunta.objects.filter(type=tipo.id, state=True)
+            context['object_list'] = PreguntaCiclo.objects.filter(pregunta__type=tipo.id, pregunta__state=True)
         context['categories'] = Categoria.objects.filter(state=True)
         context['parameters'] = ParametrosGeneral.objects.filter(parameter=parametro.id)
-        cycle = Ciclo.objects.filter(is_active=True).first()
+        cycle = Ciclo.objects.filter(pk=ciclo).first()
         context['cycle'] = cycle
         teacher = Usuario.objects.filter(id=self.request.user.id).first()
         flag = False
@@ -543,9 +545,11 @@ class CoevaluacionCreateView(CreateView):
         parametro = Parametro.objects.filter(name='Coevaluación').first()
         ciclo = self.request.session.get('ciclo_id') #GRUPO REPOSITORIO COE Y EVA
         if ciclo is not None: #GRUPO REPOSITORIO COE Y EVA
-            context['object_list'] = Pregunta.objects.filter(type=tipo.id, ciclo__pk=ciclo, state=True) #GRUPO REPOSITORIO COE Y EVA
+            #context['object_list'] = Pregunta.objects.filter(type=tipo.id, ciclo__pk=ciclo, state=True) #GRUPO REPOSITORIO COE Y EVA
+            context['object_list'] = PreguntaCiclo.objects.filter(pregunta__type=tipo.id, pregunta__ciclo__pk=ciclo, pregunta__state=True)
         else: #GRUPO REPOSITORIO COE Y EVA
-            context['object_list'] = Pregunta.objects.filter(type=tipo.id, state=True) #GRUPO REPOSITORIO COE Y EVA
+            #context['object_list'] = Pregunta.objects.filter(type=tipo.id, state=True)
+            context['object_list'] = PreguntaCiclo.objects.filter(pregunta__type=tipo.id, pregunta__state=True)
         context['categories'] = Categoria.objects.filter(state=True)
         context['parameters'] = ParametrosGeneral.objects.filter(parameter=parametro.id)
         cycle = Ciclo.objects.filter(is_active=True).first()
