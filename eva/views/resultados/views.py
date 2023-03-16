@@ -155,3 +155,5 @@ class Resultado(TemplateView):
         buffer.close()
         response.write(pdf)
         return response
+
+
