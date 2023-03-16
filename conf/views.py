@@ -12,7 +12,11 @@ from conf.models import *
 
 from authentication.models import Usuario
 from django.shortcuts import render, redirect
+from auditoria.apps import GeneradorAuditoria
 
+# CONSTANTES
+m_NombreTablaMenu= "conf_menu"
+m_ProcesoMenu = "MENU"
 class MenuContentView(View):
     def get(self, request):
         menusview = Menu.objects.order_by('orden')
@@ -27,9 +31,12 @@ class MenuContentView(View):
             menuForm = MenuForm(request.POST)
             if menuForm.is_valid():
                 menuForm.save()
+                newJson = GeneradorAuditoria().GenerarJSONNuevo(m_NombreTablaMenu)
+                GeneradorAuditoria().GenerarAuditoriaCrear(m_NombreTablaMenu, newJson, request.user.id)
                 messages.success(request, "Se registro correctamente", "success")
             else:
                 messages.error(request, "No se puedo registrar", "error")
+                GeneradorAuditoria().CrearAuditoriaAdvertencia(m_ProcesoMenu, "No se puedo registrar", request.user.id)
             return redirect('menu')
         else:
             menuFormView = MenuForm()
@@ -60,7 +67,12 @@ class MenuContentView(View):
             # endEditarField
             form = MenuForm(request.POST, instance=menu)
             if form.is_valid():
+                kwargs = {'pk': pk}
+                oldJson = GeneradorAuditoria().GenerarJSONExistente(m_NombreTablaMenu, kwargs)
                 form.save()
+                newJson = GeneradorAuditoria().GenerarJSONExistente(m_NombreTablaMenu, kwargs)
+                GeneradorAuditoria().GenerarAuditoriaActualizar(m_NombreTablaMenu, kwargs["pk"], newJson, oldJson,
+                                                                request.user.id)
                 messages.success(request, "Se edito correctamente", "success")
                 return redirect('menu')
         else:
@@ -73,7 +85,10 @@ class MenuContentView(View):
     def deleteMenu(request, pk):
         menu = get_object_or_404(Menu, pk=pk)
         if menu:
+            kwargs = {'pk': pk}
+            oldJson = GeneradorAuditoria().GenerarJSONExistente(m_NombreTablaMenu, kwargs)
             menu.delete()
+            GeneradorAuditoria().GenerarAuditoriaBorrar(m_NombreTablaMenu, kwargs["pk"], oldJson, request.user.id)
             messages.success(request, "Se ha eliminado correctamente", "success")
         return redirect('menu')
 
@@ -84,7 +99,9 @@ class MenuContentView(View):
             'descripcion')
         return render(request, 'conf/menuList.html', {'menus': menus})
 
-
+# CONSTANTES
+m_NombreTablaModulo = "conf_modulo"
+m_ProcesoModulo = "MODULO"
 class ModuloContentView(View):
 
     # Carga los datos iniciales del HTML
@@ -105,9 +122,12 @@ class ModuloContentView(View):
             modForm = ModuloForm(request.POST)
             if modForm.is_valid():
                 modForm.save()
+                newJson = GeneradorAuditoria().GenerarJSONNuevo(m_NombreTablaModulo)
+                GeneradorAuditoria().GenerarAuditoriaCrear(m_NombreTablaModulo, newJson, request.user.id)
                 messages.success(request, "Se registro correctamente", "success")
             else:
                 messages.error(request, "No se puedo registrar", "error")
+                GeneradorAuditoria().CrearAuditoriaAdvertencia(m_ProcesoModulo, "No se puedo registrar", request.user.id)
             return redirect('modulo')
         else:
             moduloFormView = ModuloForm();
@@ -136,7 +156,12 @@ class ModuloContentView(View):
             # endEditarField
             form = ModuloForm(request.POST, instance=modulo)
             if form.is_valid():
+                kwargs = {'pk': pk}
+                oldJson = GeneradorAuditoria().GenerarJSONExistente(m_NombreTablaModulo, kwargs)
                 form.save()
+                newJson = GeneradorAuditoria().GenerarJSONExistente(m_NombreTablaModulo, kwargs)
+                GeneradorAuditoria().GenerarAuditoriaActualizar(m_NombreTablaModulo, kwargs["pk"], newJson, oldJson,
+                                                                request.user.id)
                 messages.success(request, "Se edito correctamente", "success")
                 return redirect('modulo')
         else:
@@ -149,11 +174,16 @@ class ModuloContentView(View):
     def deleteModulo(request, pk):
         modulo = get_object_or_404(Modulo, pk=pk)
         if modulo:
+            kwargs = {'pk': pk}
+            oldJson = GeneradorAuditoria().GenerarJSONExistente(m_NombreTablaModulo, kwargs)
             modulo.delete()
             messages.success(request, "Se ha eliminado correctamente", "success")
+            GeneradorAuditoria().GenerarAuditoriaBorrar(m_NombreTablaModulo, kwargs["pk"], oldJson, request.user.id)
         return redirect('modulo')
 
-
+# CONSTANTES
+m_NombreTablaUniversidad = "conf_universidad"
+m_ProcesoUniversidad = "UNIVERSIDAD"
 class UniversidadContentView(View):
     # Carga los datos iniciales del HTML
     def get(self, request):
@@ -167,9 +197,13 @@ class UniversidadContentView(View):
             universidadForm = UniversidadForm(request.POST)
             if universidadForm.is_valid():
                 universidadForm.save()
+                newJson = GeneradorAuditoria().GenerarJSONNuevo(m_NombreTablaUniversidad)
+                GeneradorAuditoria().GenerarAuditoriaCrear(m_NombreTablaUniversidad, newJson, request.user.id)
                 messages.success(request, "Se registro correctamente", "success")
             else:
                 messages.error(request, "No se puedo registrar", "error")
+                GeneradorAuditoria().CrearAuditoriaAdvertencia(m_ProcesoUniversidad, "No se puedo registrar",
+                                                               request.user.id)
             return redirect('universidad')
         else:
             universidadFormView = UniversidadForm();
@@ -192,7 +226,12 @@ class UniversidadContentView(View):
         if request.method == 'POST':
             form = UniversidadForm(request.POST, instance=universidad)
             if form.is_valid():
+                kwargs = {'pk': pk}
+                oldJson = GeneradorAuditoria().GenerarJSONExistente(m_NombreTablaUniversidad, kwargs)
                 form.save()
+                newJson = GeneradorAuditoria().GenerarJSONExistente(m_NombreTablaUniversidad, kwargs)
+                GeneradorAuditoria().GenerarAuditoriaActualizar(m_NombreTablaUniversidad, kwargs["pk"], newJson,
+                                                                oldJson, request.user.id)
                 messages.success(request, "Se edito correctamente", "success")
                 return redirect('universidad')
         else:
@@ -205,11 +244,17 @@ class UniversidadContentView(View):
     def deleteUniversidad(request, pk):
         universidad = get_object_or_404(Universidad, pk=pk)
         if universidad:
+            kwargs = {'pk': pk}
+            oldJson = GeneradorAuditoria().GenerarJSONExistente(m_NombreTablaUniversidad, kwargs)
             universidad.delete()
             messages.success(request, "Se ha eliminado correctamente", "success")
+            GeneradorAuditoria().GenerarAuditoriaBorrar(m_NombreTablaUniversidad, kwargs["pk"], oldJson,
+                                                        request.user.id)
         return redirect('universidad')
 
-
+# CONSTANTES
+m_NombreTablaFacultad = "conf_facultad"
+m_ProcesoFacultad = "FACULTAD"
 class FacultadContentView(View):
     # Carga los datos iniciales del HTML
     def get(self, request):
@@ -223,9 +268,13 @@ class FacultadContentView(View):
             facultadForm = FacultadForm(request.POST)
             if facultadForm.is_valid():
                 facultadForm.save()
+                newJson = GeneradorAuditoria().GenerarJSONNuevo(m_NombreTablaFacultad)
+                GeneradorAuditoria().GenerarAuditoriaCrear(m_NombreTablaFacultad, newJson, request.user.id)
                 messages.success(request, "Se registro correctamente", "success")
             else:
                 messages.error(request, "No se puedo registrar", "error")
+                GeneradorAuditoria().CrearAuditoriaAdvertencia(m_ProcesoFacultad, "No se puedo registrar",
+                                                               request.user.id)
             return redirect('facultad')
         else:
             facultadFormView = FacultadForm();
@@ -248,7 +297,12 @@ class FacultadContentView(View):
         if request.method == 'POST':
             form = FacultadForm(request.POST, instance=facultad)
             if form.is_valid():
+                kwargs = {'pk': pk}
+                oldJson = GeneradorAuditoria().GenerarJSONExistente(m_NombreTablaFacultad, kwargs)
                 form.save()
+                newJson = GeneradorAuditoria().GenerarJSONExistente(m_NombreTablaFacultad, kwargs)
+                GeneradorAuditoria().GenerarAuditoriaActualizar(m_NombreTablaFacultad, kwargs["pk"], newJson,
+                                                                oldJson, request.user.id)
                 messages.success(request, "Se edito correctamente", "success")
                 return redirect('facultad')
         else:
@@ -261,11 +315,16 @@ class FacultadContentView(View):
     def deleteFacultad(request, pk):
         facultad = get_object_or_404(Facultad, pk=pk)
         if facultad:
+            kwargs = {'pk': pk}
+            oldJson = GeneradorAuditoria().GenerarJSONExistente(m_NombreTablaFacultad, kwargs)
             facultad.delete()
+            GeneradorAuditoria().GenerarAuditoriaBorrar(m_NombreTablaFacultad, kwargs["pk"], oldJson, request.user.id)
             messages.success(request, "Se ha eliminado correctamente", "success")
         return redirect('facultad')
 
-
+# CONSTANTES
+m_NombreTablaCarrera = "conf_carrera"
+m_ProcesoCarrera = "CARRERA"
 class CarreraContentView(View):
     # Carga los datos iniciales del HTML
     def get(self, request):
@@ -279,9 +338,13 @@ class CarreraContentView(View):
             carreraForm = CarreraForm(request.POST)
             if carreraForm.is_valid():
                 carreraForm.save()
+                newJson = GeneradorAuditoria().GenerarJSONNuevo(m_NombreTablaCarrera)
+                GeneradorAuditoria().GenerarAuditoriaCrear(m_NombreTablaCarrera, newJson, request.user.id)
                 messages.success(request, "Se registro correctamente", "success")
             else:
                 messages.error(request, "No se puedo registrar", "error")
+                GeneradorAuditoria().CrearAuditoriaAdvertencia(m_ProcesoCarrera, "No se puedo registrar",
+                                                               request.user.id)
             return redirect('carrera')
         else:
             carreraFormView = CarreraForm();
@@ -304,7 +367,12 @@ class CarreraContentView(View):
         if request.method == 'POST':
             form = CarreraForm(request.POST, instance=carrera)
             if form.is_valid():
+                kwargs = {'pk': pk}
+                oldJson = GeneradorAuditoria().GenerarJSONExistente(m_NombreTablaCarrera, kwargs)
                 form.save()
+                newJson = GeneradorAuditoria().GenerarJSONExistente(m_NombreTablaCarrera, kwargs)
+                GeneradorAuditoria().GenerarAuditoriaActualizar(m_NombreTablaCarrera, kwargs["pk"], newJson,
+                                                                oldJson, request.user.id)
                 messages.success(request, "Se edito correctamente", "success")
                 return redirect('carrera')
         else:
@@ -317,11 +385,16 @@ class CarreraContentView(View):
     def deleteCarrera(request, pk):
         carrera = get_object_or_404(Carrera, pk=pk)
         if carrera:
+            kwargs = {'pk': pk}
+            oldJson = GeneradorAuditoria().GenerarJSONExistente(m_NombreTablaCarrera, kwargs)
             carrera.delete()
+            GeneradorAuditoria().GenerarAuditoriaBorrar(m_NombreTablaCarrera, kwargs["pk"], oldJson, request.user.id)
             messages.success(request, "Se ha eliminado correctamente", "success")
         return redirect('carrera')
 
-
+# CONSTANTES
+m_NombreTablaRol = "conf_rol"
+m_ProcesoRol = "ROL"
 class RolContentView(View):
     # Carga los datos iniciales del HTML
     def get(self, request):
@@ -335,9 +408,13 @@ class RolContentView(View):
             rolForm = RolForm(request.POST)
             if rolForm.is_valid():
                 rolForm.save()
+                newJson = GeneradorAuditoria().GenerarJSONNuevo(m_NombreTablaRol)
+                GeneradorAuditoria().GenerarAuditoriaCrear(m_NombreTablaRol, newJson, request.user.id)
                 messages.success(request, "Se registro correctamente", "success")
             else:
                 messages.error(request, "No se puedo registrar", "error")
+                GeneradorAuditoria().CrearAuditoriaAdvertencia(m_ProcesoRol, "No se puedo registrar",
+                                                               request.user.id)
             return redirect('roles')
         else:
             rolFormView = RolForm();
@@ -360,7 +437,12 @@ class RolContentView(View):
         if request.method == 'POST':
             form = RolForm(request.POST, instance=rol)
             if form.is_valid():
+                kwargs = {'pk': pk}
+                oldJson = GeneradorAuditoria().GenerarJSONExistente(m_NombreTablaRol, kwargs)
                 form.save()
+                newJson = GeneradorAuditoria().GenerarJSONExistente(m_NombreTablaRol, kwargs)
+                GeneradorAuditoria().GenerarAuditoriaActualizar(m_NombreTablaRol, kwargs["pk"], newJson,
+                                                                oldJson, request.user.id)
                 messages.success(request, "Se edito correctamente", "success")
                 return redirect('roles')
         else:
@@ -373,11 +455,16 @@ class RolContentView(View):
     def deleteRol(request, pk):
         rol = get_object_or_404(Rol, pk=pk)
         if rol:
+            kwargs = {'pk': pk}
+            oldJson = GeneradorAuditoria().GenerarJSONExistente(m_NombreTablaRol, kwargs)
             rol.delete()
+            GeneradorAuditoria().GenerarAuditoriaBorrar(m_NombreTablaRol, kwargs["pk"], oldJson, request.user.id)
             messages.success(request, "Se ha eliminado correctamente", "success")
         return redirect('roles')
 
-
+# CONSTANTES
+m_NombreTablaRolMenu = "conf_rol_menu"
+m_ProcesoRolMenu = "ROL-MENU"
 class RolMenuContentView(View):
     # Carga los datos iniciales del HTML
     def get(self, request):
@@ -389,11 +476,16 @@ class RolMenuContentView(View):
     def deleteRolMenu(request, pk):
         rol = get_object_or_404(RolMenu, pk=pk)
         if rol:
+            kwargs = {'pk': pk}
+            oldJson = GeneradorAuditoria().GenerarJSONExistente(m_NombreTablaRolMenu, kwargs)
             rol.delete()
+            GeneradorAuditoria().GenerarAuditoriaBorrar(m_NombreTablaRolMenu, kwargs["pk"], oldJson, request.user.id)
             messages.success(request, "Se ha eliminado correctamente", "success")
         return redirect('roles-menu')
 
-
+# CONSTANTES
+m_NombreTablaRolMenu = "conf_rol_user"
+m_ProcesoRolMenu = "ROL-USUARIO"
 class RolUsuarioContentView(View):
     # Carga los datos iniciales del HTML
     def get(self, request):
@@ -406,11 +498,16 @@ class RolUsuarioContentView(View):
     def deleteRolUsuario(request, pk):
         rol = get_object_or_404(RolUser, pk=pk)
         if rol:
+            kwargs = {'pk': pk}
+            oldJson = GeneradorAuditoria().GenerarJSONExistente(m_NombreTablaRolMenu, kwargs)
             rol.delete()
+            GeneradorAuditoria().GenerarAuditoriaBorrar(m_NombreTablaRolMenu, kwargs["pk"], oldJson, request.user.id)
             messages.success(request, "Se ha eliminado correctamente", "success")
         return redirect('roles-usuario')
 
-
+# CONSTANTES
+m_NombreTablaRolMoodle = "conf_rol_moodle"
+m_ProcesoRolMoodle = "ROL-MOODLE"
 class RolMoodleContentView(View):
     # Carga los datos iniciales del HTML
     def get(self, request):
@@ -424,9 +521,13 @@ class RolMoodleContentView(View):
             rolMoodleFormView = RolMoodleForm(request.POST)
             if rolMoodleFormView.is_valid():
                 rolMoodleFormView.save()
+                newJson = GeneradorAuditoria().GenerarJSONNuevo(m_NombreTablaRolMoodle)
+                GeneradorAuditoria().GenerarAuditoriaCrear(m_NombreTablaRolMoodle, newJson, request.user.id)
                 messages.success(request, "Se registro correctamente", "success")
             else:
                 messages.error(request, "No se puedo registrar", "error")
+                GeneradorAuditoria().CrearAuditoriaAdvertencia(m_ProcesoRolMoodle, "No se puedo registrar",
+                                                               request.user.id)
             return redirect('roles-moodle')
         else:
             rolMoodleFormView = RolMoodleForm();
@@ -449,7 +550,12 @@ class RolMoodleContentView(View):
         if request.method == 'POST':
             form = RolMoodleForm(request.POST, instance=rolMoodle)
             if form.is_valid():
+                kwargs = {'pk': pk}
+                oldJson = GeneradorAuditoria().GenerarJSONExistente(m_NombreTablaRolMoodle, kwargs)
                 form.save()
+                newJson = GeneradorAuditoria().GenerarJSONExistente(m_NombreTablaRolMoodle, kwargs)
+                GeneradorAuditoria().GenerarAuditoriaActualizar(m_NombreTablaRolMoodle, kwargs["pk"], newJson,
+                                                                oldJson, request.user.id)
                 messages.success(request, "Se edito correctamente", "success")
                 return redirect('roles-moodle')
         else:
@@ -462,7 +568,10 @@ class RolMoodleContentView(View):
     def deleteRolMoodle(request, pk):
         rolMoodle = get_object_or_404(RolMoodle, pk=pk)
         if rolMoodle:
+            kwargs = {'pk': pk}
+            oldJson = GeneradorAuditoria().GenerarJSONExistente(m_NombreTablaRolMoodle, kwargs)
             rolMoodle.delete()
+            GeneradorAuditoria().GenerarAuditoriaBorrar(m_NombreTablaRolMoodle, kwargs["pk"], oldJson, request.user.id)
             messages.success(request, "Se ha eliminado correctamente", "success")
         return redirect('roles-moodle')
 

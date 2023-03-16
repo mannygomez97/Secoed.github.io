@@ -27,8 +27,7 @@
                                             <!--- menu nivel 2 -->
                                             {% for n2 in n1.items %}
                                                 <li>
-                                                   <a class="waves-effect"
-                                                            {% if n2.url %} href="{% url n2.url %}" {% endif %}>
+                                                   <a class="waves-effect"{% if n2.url %} href="{% url n2.url %}" {% endif %}>
    
                                                         <i class="{{ n2.icon }}"></i>
                                                         <span key="{{ n2.key }}">{{ n2.descripcion }}</span>

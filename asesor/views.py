@@ -5,7 +5,7 @@ from turtle import update
 from django.conf import settings
 import requests
 from asesor.utils import render_to_pdf
-from secoed.settings import TOKEN_ROOT, API_BASE, TOKEN_ROOT
+from secoed.settings import TOKEN_MOODLE, API_BASE, TOKEN_MOODLE
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .models import  ValorationsCourses
@@ -24,11 +24,13 @@ import json
 from eva.models import Ciclo2
 
 def getAsesorLogin(request):
+    print('getAsesorLogin')  
     user = Usuario.objects.filter(username__icontains=request.session['username']).values('id')
     userId = user[0]['id']
     return userId
 
 def getAsesorInfo(request):
+    print('getAsesorInfo')   
     login = Usuario.objects.filter(username__icontains=request.session['username'])
     nombre = login.values('nombres')[0]['nombres']
     apellido = login.values('apellidos')[0]['apellidos']
@@ -36,8 +38,9 @@ def getAsesorInfo(request):
     return user
 
 def getCoursesByActuallyCicle(request):
+    print('entro en getCoursesByActuallyCicle')
     cicleId = request.session['activeCicle']
-
+    print('getCoursesByActuallyCicle')   
     secoedCourses = CourseCicleCarrer.objects.filter(cicle = cicleId).values('course')
     moodleCourses = CoursesMoodle.objects.all().values('id','moodleId')
     
@@ -50,30 +53,36 @@ def getCoursesByActuallyCicle(request):
     return courses
 
 def getCourses(request):
-    params={"wstoken":TOKEN_ROOT,
+    params={"wstoken":TOKEN_MOODLE,
             "wsfunction":"core_course_get_courses",
             "moodlewsrestformat":"json",                                    
             }
+    print('getCourses')   
     courses = []
     response = requests.post(API_BASE, params)
+    print(response) 
     if response.status_code == 400:
         courses = []
     elif response:
         courses = response.json()
+        print('despues de course') 
         for y in courses:
-                timestamp = datetime.fromtimestamp(y["startdate"])                
-                y["startdate"]=timestamp.strftime('%Y-%m-%d')
-        for v in courses:                
+                print('primer for')                             
+                timestamp = datetime.fromtimestamp(y["startdate"])                              
+                y["startdate"]=timestamp.strftime('%Y-%m-%d')                
+        for v in courses:  
+                print('segundo for')              
                 timestamp = datetime.fromtimestamp(v["enddate"])                
                 v["enddate"]=timestamp.strftime('%Y-%m-%d')
     return courses
 
 def getCalendarEvents(request, id):
-    params={"wstoken":TOKEN_ROOT,
+    params={"wstoken":TOKEN_MOODLE,
             "wsfunction":"core_calendar_get_calendar_events",
             "moodlewsrestformat":"json",
             "events[courseids][0]":id
             }
+    print('getCalendarEvents')   
     response=requests.post(API_BASE, params)
     if response.status_code==400:
             return render(request,'utility/utility-404error.html',context={"context":"Bad request"})
@@ -85,7 +94,11 @@ def getAsesorCourses(request, user):
     asesorList = CourseAsesor.objects.filter(asesor=user).values('course')
     secoedCourses = CourseCicleCarrer.objects.all().values('id','course' )
     cursos_asesor = []
-
+    print('********getAsesorCourses*******')   
+    print('********asesorList*******')   
+    print(asesorList)  
+    print('********secoedCourses*******')   
+    print(secoedCourses)   
     for secoed in secoedCourses:
         for asesor in asesorList:
             if secoed['id'] == asesor['course']:
@@ -95,18 +108,19 @@ def getAsesorCourses(request, user):
 
 def getAsesorCoursesMoodle(request, user):
     courses = CourseAsesor.objects.filter(asesor = user).values('id')
-    
+    print('getAsesorCoursesMoodle')   
     courses_asesor = []
     for i in range(len(courses)):
         courses_asesor.append(courses[i]['id'])
     return courses_asesor
 
 def getStudentList(request, id):
-    params={"wstoken":TOKEN_ROOT,
+    params={"wstoken":TOKEN_MOODLE,
             "wsfunction":"gradereport_user_get_grade_items",
             "moodlewsrestformat":"json",
             "courseid":id                                   
             }
+    print('getStudentList')   
     student_list = []
     response = requests.post(API_BASE, params)
     if response.status_code != 200:
@@ -116,11 +130,12 @@ def getStudentList(request, id):
     return student_list
 
 def getCourseMoodleInfo(request, id):
-    params={"wstoken":TOKEN_ROOT,
+    params={"wstoken":TOKEN_MOODLE,
             "wsfunction":"gradereport_user_get_grade_items",
             "moodlewsrestformat":"json",
             "courseid":id                                   
             }
+    print('getCourseMoodleInfo')   
     courseInfo = []
     response = requests.post(API_BASE, params)
     if response.status_code != 200:
@@ -130,12 +145,13 @@ def getCourseMoodleInfo(request, id):
     return courseInfo
 
 def getUsers(request, id):
-    params = {"wstoken":TOKEN_ROOT,
+    params = {"wstoken":TOKEN_MOODLE,
             "wsfunction":"core_user_get_users",
             "moodlewsrestformat":"json",
             "criteria[0][key]": "id",
             "criteria[0][value]": id                               
     }
+    print('getUsers')   
     response = requests.post(API_BASE, params)
     if response.status_code==400:
             return render(request,'utility/utility-404error.html',context={"context":"Bad request"})
@@ -146,17 +162,19 @@ def getUsers(request, id):
 def getActiveCourseList(request):
     actualCoursesList = CoursesMoodle.objects.filter(status = True).values('moodleId')
     actualCourses = []
+    print('getActiveCourseList')   
     for i in range(len(actualCoursesList)):
         actualCourses.append(actualCoursesList[i]['moodleId'])
     return actualCoursesList
 
 def getUserActivities(request, id, idest):
-    params={"wstoken":TOKEN_ROOT,
+    params={"wstoken":TOKEN_MOODLE,
             "wsfunction":"gradereport_user_get_grade_items",
             "moodlewsrestformat":"json",
             "courseid":id,
             "userid":idest
     }
+    print('getUserActivities')   
     response=requests.post(API_BASE, params)
     if response.status_code==400:
             return render(request,'utility/utility-404error.html',context={"context":"Bad request"})
@@ -165,7 +183,7 @@ def getUserActivities(request, id, idest):
             return userActivities
 
 def getContentsCourse(request, id):
-    params={"wstoken":TOKEN_ROOT,
+    params={"wstoken":TOKEN_MOODLE,
             "wsfunction":"core_course_get_contents",
             "moodlewsrestformat":"json",
             "courseid":id
@@ -179,30 +197,45 @@ def getContentsCourse(request, id):
 
 def coursesSecoedView(request):
     t="Cursos" 
-    u="Cursos asignados"
+    u="Cursos asignados1"
     user = getAsesorLogin(request)
+    print('coursesSecoedView tittle')
+    print(user)
     asesorCourses = getAsesorCourses(request, user)
-
+    print('***asesorCourses response****')
+    print(asesorCourses)
     allCourses = getCourses(request)
+    print('*****allCourses response*****') 
+    print(allCourses) 
     courseList = getCoursesByActuallyCicle(request)
-
+    print('****courseList response****') 
+    print(courseList) 
     courses = []
-
     for course in allCourses:
+        #print('*******course["id"]*******')
+        #print(course["id"])   
+        #print(asesorCourses)     
         for activeCourse in courseList:
-            if course["id"] == activeCourse["moodleId"] and activeCourse["id"] in asesorCourses:
-                    courses.append(course)
+         #print('*******activeCourse["moodleId"]*******')
+         #print(activeCourse["moodleId"])
+         #print('*******activeCourse["id"]*******')
+         #print(activeCourse["id"])                  
+         if course["id"] ==  activeCourse["id"] in asesorCourses:
+          #print('*********grabo***********')   
+          courses.append(course)
+    #print('******courses****')
+    #print(courses)
     context = {'context': courses, 'heading': u,'pageview': t, 'status': 'A'}
     return render(request,'asesor/seguimiento_docente/courses_list.html',context)
 
 def inactiveCourses(request):
     t="Detalle cursos inactivos" 
     u=datetime.today().strftime('%Y')
-    
+    print('inactiveCourses')   
     courses = []
     allCourses = getCourses(request)
     asesorLogin = getAsesorCourses(request)
-    
+    print('siguiendo listado_estudiantes modulo asesor')
     for course in allCourses:
         if datetime.strptime(course["enddate"], '%Y-%m-%d').date() < date.today():
             if course["id"] in asesorLogin:
@@ -214,18 +247,28 @@ def inactiveCourses(request):
 def listadoEstudiante(request, id, fullname):
     t="Seguimiento" 
     u=fullname
-
-    courseMoodle = CoursesMoodle.objects.filter(moodleId = id).values('id')[0]['id']
-    infoCourse = CourseCicleCarrer.objects.filter(course = courseMoodle)
-    evalStatus = infoCourse.values('evaluated')[0]['evaluated']  
+    print('listadoEstudiante modulo encontrado')        
+    print(fullname)  
+    print(id)  
+    print(request)  
+    
     try:
+        courseMoodle = CoursesMoodle.objects.filter(moodleId = id).values('id')[0]['id']
+        print('*******courseMoodle**********')
+        print(courseMoodle)
+        infoCourse = CourseCicleCarrer.objects.filter(course = courseMoodle)
+        print('*******infoCourse**********')
+        print(infoCourse)
+        evalStatus = infoCourse.values('evaluated')[0]['evaluated']  
+        print(evalStatus)
         context={"context": getStudentList(request, id),'heading': u,'pageview': t,'fullname': fullname, 'course': id, 'evalStatus': evalStatus}
     except Exception as e:
         print(e)
     return render(request,'asesor/seguimiento_docente/lista_Estudiantes.html',context)
 
 def userActivities(request, id, nombre, idest):   
-    nombre_Estudiante=nombre         
+    nombre_Estudiante=nombre 
+    print('userActivities')        
     try:
         user_activities =  getUserActivities(request, id, idest)                     
         context={"context":user_activities,'nombre':nombre_Estudiante}
@@ -235,6 +278,7 @@ def userActivities(request, id, nombre, idest):
 
 def courseNotes(request):
     u="Detalle de notas"
+    print('courseNotes')
     t="Cursos"
     notes = ValorationsCourses.objects.filter(cicle__is_active = True)
     myFilter = valorationCourseStudentFilter(request.GET, queryset = notes)
@@ -310,7 +354,7 @@ def saveScheduleEvent(request):
 
     try:
         params = {
-            "wstoken": TOKEN_ROOT,
+            "wstoken": TOKEN_MOODLE,
             "wsfunction": "core_calendar_create_calendar_events",
             "moodlewsrestformat": "json",
             "events[0][name]":name,
@@ -351,7 +395,7 @@ def delScheduleEvent(request,courseid, id, repeatid, fullname):
         nrepeat = 0
     else:
         nrepeat = int(repeatid)
-    params={"wstoken":TOKEN_ROOT,
+    params={"wstoken":TOKEN_MOODLE,
             "wsfunction":"core_calendar_delete_calendar_events",
             "moodlewsrestformat":"json",
             "events[0][eventid]":id,
@@ -375,7 +419,7 @@ def createModule(request,course, section):
     u="Modulos del curso: "
     t="Cursos"
     apiBase=API_BASE
-    params={"wstoken":TOKEN_ROOT,
+    params={"wstoken":TOKEN_MOODLE,
             "wsfunction":"core_course_get_course_content_items",
             "moodlewsrestformat":"json",
             "courseid":course         

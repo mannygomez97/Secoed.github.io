@@ -16,9 +16,13 @@ from authentication.models import Post
 from django.contrib import messages
 from django.db.models import Q
 from django.shortcuts import render, redirect, get_object_or_404
+from auditoria.apps import GeneradorAuditoria
 
 Notificacion = load_model('notify', 'Notification')
 
+#Constantes
+m_ProcesoNotificacion = "NOTIFICACIONES"
+m_NombreTablaNotificacion = "notify_notification"
 
 # Emite notificacion de retroalimentacion
 def notificacionRetroalimentacion(usuario,message,feedback):
@@ -88,9 +92,13 @@ class PostView(View):
             postForm = PostForm(request.POST)
             if postForm.is_valid():
                 postForm.save()
+                newJson = GeneradorAuditoria().GenerarJSONNuevo(m_NombreTablaNotificacion)
+                GeneradorAuditoria().GenerarAuditoriaCrear(m_NombreTablaNotificacion, newJson, request.user.id)
                 messages.success(request, "Se registro correctamente", "success")
             else:
                 messages.error(request, "No se puedo registrar", "error")
+                GeneradorAuditoria().CrearAuditoriaAdvertencia(m_ProcesoNotificacion, "No se puedo registrar",
+                                                               request.user.id)
             return redirect('publicaciones')
         else:
             postFormView = PostForm()
@@ -105,8 +113,13 @@ class PostView(View):
         if request.method == 'POST':
             form = PostForm(request.POST, instance=post)
             if form.is_valid():
+                kwargs = {'pk': pk}
+                oldJson = GeneradorAuditoria().GenerarJSONExistente(m_NombreTablaNotificacion, kwargs)
                 form.save()
+                newJson = GeneradorAuditoria().GenerarJSONExistente(m_NombreTablaNotificacion, kwargs)
                 messages.success(request, "Se edito correctamente", "success")
+                GeneradorAuditoria().GenerarAuditoriaActualizar(m_NombreTablaNotificacion, kwargs["pk"], newJson,
+                                                                oldJson, request.user.id)
                 return redirect('publicaciones')
         else:
             postFormView = PostForm(instance=post)
@@ -118,6 +131,10 @@ class PostView(View):
     def deletePost(request, pk):
         post = get_object_or_404(Post, pk=pk)
         if post:
+            kwargs = {'pk': pk}
+            oldJson = GeneradorAuditoria().GenerarJSONExistente(m_NombreTablaNotificacion, kwargs)
             post.delete()
             messages.success(request, "Se ha eliminado correctamente", "success")
+            GeneradorAuditoria().GenerarAuditoriaBorrar(m_NombreTablaNotificacion, kwargs["pk"], oldJson,
+                                                        request.user.id)
         return redirect('publicaciones')

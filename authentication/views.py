@@ -14,19 +14,20 @@ from django.utils.http import urlsafe_base64_encode
 from django.contrib.auth.tokens import default_token_generator
 from django.utils.encoding import force_bytes
 from django.db.models.query_utils import Q
-from authentication.models import Usuario, RolUser, HistoricoUsers
+from authentication.models import Usuario, RolUser, HistoricoUsers,FacultyUser
 from authentication.forms import UserRegisterForm
 from secoed.settings import TOKEN_MOODLE, API_BASE, CONTEXT_ID
 from eva.models import Ciclo2
 
 #DRF
 from authentication import serializers
-from authentication.serializers import RolUserSerializer, UsuarioSerializer
+from authentication.serializers import RolUserSerializer, UsuarioSerializer,FacultyUserSerializer
 from rest_framework.views import APIView
 from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from rest_framework import status
 from rest_framework import permissions
+from auditoria.apps import GeneradorAuditoria
 
 
 username = '';
@@ -42,6 +43,19 @@ class GetRolUser(APIView):
         if request.method == 'GET':
             roluser = RolUser.objects.all()
             serializer = RolUserSerializer(roluser, many=True)
+            #print('entra roles')
+            #print(serializer)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        
+class GetCarreraUser(APIView):
+    permissions_classes = [permissions.AllowAny]
+    @api_view(['GET'])
+    def CarreraUser(request):
+        if request.method == 'GET':
+            carrerauser = FacultyUser.objects.all()
+            serializer = FacultyUserSerializer(carrerauser, many=True)
+           # print('entra carrera')
+            #print(serializer)
             return Response(serializer.data, status=status.HTTP_200_OK)
 
 
@@ -66,18 +80,27 @@ class PagesLoginView(View):
                 return redirect('pages-login')
             else:
                 user = auth.authenticate(username=username, password=password)
-                
+                #print(user)    
+                #print(username)    
+                #print(password)                                                      
                 if user is not None:
                     if user.usuario_activo:
-                        request.session['username'] = username
-                        request.session['isModulo'] = False
-                        request.session['activeCicle'] = getActualCicle(request)
-                        auth.login(request, user)
-                        return redirect('dashboard')
-                    else:
+                        Rol_user= RolUser.objects.filter(user_id=user.id).values('rol')
+                        Carrera_user= FacultyUser.objects.filter(user_id=user.id).values('carrera') 
+                        if Rol_user != 2 and Carrera_user.count() == 0 :
+                         user = None     
+                         messages.error(request, 'Usuario no cuenta con carrera asignada')
+                         return redirect('pages-login')                                                  
+                        else :
+                         request.session['username'] = username
+                         request.session['isModulo'] = False
+                         request.session['activeCicle'] = getActualCicle(request)
+                         auth.login(request, user)
+                         return redirect('dashboard')                                           
+                    else :                        
                         user = None
                         messages.error(request, 'Usuario inactivo')
-                        return redirect('pages-login')
+                        return redirect('pages-login') 
                 else:
                     messages.error(request, 'Credenciales invalidas')
                     return redirect('pages-login')
@@ -211,7 +234,9 @@ def __validar_ced_ruc(nro, tipo):
     val = base - mod if mod != 0 else 0
     return val == d_ver
 
-
+# CONSTANTES
+m_NombreTablaUsuario = "conf_user"
+m_ProcesoUsuario = "USUARIO"
 class UsuarioView(View):
     # Carga los datos iniciales del HTML
     def get(self, request):
@@ -249,6 +274,7 @@ class UsuarioView(View):
                     r = respuesta.json()
                     if respuesta.status_code == 400:
                         messages.success(request, "Error 400", "error")
+                        GeneradorAuditoria().CrearAuditoriaError(m_ProcesoUsuario,  "Error 400", request.user.id)
                         return redirect('usuario')
                     else:
                         mutable = request.POST._mutable
@@ -258,6 +284,7 @@ class UsuarioView(View):
                         request.POST._mutable = mutable
             except Exception as e:
                 messages.success(request, "Error al registrar el usuario en el moodle", "error")
+                GeneradorAuditoria().CrearAuditoriaAdvertencia(m_ProcesoUsuario, str(e), request.user.id)
                 return redirect('usuario')
             # crear rol-usuario en moodle
             parameters = {
@@ -275,10 +302,12 @@ class UsuarioView(View):
                     print(r)
                     if result.status_code == 400:
                         messages.success(request, "Error 400", "error")
+                        GeneradorAuditoria().CrearAuditoriaError(m_ProcesoUsuario,  "Error 400", request.user.id)
                         return redirect('usuario')
             except Exception as e:
                 print(e)
                 messages.success(request, "Error al registrar el rol-usuario en el moodle", "error")
+                GeneradorAuditoria().CrearAuditoriaAdvertencia(m_ProcesoUsuario, str(e), request.user.id)
                 return redirect('usuario')
             if userForm.is_valid():
                 subject = "USUARIO DE INGRESO PARA EL SECOED"
@@ -293,7 +322,11 @@ class UsuarioView(View):
                 email_1 = render_to_string(email_template_name, c)
                 send_mail(subject, email_1, 'secoed.web@gmail.com',
                           [emailUser], fail_silently=False)
+                #print('entra')
+                #print(userForm)
                 userForm.save()
+                newJson = GeneradorAuditoria().GenerarJSONNuevo(m_NombreTablaUsuario)
+                GeneradorAuditoria().GenerarAuditoriaCrear(m_NombreTablaUsuario, newJson, request.user.id)
                 messages.success(request, "Se registro correctamente", "success")
             else:
                 # validar email existente
@@ -304,6 +337,8 @@ class UsuarioView(View):
                 aux = Usuario.objects.filter(identificacion=request.POST['identificacion'])
                 if aux:
                     messages.warning(request, "Ya exite un usuario con esta identificación", "warning")
+                    GeneradorAuditoria().CrearAuditoriaAdvertencia(m_ProcesoUsuario, "Ya exite un usuario con esta"
+                                                                                     " identificación", request.user.id)
             return redirect('usuario')
         else:
             usuarioFormView = UserRegisterForm();
@@ -341,10 +376,17 @@ class UsuarioView(View):
             identificacion = request.POST['identificacion']
             if not verificar(identificacion):
                 messages.warning(request, "El número de identificación es invalida", "warning")
+                GeneradorAuditoria().CrearAuditoriaAdvertencia(m_ProcesoUsuario, "El número de identificación"
+                                                                                 " es invalida", request.user.id)
                 return redirect('usuario')
             form = UserRegisterForm(request.POST, instance=usuario)
             if form.is_valid():
+                kwargs = {'pk': pk}
+                oldJson = GeneradorAuditoria().GenerarJSONExistente(m_NombreTablaUsuario, kwargs)
                 form.save()
+                newJson = GeneradorAuditoria().GenerarJSONExistente(m_NombreTablaUsuario, kwargs)
+                GeneradorAuditoria().GenerarAuditoriaActualizar(m_NombreTablaUsuario, kwargs["pk"], newJson,
+                                                                oldJson, request.user.id)
                 messages.success(request, "Se edito correctamente", "success")
                 return redirect('usuario')
         else:
@@ -355,9 +397,14 @@ class UsuarioView(View):
 
     # Elimina un registro del usuario
     def deleteUsuario(request, pk):
+        print(pk)
         usuario = get_object_or_404(Usuario, pk=pk)
+        print(usuario)
         if usuario:
+            kwargs = {'pk': pk}
+            oldJson = GeneradorAuditoria().GenerarJSONExistente(m_NombreTablaUsuario, kwargs)
             usuario.delete()
+            GeneradorAuditoria().GenerarAuditoriaBorrar(m_NombreTablaUsuario, kwargs["pk"], oldJson, request.user.id)
             messages.success(request, "Se ha eliminado correctamente", "success")
         return redirect('usuario')
 
@@ -368,7 +415,8 @@ class UsuarioPerfilView(View):
     def get(self, request):
         usuario = get_object_or_404(Usuario, pk=request.user.id)
         usuarioPerfilForm = UsuarioPerfilForm(instance=usuario)
-        greeting = {'heading': "Perfil", 'pageview': "Perfil", "form": usuarioPerfilForm, "usuario": usuario}
+        carrera=FacultyUser.objects.filter(user=request.user.id)
+        greeting = {'heading': "Perfil", 'pageview': "Perfil", "form": usuarioPerfilForm, "usuario": usuario, "carrera": carrera}
         return render(request, self.template_name, greeting)
 
     def editUsuarioPerfil(request, pk):

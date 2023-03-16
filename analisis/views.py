@@ -11,6 +11,7 @@ from django.db import connection
 from django.utils import timezone
 from django.db.models import Count
 from xhtml2pdf import pisa
+from auditoria.apps import GeneradorAuditoria
 
 def listar_preguntas_respuestas():
     def dictfetchall(cursor):
@@ -86,6 +87,9 @@ def lista(request):
     }
     return render(request, "analisis/list.html", context)
 
+# CONSTANTES
+m_NombreTablaAnalisisPregunta = "analisis_pregunta"
+m_ProcesoAnalisPregunta = "PREGUNTAS"
 def guardar(request):
     add_pregunta = request.POST['pregunta']
     add_nivel = request.POST['nivel']
@@ -96,6 +100,8 @@ def guardar(request):
             nivel = Nivel.objects.get(id=request.POST['nivel'])
             db_data = AnalisisPregunta(pregunta=add_pregunta,nivel=nivel,ciclo=ciclo_id)
             db_data.save()
+            newJson = GeneradorAuditoria().GenerarJSONNuevo(m_NombreTablaAnalisisPregunta)
+            GeneradorAuditoria().GenerarAuditoriaCrear(m_NombreTablaAnalisisPregunta, newJson, request.user.id)
         except  Nivel.DoesNotExist:
             pass
     
@@ -105,7 +111,10 @@ def guardar(request):
 
 def borrar(request,data_id):
     db_data = AnalisisPregunta.objects.filter(id=data_id)
+    kwargs = {'pk': data_id}
+    oldJson = GeneradorAuditoria().GenerarJSONExistente(m_NombreTablaAnalisisPregunta, kwargs)
     db_data.delete()
+    GeneradorAuditoria().GenerarAuditoriaBorrar(m_NombreTablaAnalisisPregunta, kwargs["pk"], oldJson, request.user.id)
     return HttpResponseRedirect(reverse("lista"))
 
 def actualiza(request,data_id):
@@ -124,7 +133,13 @@ def guardarActualizar(request):
     add_ciclo = Ciclo.objects.get(pk=int(request.POST['ciclo']))
     add_nivel = Nivel.objects.get(pk=int(request.POST['nivel']))
     db_data = AnalisisPregunta.objects.filter(pk=request.POST['id'])
+    pk = request.POST['id']
+    kwargs = {'pk': pk}
+    oldJson = GeneradorAuditoria().GenerarJSONExistente(m_NombreTablaAnalisisPregunta, kwargs)
     db_data.update(pregunta= add_pregunta, nivel= add_nivel, ciclo= add_ciclo)
+    newJson = GeneradorAuditoria().GenerarJSONExistente(m_NombreTablaAnalisisPregunta, kwargs)
+    GeneradorAuditoria().GenerarAuditoriaActualizar(m_NombreTablaAnalisisPregunta, kwargs["pk"], newJson,
+                                                    oldJson, request.user.id)
     return HttpResponseRedirect(reverse("lista"))
 
 
@@ -140,19 +155,28 @@ def listanivel(request):
     }
     return render(request, "analisis/listanivel.html", context)
 
+# CONSTANTES
+m_NombreTablaNivel = "nivel"
+m_ProcesoNivel = "CRITERIOS"
+
 def guardarnivel(request):
     add_nivel = request.POST['nivel']
     try:
         ciclo_id = Ciclo.objects.get(id=request.POST['ciclo'])
         db_data = Nivel(ciclo=ciclo_id, nivel=add_nivel)
         db_data.save()
+        newJson = GeneradorAuditoria().GenerarJSONNuevo(m_NombreTablaNivel)
+        GeneradorAuditoria().GenerarAuditoriaCrear(m_NombreTablaNivel, newJson, request.user.id)
     except  Ciclo.DoesNotExist:
         pass
     return HttpResponseRedirect(reverse("listanivel"))
 
 def borrarnivel(request,data_id):
     db_data = Nivel.objects.filter(id=data_id)
+    kwargs = {'pk': data_id}
+    oldJson = GeneradorAuditoria().GenerarJSONExistente(m_NombreTablaNivel, kwargs)
     db_data.delete()
+    GeneradorAuditoria().GenerarAuditoriaBorrar(m_NombreTablaNivel, kwargs["pk"], oldJson, request.user.id)
     return HttpResponseRedirect(reverse("listanivel"))
 
 def actualizanivel(request,data_id):
@@ -167,7 +191,11 @@ def guardarActualizarnivel(request):
     add_nivel = request.POST['nivel']
     db_data = Nivel.objects.get(pk=act_id)
     db_data.nivel = add_nivel
+    kwargs = {'pk': act_id}
+    oldJson = GeneradorAuditoria().GenerarJSONExistente(m_NombreTablaNivel, kwargs)
     db_data.save()
+    newJson = GeneradorAuditoria().GenerarJSONExistente(m_NombreTablaNivel, kwargs)
+    GeneradorAuditoria().GenerarAuditoriaActualizar(m_NombreTablaNivel, kwargs["pk"], newJson, oldJson, request.user.id)
     return HttpResponseRedirect(reverse("listanivel"))
 
 
@@ -204,6 +232,8 @@ def guardarespuestas(request):
                                     nivel=add_nivel,
                                     ciclo=add_ciclo)           
         db_data.save()
+        newJson = GeneradorAuditoria().GenerarJSONNuevo(m_ProcesoAnalisPregunta)
+        GeneradorAuditoria().GenerarAuditoriaCrear(m_ProcesoAnalisPregunta, newJson, request.user.id)
     except AnalisisPregunta.DoesNotExist:
         pass
     return HttpResponseRedirect(reverse("listarespuestas")) 
@@ -309,7 +339,10 @@ def reporteusuariopregunta(request,data_id):
 
 def borrarespuestas(request,data_id):
     db_data = AnalisisRespuestas.objects.filter(id=data_id)
+    kwargs = {'pk': data_id}
+    oldJson = GeneradorAuditoria().GenerarJSONExistente(m_NombreTablaAnalisisPregunta, kwargs)
     db_data.delete()
+    GeneradorAuditoria().GenerarAuditoriaBorrar(m_NombreTablaAnalisisPregunta, kwargs["pk"], oldJson, request.user.id)
     return HttpResponseRedirect(reverse("listarespuestas"))
 
 def filtrarespuesta(request):
