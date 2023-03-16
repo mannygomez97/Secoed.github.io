@@ -1,5 +1,5 @@
 import json
-
+from django.contrib.auth.decorators import login_required
 import requests
 from django.core.mail import send_mail
 from django.db import transaction, IntegrityError
@@ -16,10 +16,11 @@ from authentication.models import Usuario
 from conf.models import RolMoodle
 from eva.forms import CoevaluacionForm, AutoEvaluacionForm
 from eva.models import Respuesta, DetalleRespuesta, ResultadoProceso, ParametrosGeneral, Ciclo, \
-    Pregunta, Categoria, Tipo, Parametro, Materia, AreasConocimiento, Courses, PreguntaCiclo
+    Pregunta, Categoria, Tipo, Parametro, Materia, AreasConocimiento, Courses, PreguntaCiclo, Ciclo2
 from secoed.settings import TOKEN_MOODLE, API_BASE
 from notify.views import emitirNotificacion
 
+@method_decorator(login_required, name='dispatch')
 class TeachersPendingEvaluationList(ListView):
     model = Usuario
     template_name = 'evaluaciones/list.html'
@@ -30,7 +31,7 @@ class TeachersPendingEvaluationList(ListView):
         data = []
         by_co_evaluate = []
         type_eva = Tipo.objects.filter(name='Coevaluación').first()
-        cycle = Ciclo.objects.filter(is_active=True).first()
+        cycle = Ciclo2.objects.filter(pk=self.request.session.get('ciclo_id'))[0]
         resultado = Respuesta.objects.filter(cycle=cycle.id, type_evaluation=type_eva.id)
         area = AreasConocimiento.objects.filter(docente=self.request.user.id).first()
 
@@ -71,7 +72,7 @@ class TeachersPendingEvaluationList(ListView):
         context['list_url'] = reverse_lazy('eva:list-coevaluar')
         return context
 
-
+@method_decorator(login_required, name='dispatch')
 class AutoEvaluacionCreateView(CreateView):
     model = Usuario
     form_class = AutoEvaluacionForm
@@ -258,17 +259,19 @@ class AutoEvaluacionCreateView(CreateView):
         context['heading'] = 'AutoEvaluación'
         tipo = Tipo.objects.filter(name='Autoevaluación').first()
         parametro = Parametro.objects.filter(name='Autoevaluación').first()
-        ciclo = self.request.session.get('cicloId')
+        ciclo = self.request.session.get('ciclo_id')
         if ciclo is not None:
             #context['object_list'] = Pregunta.objects.filter(type=tipo.id, ciclo__pk=ciclo, state=True)
-            context['object_list'] = PreguntaCiclo.objects.filter(pregunta__type=tipo.id, ciclo__periodo__id=ciclo)
+            context['object_list'] = PreguntaCiclo.objects.filter(pregunta__type=tipo.id, ciclo_id=ciclo)
         else:
             #context['object_list'] = Pregunta.objects.filter(type=tipo.id, state=True)
             context['object_list'] = PreguntaCiclo.objects.filter(pregunta__type=tipo.id, pregunta__state=True)
         context['categories'] = Categoria.objects.filter(state=True)
         context['parameters'] = ParametrosGeneral.objects.filter(parameter=parametro.id)
-        cycle = Ciclo.objects.filter(pk=ciclo).first()
+        #cc = Ciclo2.objects.get(pk=ciclo)[0]
+        cycle = Ciclo2.objects.filter(pk=ciclo)[0]
         context['cycle'] = cycle
+
         teacher = Usuario.objects.filter(id=self.request.user.id).first()
         flag = False
         if teacher is not None:
@@ -506,16 +509,16 @@ class CoevaluacionCreateView(CreateView):
                 return context
         tipo = Tipo.objects.filter(name='Coevaluación').first()
         parametro = Parametro.objects.filter(name='Coevaluación').first()
-        ciclo = self.request.session.get('ciclo_id') #GRUPO REPOSITORIO COE Y EVA
-        if ciclo is not None: #GRUPO REPOSITORIO COE Y EVA
+        ciclo = int(self.request.session.get('ciclo_id'))
+        if ciclo is not None:
             #context['object_list'] = Pregunta.objects.filter(type=tipo.id, ciclo__pk=ciclo, state=True) #GRUPO REPOSITORIO COE Y EVA
-            context['object_list'] = PreguntaCiclo.objects.filter(pregunta__type=tipo.id, pregunta__ciclo__pk=ciclo, pregunta__state=True)
-        else: #GRUPO REPOSITORIO COE Y EVA
+            context['object_list'] = PreguntaCiclo.objects.filter(pregunta__type=tipo.id, ciclo_id=ciclo)
+        else:
             #context['object_list'] = Pregunta.objects.filter(type=tipo.id, state=True)
-            context['object_list'] = PreguntaCiclo.objects.filter(pregunta__type=tipo.id, pregunta__state=True)
+            context['object_list'] = PreguntaCiclo.objects.filter(pregunta__type_id=tipo.id)
         context['categories'] = Categoria.objects.filter(state=True)
         context['parameters'] = ParametrosGeneral.objects.filter(parameter=parametro.id)
-        cycle = Ciclo.objects.filter(is_active=True).first()
+        cycle = Ciclo2.objects.filter(pk=ciclo).first()
         context['cycle'] = cycle
         teacher = int(self.request.GET.get('docente'))
         evaluate = Respuesta.objects.filter(teacher=teacher, cycle=cycle.id, type_evaluation=tipo.id).first()
