@@ -8,7 +8,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from datetime import datetime
 import matplotlib.pyplot as plt
 import time
-from eva.models import Ciclo
+from eva.models import Ciclo, Ciclo2
 
 from django.views.generic import TemplateView
 from eva.models import ParametrosGeneral, Parametro, Respuesta, Usuario
@@ -103,14 +103,14 @@ class Resultado(TemplateView):
         # Clase usuario
         resultadoOBJ = get_object_or_404(ResultadoProcesos, pk=pk)
         userObj = resultadoOBJ.user
-        ciclo = get_object_or_404(Ciclo, pk=resultadoOBJ.cycle)
+        ciclo = get_object_or_404(Ciclo2, pk=resultadoOBJ.cycle)
         # Cabecera
         # title
         c.setFont("Times-Roman", 12)
         c.drawImage('static/images/secoed/logo-secoed.png', 480, 710, mask='auto', width=100, height=100)
         c.drawString(30, 790, 'FACULTAD: POR DEFINIR')
         c.drawString(30, 770, 'CARRERA: POR DEFINIR')
-        c.drawString(30, 750, 'CICLO: ' + ciclo.name)
+        c.drawString(30, 750, 'CICLO: ' + ciclo.nombre)
         c.drawString(30, 730, 'RESULTADOS EVALUACIÓN DOCENTE POR CARRERA')
         c.drawString(30, 710, (userObj.nombres + ' ' + userObj.apellidos))
         c.drawString(30, 690, 'COEVALUADOR: ' + resultadoOBJ.coevaluator)
@@ -151,7 +151,9 @@ class Resultado(TemplateView):
                     height=280)
         # save
         c.save()
-        pdf = buffer.getvalue();
+        pdf = buffer.getvalue()
         buffer.close()
         response.write(pdf)
         return response
+
+

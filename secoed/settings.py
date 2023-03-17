@@ -46,6 +46,7 @@ THIRD_APPS = [
 LOCAL_APPS = [
     'layout',
     'authentication',
+    'auditoria',
     'conf',
     'cursos',
     'eva',
@@ -103,19 +104,19 @@ WSGI_APPLICATION = 'secoed.wsgi.application'
 ASGI_APPLICATION = 'secoed.asgi.application'
 
 
-# CONEXION PRODUCCION
-""" CONEXION_NAME = 'db_secoedv2'
+#CONEXION PRODUCCION
+CONEXION_NAME = 'db_secoed_v3'
 CONEXION_USER = 'secoed'
 CONEXION_PASSWORD = 'secoed2021'
-CONEXION_HOST = 'pgdb'
-CONEXION_PORT = 5432 """
+CONEXION_HOST = '5.161.135.79'
+CONEXION_PORT = 5434 
 
-# CONEXION DEVELOPER
-CONEXION_NAME = 'secoed_v3'
-CONEXION_USER = 'secoed'
-CONEXION_PASSWORD = 'secoed'
-CONEXION_HOST = 'localhost'
-CONEXION_PORT = 5432
+# # CONEXION DEVELOPER
+# CONEXION_NAME = 'db_secoed_v3'
+# CONEXION_USER = 'postgres'
+# CONEXION_PASSWORD = '123456'
+# CONEXION_HOST = 'localhost'
+# CONEXION_PORT = 5432
 
 DATABASES = {
     'default': {
@@ -194,9 +195,9 @@ DJANGO_EASY_AUDIT_ADMIN_SHOW_MODEL_EVENTS = False
 DJANGO_EASY_AUDIT_ADMIN_SHOW_AUTH_EVENTS = False
 DJANGO_EASY_AUDIT_ADMIN_SHOW_REQUEST_EVENTS = False
 
-TOKEN_MOODLE = 'cae40824ddd52a292888f736c8843929'
+TOKEN_MOODLE = 'f3daa936736c02613b285fe50f4616a5'
 TOKEN_ROOT = '2fb3df9ba2006ef257f072651b547b3d'
-API_BASE = 'http://secoed.com/moodle/webservice/rest/server.php'
+API_BASE = 'https://secoed.com/aula-virtual/webservice/rest/server.php'
 CONTEXT_ID = 116
 
 CHANNEL_LAYERS = {

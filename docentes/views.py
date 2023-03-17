@@ -43,17 +43,22 @@ def findCategoria(curso):
 
 def fs_cursos_actividades(moodle_user, activos):
     cursos_actividades = []
+    print(moodle_user)
     params = {"wstoken": TOKEN_MOODLE,
               "wsfunction": "core_enrol_get_users_courses",
               "moodlewsrestformat": "json",
               "userid": moodle_user}
     course_response = requests.post(API_BASE, params)
+    print('RESPONSE SEGUIMIENTO')
+    print(course_response )
     if course_response:
         r1 = course_response.json()
         d1 = json.dumps(r1)
         l1 = json.loads(d1)
         for obj in l1:
             aux1 = core_enrol_get_users_courses(**obj)
+            print('******* aux1 *******')
+            print(aux1)
             categoria = findCategoria(aux1)
             params3 = {"wstoken": TOKEN_MOODLE,
                        "wsfunction": "gradereport_user_get_grade_items",
@@ -161,10 +166,15 @@ def cursoVSFinalizados(list, identificacion):
 class CursosUserView(View):
     def get(self, request):
         userObj = get_object_or_404(Usuario, pk=request.user.id)
+        print(userObj)
+        print(Usuario)
+        print(request.user.id)
+        print(userObj.moodle_user)
         cursos_actividades = []
         if userObj.moodle_user:
+            print('entro por aqui')
             cursos_actividades = fs_cursos_actividades(userObj.moodle_user, True)
-        greeting = {'heading': 'LISTADO DE CURSOS CON SUS ACTIVIDADES Y CALIFICACIONES',
+        greeting = {'heading': 'LISTADO DE CURSOS CON SUS ACTIVIDADES1 Y CALIFICACIONES',
                     'pageview': 'Docentes',
                     'cursos_actividades': cursos_actividades}
         return render(request, 'docentes/cursos_usuario.html', greeting)
@@ -311,11 +321,22 @@ class CursosUserView(View):
 
 class CalificacionesProceso(View):
     def get(self, request):
+        print('CalificacionesProceso')
         notas_evaluacion = ResultadoProceso.objects.order_by('-cycle').filter(user=request.user.id)
+        print('*********notas_evaluacion**********')
+        print(notas_evaluacion)
         result = []
         for obj in notas_evaluacion:
-            ciclo = get_object_or_404(Ciclo, pk=obj.cycle)
+            print('entro a un for')
+            print(Ciclo)
+            print(obj.cycle)
+            ciclo = get_object_or_404(Ciclo2, pk=obj.cycle)
+            print('*********ciclo**********')
+            print(ciclo)
+            print(obj)            
             temp = ResultadoProcesoModel(obj, ciclo);
+            print('*********temp**********')
+            print(temp)
             result.append(temp)
         greeting = {'heading': 'PROCESO DE COEVALUACIÓN - AUTOEVALUACIÓN',
                     'pageview': 'Docentes',

@@ -291,8 +291,10 @@ class FormAsesor(View):
         params = wsfunction("core_course_get_courses")
         response = requests.get(apiBase, params)
         datos = []
-        if response.json():
+        #if response.json():
+        if response:
             for data in response.json():
+            #for data in response:
                 curs = CursoAsesores.objects.filter(id_curso=data['id']).values('id', 'id_asesor')
                 if curs:
                     a = Usuario.objects.filter(id=curs[0]['id_asesor']).values(
@@ -300,6 +302,8 @@ class FormAsesor(View):
 
                     context = {"id": curs[0]['id'], "curso": data["fullname"], "asesor": a[0]["names"]}
                     datos.append(context)
+                    print('entra aaaaaaaa')
+                    print(datos)
         greeting = {}
         greeting['heading'] = "Curso Designado a Asesor"
         greeting['pageview'] = "Formulario test"
@@ -405,10 +409,11 @@ class FormEvaluation(View):
             "wsfunction": "core_course_get_courses",
         })
         # greeting['curso'] = AsesorCursoAsesor.objects.filter(~Q(curso = AsesorCursos.objects.all() )).values('curso__id_curso','curso__tipo')
+        listcurso=[]
 
         return render(request, 'components/proyecto/components-formevaluation.html', {
             "greeting": greeting,
-            "courses": [course['fullname'] for course in coursesList]
+            "courses": [course['fullname'] for course in (coursesList)]
         })
 
 
@@ -438,7 +443,7 @@ def course_list(request):
         curso_asesor.append(i['id_curso'])
 
     apiBase = API_BASE
-
+    print('siguiendo listado_estudiantes modulo components')
     params = {"wstoken": TOKEN_MOODLE,
               "wsfunction": "core_course_get_courses",
               "moodlewsrestformat": "json",

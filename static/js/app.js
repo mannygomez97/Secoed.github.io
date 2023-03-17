@@ -388,7 +388,7 @@ $("#periodoAcademico").change(function () {
                 type: 'GET',
                 headers: {"X-CSRFToken": csrftoken},
                 success: function (data2) {
-                    console.log(dat2.context)
+                    //console.log(dat2.context)
                     $.each(dat2.context, function(indice,valor) 
                     {
                       

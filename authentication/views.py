@@ -43,8 +43,8 @@ class GetRolUser(APIView):
         if request.method == 'GET':
             roluser = RolUser.objects.all()
             serializer = RolUserSerializer(roluser, many=True)
-            print('entra roles')
-            print(serializer)
+            #print('entra roles')
+            #print(serializer)
             return Response(serializer.data, status=status.HTTP_200_OK)
         
 class GetCarreraUser(APIView):
@@ -79,11 +79,14 @@ class PagesLoginView(View):
                 messages.error(request, 'Ingrese su contraseña')
                 return redirect('pages-login')
             else:
-                user = auth.authenticate(username=username, password=password)                         
-                Rol_user= RolUser.objects.filter(user_id=user.id).values('rol')
-                Carrera_user= FacultyUser.objects.filter(user_id=user.id).values('carrera')                
+                user = auth.authenticate(username=username, password=password)
+                #print(user)    
+                #print(username)    
+                #print(password)                                                      
                 if user is not None:
                     if user.usuario_activo:
+                        Rol_user= RolUser.objects.filter(user_id=user.id).values('rol')
+                        Carrera_user= FacultyUser.objects.filter(user_id=user.id).values('carrera') 
                         if Rol_user != 2 and Carrera_user.count() == 0 :
                          user = None     
                          messages.error(request, 'Usuario no cuenta con carrera asignada')
@@ -99,7 +102,7 @@ class PagesLoginView(View):
                         messages.error(request, 'Usuario inactivo')
                         return redirect('pages-login') 
                 else:
-                    messages.error(request, 'Credenciales invalidas seguimiento')
+                    messages.error(request, 'Credenciales invalidas')
                     return redirect('pages-login')
         else:
             return render(request, self.template_name)

@@ -1,42 +1,203 @@
-{% extends 'parciales/list.html' %}
-{% block btn_creacion %}
-    <!--<div class="mb-2">
-        <a href="/eva/periodo/periodociclo/lista?action=add_ciclo&id={{ periodo.id }}" class="rounded-circle btn btn-outline-info "><i class="fas fa-plus"></i></a>
-    </div>-->
-    <div class="mb-2">
-        <a href="/eva/periodo?action=add_ciclo&periodo={{ periodo.id }}" class="rounded-circle btn btn-outline-info "><i class="fas fa-plus"></i></a>
-    </div>
-    <div>
-        <h2></h2>
-    </div>
+{% extends 'partials/base.html' %}
+
+{% load static %}
+
+{% block css%}
+    {% include 'partials/css.html' %}
 {% endblock %}
-<!--Columnas de la tabla-->
-{% block cols %}
-    <th>Nombre</th>
-    <th>Estado</th>
-    <th>Acción</th>
+
+{% block extra_css %}
+    <link href="{% static 'libs/sweetalert2/sweetalert2.min.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'evaluations/libs/datatables/datatables.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'libs/select2/css/select2.min.css' %}" rel="stylesheet" type="text/css" />
+
 {% endblock %}
-<!--Filas de la tabla-->
-{% block filas %}
-    {% for item in object_list %}
-        <tr>
-            <td>{{ item.nombre }}</td>
-            <td>
-                {% if item.is_active %}
-                    <span class="rounded-circle btn btn-outline-success btn-sm "><i class="bx bx-check-circle" ></i></span>
-                {%else %}
-                    <span class="rounded-circle btn btn-outline-danger btn-sm"><i class="far fa-times-circle" ></i></span>
-                {% endif %}
-            </td>
-            <td>
-                <button onclick="openModal('{% url 'eva:update-cycle' item.pk %}', 'updateModal')" class="rounded-circle btn btn-outline-secondary btn-sm edit" title="Editar">
-                    <i class="fas fa-pencil-alt"></i>
-                </button>
-                <button onclick="confirmDelete('{% url 'eva:delete-cycle' item.pk %}')" class="rounded-circle btn btn-outline-danger btn-sm trash" title="Borrar">
-                    <i class="fas fa-trash"></i>
-                </button>
-                {% csrf_token %}
-            </td>
-        </tr>
-    {% endfor %}
- {% endblock %}
+
+{% block contents %}
+    <div class='row-fluid'>
+        <div class='span12'>
+            <h4>Periodo: {{ periodo }}</h4>
+            <h4>Carrera: {{ periodo.carrera }}</h4>
+            <h4>Carrera: {{ periodo.id }}</h4>
+        </div>
+    </div>
+    <div class="row-fluid">
+        <div class='span6'>
+            <div>
+                <table class="table table-bordered">
+                    <thead>
+                    <tr>
+                        <th style="width: 900px">Nombre</th>
+                        <th style="width: 80px; text-align: center">Activo</th>
+                        <th style="width: 80px; text-align: center">Acciones</th>
+                    </tr>
+                    </thead>
+                    <br>
+                    <div>
+                        <!--<a class="rounded-circle btn btn-outline-info" href="/eva/periodociclo/lista/?id={{ item.pk }}"><i class="fas fa-plus"></i></a>-->
+                        <button type="button" class="rounded-circle btn btn-outline-info" data-toggle="modal" data-target="#myModal">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                    <br>
+                    <tbody>
+                    {% for ciclo in object_list %}
+                        <tr>
+                            <td>{{ ciclo.nombre }}</td>
+                            <td style="text-align: center">
+                                {% if ciclo.is_active %}
+                                    <span style="align-items: center; text-align: center" class="rounded-circle btn btn-outline-success btn-sm "><i class="bx bx-check-circle" ></i></span>
+                                {% else %}
+                                    <span style="align-items: center; text-align: center" class="rounded-circle btn btn-outline-danger btn-sm"><i class="far fa-times-circle" ></i></span>
+                                {% endif %}
+                            </td>
+                            <td style="text-align: center">
+                                <button type="button"class="rounded-circle btn btn-outline-danger btn-sm trash" ids="{{ ciclo.id }}" data-toggle="modal" data-target="#deleteciclo">
+                                    <i class="fas fa-trash"></i>
+                                </button>
+                            </td>
+
+                        </tr>
+                    {% empty %}
+                        <tr>
+                            <td colspan="20">NO EXISTEN DATOS</td>
+                        </tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+  <!-- The Modal -->
+  <div class="modal" id="myModal">
+    <div class="modal-dialog">
+      <div class="modal-content">
+
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h4 class="modal-title">Ingresar Ciclo</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+
+        <!-- Modal body -->
+        <div class="modal-body">
+          <form>
+                <div class="form-group">
+                  <label>Nombre Ciclo</label>
+                  <input type="text" id="ciclo" class="form-control" placeholder="Ejemplo: Ciclo I">
+                </div>
+          </form>
+        </div>
+
+        <!-- Modal footer -->
+        <div class="modal-footer">
+           <a href="javascript:;" id="btnguardar" class="btn btn-primary">Guardar</a>
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- The Modal -->
+  <div class="modal fade" id="deleteciclo">
+    <div class="modal-dialog">
+      <div class="modal-content">
+
+        <!-- Modal Header -->
+        <div class="modal-header">
+          <h4 class="modal-title">Eliminar Ciclo</h4>
+          <button type="button" class="close" data-dismiss="modal">&times;</button>
+        </div>
+
+        <!-- Modal body -->
+        <div class="modal-body">
+          ¿Desea eliminar el Ciclo?
+        </div>
+
+        <!-- Modal footer -->
+        <div class="modal-footer">
+           <a href="javascript:;" id="btndelete" class="btn btn-primary">Eliminar</a>
+          <button type="button" class="btn btn-danger" data-dismiss="modal">Cerrar</button>
+        </div>
+
+      </div>
+    </div>
+  </div>
+{% endblock %}
+
+{% block r_sidebar %}
+    {% include 'partials/rightsidebar.html' %}
+{% endblock %}
+{% block footer %}
+    {% include 'partials/footer.html' %}
+{% endblock %}
+{% block javascript %}
+        <!-- JAVASCRIPT -->
+        <script src="{% static 'libs/jquery/jquery.min.js' %}"></script>
+        <script src="{% static 'libs/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+        <script src="{% static 'libs/metismenu/metisMenu.min.js' %}"></script>
+        <script src="{% static 'libs/simplebar/simplebar.min.js' %}"></script>
+        <script src="{% static 'libs/node-waves/waves.min.js' %}"></script>
+
+        <script src="{% static 'js/app.js' %}"></script>
+         <!-- sweetalert2 -->
+        <script src="{% static 'libs/sweetalert2/sweetalert2.all.min.js' %}"></script>
+        <script src="{% static 'js/eva.js' %}"></script>
+        <script src="{% static 'evaluations/libs/datatables/datatables.js' %}"></script>
+        <script src="{% static 'evaluations/datatables.init.js' %}"></script>
+        <script src="{% static 'libs/select2/js/select2.full.min.js' %}"></script>
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/js/bootstrap.bundle.min.js"></script>
+        <script type="text/javascript">
+           $(function() {
+               $('#btnguardar').click(function (){
+                    $.ajax({
+                        type: "POST",
+                        url: "/eva/periodociclo/lista/",
+                        //data: {'action': 'add', 'nombre': JSON.stringify($("#ciclo").val()), 'periodo': '{{ periodo.id }}'},
+                        data: {'action': 'add', 'nombre': $("#ciclo").val(), 'periodo': {{ periodo.id }}},
+                        success: function(data) {
+                            if (data.result === 'ok') {
+                                Swal.fire("Alerta", 'Guardado con éxito', 'success');
+
+                                location.href = "/eva/periodociclo/lista/?id={{ periodo.id }}";
+                            } else {
+                                Swal.fire("ALerta", data.mensaje, 'warning');
+                            }
+                        },
+                        error: function() {
+                            console.log('error')
+                            Swal.fire("ALerta", 'Error de conexión', 'error');
+                        },
+                        dataType: "json",
+                    });
+
+               });
+
+               $('#btndelete').click(function (){
+                   console.log('Ingreso')
+                   ids = parseInt($('#ids').val());
+                    $.ajax({
+                        type: "POST",
+                        url: "/eva/periodociclo/lista/",
+                        data: {'action': 'delete', 'ciclo': ids },
+                        success: function(data) {
+                            if (data.result === 'ok') {
+                                Swal.fire("Alerta", 'Guardado con éxito', 'success');
+
+                                location.href = "/eva/periodociclo/lista/?id={{ periodo.id }}";
+                            } else {
+                                Swal.fire("ALerta", data.mensaje, 'warning');
+                            }
+                        },
+                        error: function() {
+                            console.log('error')
+                            Swal.fire("ALerta", 'Error de conexión', 'error');
+                        },
+                        dataType: "json",
+                    });
+
+               });
+           });
+        </script>
+{% endblock %}

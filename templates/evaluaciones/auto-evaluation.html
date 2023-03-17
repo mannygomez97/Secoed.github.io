@@ -10,17 +10,17 @@
             <td style="text-align: center"><h5>{{ category.name|upper }}</h5></td>
         </tr>
         {% for question in object_list %}
-            <input type="hidden" name="type_evaluation" value="{{ question.type }}">
-            {% ifequal question.category_id category.id %}
+            <input type="hidden" name="type_evaluation" value="{{ question.pregunta.type }}">
+            {% ifequal question.pregunta.category_id category.id %}
                 <tr class="parent">
                     <td>
-                        <input type="hidden" name="pregunta" value="{{ question.id }}">
+                        <input type="hidden" name="pregunta" value="{{ question.pregunta.id }}">
                         <input type="hidden" name="category" value="{{ category.id }}">
-                        {{ question.title }}
+                        {{ question.pregunta.title }}
                     </td>
                     {% for val in parameters %}
                         <td>
-                            <input class="valor" type="radio" name="parametro-{{ question.id }}" value="{{ val.id }}"
+                            <input class="valor" type="radio" name="parametro-{{ question.pregunta.id }}" value="{{ val.id }}"
                                    required/>
                         </td>
                     {% endfor %}
@@ -47,3 +47,4 @@
     <script src="{% static 'evaluations/evaluacion.js' %}"></script>
     <script src="{% static 'evaluations/notifications.js' %}"></script>
 {% endblock %}
+

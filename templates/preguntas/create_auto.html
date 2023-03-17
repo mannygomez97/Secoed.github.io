@@ -1,8 +1,98 @@
-{% extends 'parciales/form_modal.html' %}
-{% block action %}{% url 'eva:create-questions-auto' %}{% endblock %}
-{% block id_error %}error_create{% endblock %}
-{% block id_form %}form_create{% endblock %}
-{% block btn %}
-    <button id="btn_cancel_create" class="btn btn-danger" type="button" onclick="closeModal('createModal');">Cancelar</button>
-    <button id="btn_create" class="btn btn-primary" type="button" onclick="ajaxRequest('form_create', 'error_create', 'btn_create');">Confirmar</button>
+{% extends 'partials/base.html' %}
+
+{% load static %}
+
+{% block css%}
+    {% include 'partials/css.html' %}
+{% endblock %}
+
+{% block extra_css %}
+    <link href="{% static 'libs/sweetalert2/sweetalert2.min.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'evaluations/libs/datatables/datatables.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'libs/select2/css/select2.min.css' %}" rel="stylesheet" type="text/css" />
+
+{% endblock %}
+
+{% block contents %}
+<div class="row">
+    <div class="col-12">
+        <form>
+          <div class="form-group ">
+            <label for="exampleFormControlSelect2">Seleccione las Preguntas de Autoevaluación</label>
+            <select multiple class="form-control" id="exampleFormControlSelect2" style="height: 400px">
+              {% for pregunta in object_list %}
+                  <option value="{{ pregunta.id }}">{{ pregunta }}</option>
+              {% endfor %}
+            </select>
+          </div>
+        </form>
+    </div>
+    <div>
+        <a href="javascript:;" id="btnguardar" class="btn btn-primary">Guardar</a>
+
+        <a type="submit" class="btn btn-danger" href="/eva/autoevaluacion/lista/">Atras</a>
+    </div>
+</div>
+{% endblock %}
+{% block notification %}
+    <input type="hidden" name="url_list" value="{{ url_list }}">
+
+    <div id="createModal" class="modal fade" tabindex="-1" aria-hidden="true"></div>
+    <div id="updateModal" class="modal fade" tabindex="-1" aria-hidden="true"></div>
+    <div id="deleteModal" class="modal fade" tabindex="-1" aria-hidden="true"></div>
+
+{% endblock %}
+{% block r_sidebar %}
+    {% include 'partials/rightsidebar.html' %}
+{% endblock %}
+{% block footer %}
+    {% include 'partials/footer.html' %}
+{% endblock %}
+{% block javascript %}
+        <!-- JAVASCRIPT -->
+        <script src="{% static 'libs/jquery/jquery.min.js' %}"></script>
+        <script src="{% static 'libs/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
+        <script src="{% static 'libs/metismenu/metisMenu.min.js' %}"></script>
+        <script src="{% static 'libs/simplebar/simplebar.min.js' %}"></script>
+        <script src="{% static 'libs/node-waves/waves.min.js' %}"></script>
+
+        <script src="{% static 'js/app.js' %}"></script>
+         <!-- sweetalert2 -->
+        <script src="{% static 'libs/sweetalert2/sweetalert2.all.min.js' %}"></script>
+        <script src="{% static 'js/eva.js' %}"></script>
+        <script src="{% static 'evaluations/libs/datatables/datatables.js' %}"></script>
+        <script src="{% static 'evaluations/datatables.init.js' %}"></script>
+        <script src="{% static 'libs/select2/js/select2.full.min.js' %}"></script>
+
+    <script type="text/javascript">
+           $(function() {
+
+
+               $('#btnguardar').click(function (){
+
+                    $.ajax({
+                        type: "POST",
+                        url: "/eva/autoevaluacion/crear/",
+                        data: {'action': 'guardar', 'lista': JSON.stringify($("#exampleFormControlSelect2").val())},
+                        success: function(data) {
+                            if (data.result === 'ok') {
+                                Swal.fire("ALerta", 'Guardado con éxito', 'success');
+
+                                location.href = "/eva/autoevaluacion/lista/";
+                            } else {
+                                Swal.fire("ALerta", data.mensaje, 'warning');
+                            }
+                        },
+                        error: function() {
+                            Swal.fire("ALerta", 'Error de conexión', 'error');
+                        },
+                        dataType: "json",
+                    });
+
+               });
+
+           });
+        </script>
+
+
 {% endblock %}
