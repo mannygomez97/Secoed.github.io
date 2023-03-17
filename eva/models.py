@@ -4,34 +4,47 @@ from django.forms import model_to_dict
 from authentication.models import Usuario
 from conf.models import Carrera
 
+class Periodo(models.Model):    
+    fecha_inicial = models.DateTimeField(auto_now_add=True, db_column='fecha_inicial',
+                                        help_text='Registra la fecha de creación de un valor')
+    fecha_final = models.DateTimeField(auto_now=True, db_column='fecha_final',
+                                       help_text='Fecha final del registro')
+    nombre = models.CharField(max_length=100, unique=True, db_column='nombre')    
+    carrera_id = models.IntegerField(db_column='periodo_id', null=False, blank=False)
+
+    def __str__(self):
+        return str(self.nombre)
+
+    class Meta:
+        db_table = "periodo"
 
 # Migración
 class Ciclo(models.Model):
     carrera = models.ForeignKey(Carrera, db_column=u'carrera',  on_delete=models.CASCADE)
-    name = models.CharField(max_length=100, unique=True, db_column='nombre')
+    name = models.CharField(max_length=100, db_column='nombre')
     is_active = models.BooleanField(default=False, db_column='es_activo')
     date_created = models.DateTimeField(auto_now_add=True, db_column='fecha_creacion',
                                         help_text='Registra la fecha de creación de un valor')
     date_update = models.DateTimeField(auto_now=True, db_column='fecha_edicion',
                                        help_text='Fecha de edición del registro')
-
+    periodo = models.ForeignKey(Periodo, db_column='periodo_id', on_delete=models.CASCADE)    
 
     def __str__(self):
-        txt = "{0} "
-        return txt.format(self.name)
+        return str(self.name)
 
     class Meta:
         db_table = "pt_ciclo"
 
 
+
 class Ciclo2(models.Model):
-    is_active = models.BooleanField(default=False, db_column='activo')
+    is_active = models.BooleanField(default=True, db_column='activo')
     date_created = models.DateTimeField(auto_now_add=True, db_column='created_at',
                                         help_text='Registra la fecha de creación de un valor')
     date_update = models.DateTimeField(auto_now=True, db_column='update_at',
                                        help_text='Fecha de edición del registro')
-    nombre = models.CharField(max_length=100, unique=True, db_column='nombre')
-    identificador = models.CharField(max_length=100, unique=True, db_column='identificador')
+    nombre = models.CharField(max_length=100,  db_column='nombre')
+    identificador = models.CharField(max_length=100, default='', db_column='identificador')
     periodo = models.ForeignKey(Ciclo, db_column='periodo_id', on_delete=models.CASCADE)
 
     def __str__(self):
@@ -219,6 +232,9 @@ class Pregunta(models.Model):
     class Meta:
         db_table = "pt_pregunta"
         ordering = ['title']
+
+    def en_uso(self):
+        return self.preguntaciclo_set.exists()
 
 
 class PreguntaCiclo(models.Model):

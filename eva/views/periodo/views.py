@@ -1,9 +1,13 @@
-from django.shortcuts import redirect
+import json
+from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
+from django.views.decorators.csrf import csrf_exempt
 from django.views.generic import ListView, CreateView, UpdateView, DeleteView
-from eva.models import Ciclo
-from eva.forms import CicloForm
-from django.http import JsonResponse
+
+from eva.models import Ciclo, Ciclo2
+from eva.forms import CicloForm, CicloFormCN
+from django.http import JsonResponse, HttpResponseRedirect, HttpResponse
+from django.utils.decorators import method_decorator
 from auditoria.apps import GeneradorAuditoria
 
 #Constantes
@@ -18,10 +22,10 @@ class PeriodListView(ListView):
         context = super().get_context_data(**kwargs)
         context['heading'] = 'Mantenimiento Periodo'
         cycle = Ciclo.objects.filter(is_active=True).first()
-        if(cycle is not None): #Nuevo COE Y EVA - GRUPO REPOSITORIO
-            context['pageview'] = cycle.name #Nuevo COE Y EVA - GRUPO REPOSITORIO
-        else: #Nuevo COE Y EVA - GRUPO REPOSITORIO
-            context['pageview'] = "" #Nuevo COE Y EVA - GRUPO REPOSITORIO
+        if(cycle is not None):
+            context['pageview'] = cycle.name
+        else:
+            context['pageview'] = ""
         context['create_url'] = reverse_lazy('eva:create-cycle')
         context['url_list'] = reverse_lazy('eva:list-periodo')
         return context
@@ -132,3 +136,40 @@ class PeriodDeleteView(DeleteView):
             return response
         else:
             return redirect('eva:list-periodo')
+
+@csrf_exempt
+def periodociclo(request):
+    global ex
+    data = {}
+    if request.method == 'POST':
+        action = request.POST['action']
+        if action == 'add':
+            try:
+                ciclo = Ciclo2(nombre=request.POST['nombre'],
+                               periodo_id=int(request.POST['periodo']),
+                               is_active=True)
+                ciclo.save()
+                return HttpResponse(json.dumps({"result": "ok"}), content_type="application/json")
+            except Exception as ex:
+                pass
+
+        if action == 'delete':
+            try:
+                ciclo = Ciclo2.objects.get(pk=int(request.POST['ciclo']))
+                ciclo.delete()
+                return HttpResponse(json.dumps({"result": "ok"}), content_type="application/json")
+            except Exception as ex:
+                pass
+
+    else:
+        if 'action' in request.GET:
+            action = request.GET['action']
+
+        else:
+            try:
+                data['title'] = u'Criclo'
+                data['periodo'] = periodo = Ciclo.objects.get(pk=int(request.GET['id']))
+                data['object_list'] = Ciclo2.objects.filter(periodo=periodo)
+                return render(request, 'periodo/periodociclo.html', data)
+            except Exception as ex:
+                return HttpResponseRedirect('/')
