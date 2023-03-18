@@ -48,15 +48,15 @@
                         </tr>
                         </thead>
                         <tbody>
-                        {% for fal in page_obj %}
+                        {% for err in page_obj %}
                             <tr>
-                                 <td>{{ fal.id }}</td>
-                                <td>{{ fal.proceso }}</td>
-                                <td>{{ fal.tipo }}</td>
-                                <td>{{ fal.excepcion }}</td>
-                                <td>{{ fal.usuario.username }} </td>
-                                <td>{{ fal.fechacreacion }}</td>
-                                <td>{{ fal.detalles }}</td>
+                                 <td>{{ err.id }}</td>
+                                <td>{{ err.proceso }}</td>
+                                <td>{{ err.tipo }}</td>
+                                <td>{{ err.excepcion }}</td>
+                                <td>{{ err.usuario.username }} </td>
+                                <td>{{ err.fechacreacion }}</td>
+                                <td>{{ err.detalles }}</td>
                             </tr>
                         {% endfor %}
                         </tbody>

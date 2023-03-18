@@ -49,16 +49,16 @@
                         </tr>
                         </thead>
                         <tbody>
-                        {% for fal in page_obj %}
+                        {% for aud in page_obj %}
                             <tr>
-                                <td>{{ fal.id }}</td>
-                                <td>{{ fal.tabla }}</td>
-                                <td>{{ fal.idregistro }}</td>
-                                <td>{{ fal.comando }}</td>
-                                <td>{{ fal.usuario.username }} </td>
-                                <td>{{ fal.fechacreacion }}</td>
-                                <td>{{ fal.registroanterior }}</td>
-                                <td>{{ fal.registronuevo }}</td>
+                                <td>{{ aud.id }}</td>
+                                <td>{{ aud.tabla }}</td>
+                                <td>{{ aud.idregistro }}</td>
+                                <td>{{ aud.comando }}</td>
+                                <td>{{ aud.usuario.username }} </td>
+                                <td>{{ aud.fechacreacion }}</td>
+                                <td>{{ aud.registroanterior }}</td>
+                                <td>{{ aud.registronuevo }}</td>
                             </tr>
                         {% endfor %}
                         </tbody>
