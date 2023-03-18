@@ -5,6 +5,9 @@
 
 {% block css %}
     {% include 'partials/css.html' %}
+    <script src="{% static 'js/libs/xlsx.full.min.js' %}" ></script>
+    <script src="{% static 'js/libs/FileSaver.min.js' %}" ></script>
+    <script src="{% static 'js/libs/tableexport.min.js' %}" ></script>
 {% endblock %}
 
 {% block extra_css %}
@@ -21,37 +24,62 @@
     <div class="row">
         <div class="col-12">
             <div class="card">
+                <div class="text-center">
+                    <table>
+                        <tr>
+                            <td>
+                                 <button class="btn btn-success" id="btnExportar"> Exportar a Excel</button>
+                            </td>
+                            <td colspan="7"></td>
+                        </tr>
+                    </table>
+                </div>
                 <div class="card-body">
-
-                    <table id="datatable" class="table table-primary table-responsive table-nowrap align-middle dt-responsive nowrap w-100"
-                           style="text-align: center">
+                    <table id="tabla" class="table table-primary table-responsive table-nowrap align-middle dt-responsive nowrap w-100">
                         <thead class="table-light">
                         <tr>
-                            <th style="width: 10%">N°</th>
-                            <th style="width: 10%">Tabla</th>
-                            <th style="width: 10%">Id Registro</th>
-                            <th style="width: 10%">Comando</th>
-                            <th style="width: 10%">Usuario Creación</th>
-                            <th style="width: 10%">Fecha Creación</th>
-                            <th style="width: 20%">Registro Anterior</th>
-                            <th style="width: 20%">Registro Nuevo</th>
+                            <th>N°</th>
+                            <th>Tabla</th>
+                            <th>Id Registro</th>
+                            <th>Comando</th>
+                            <th>Usuario Creación</th>
+                            <th>Fecha Creación</th>
+                            <th>Registro Anterior</th>
+                            <th>Registro Nuevo</th>
                         </tr>
                         </thead>
                         <tbody>
-                        {% for fal in auditoriaview %}
+                        {% for aud in page_obj %}
                             <tr>
-                                <td>{{ fal.id }}</td>
-                                <td>{{ fal.tabla }}</td>
-                                <td>{{ fal.idregistro }}</td>
-                                <td>{{ fal.comando }}</td>
-                                <td>{{ fal.usuario.username }} </td>
-                                <td>{{ fal.fechacreacion }}</td>
-                                <td>{{ fal.registroanterior }}</td>
-                                <td>{{ fal.registronuevo }}</td>
+                                <td>{{ aud.id }}</td>
+                                <td>{{ aud.tabla }}</td>
+                                <td>{{ aud.idregistro }}</td>
+                                <td>{{ aud.comando }}</td>
+                                <td>{{ aud.usuario.username }} </td>
+                                <td>{{ aud.fechacreacion }}</td>
+                                <td>{{ aud.registroanterior }}</td>
+                                <td>{{ aud.registronuevo }}</td>
                             </tr>
                         {% endfor %}
                         </tbody>
                     </table>
+                </div>
+                <div>
+                    <span class="step-links">
+                        {% if page_obj.has_previous %}
+                        <a href="?page=1">&laquo; 1</a>
+                        <a href="?page={{ page_obj.previous_page_number }}">Previa</a>
+                        {% endif %}
+
+                        <span class="current">
+                            Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}.
+                        </span>
+
+                        {% if page_obj.has_next %}
+                        <a href="?page={{ page_obj.next_page_number }}">Próxima</a>
+                        <a href="?page={{ page_obj.paginator.num_pages }}">&raquo;Ultima</a>
+                        {% endif %}
+                    </span>
                 </div>
             </div>
         </div>
@@ -83,6 +111,12 @@
 {% endblock %}
 
 {% block javascript %}
+    <!-- reportes -->
+    <script src="{% static 'js/reports/toExcel.js' %}"></script>
+    <script src="{% static 'js/reports/toPdf.js' %}"></script>
+    <script src="{% static 'js/libs/jspdf.min.js' %}"></script>
+    <script src="{% static 'js/libs/jspdf.plugin.autotable.min.js' %}"></script>
+
     <!-- JAVASCRIPT -->
     <script src="{% static 'libs/jquery/jquery.min.js' %}"></script>
     <script src="{% static 'libs/bootstrap/js/bootstrap.bundle.min.js' %}"></script>
