@@ -203,8 +203,8 @@ class CursoView(View):
                 aList = variable['courses']                                            
                 for entrada in aList:                         
                  if( entrada["id"]==pk):                    
-                    TiempoInicio=datetime.utcfromtimestamp(entrada["startdate"]).strftime('%d-%m-%Y ')
-                    TiempoFin=datetime.utcfromtimestamp(entrada["enddate"]).strftime('%d-%m-%Y ')
+                    TiempoInicio=datetime.utcfromtimestamp(entrada["startdate"]).strftime('%m/%d/%Y')
+                    TiempoFin=datetime.utcfromtimestamp(entrada["enddate"]).strftime('%m/%d/%Y')
                     entrada["startdate"]=TiempoInicio
                     entrada["enddate"]=TiempoFin                    
                     cursos.append(entrada)                  
@@ -242,8 +242,8 @@ class CursoView(View):
                 aList = variable['courses']                                            
                 for entrada in aList:                            
                  if( entrada["id"]==pk):                    
-                    TiempoInicio=datetime.utcfromtimestamp(entrada["startdate"]).strftime('%d-%m-%Y ')
-                    TiempoFin=datetime.utcfromtimestamp(entrada["enddate"]).strftime('%d-%m-%Y ')
+                    TiempoInicio=datetime.utcfromtimestamp(entrada["startdate"]).strftime('%m/%d/%Y')
+                    TiempoFin=datetime.utcfromtimestamp(entrada["enddate"]).strftime('%m/%d/%Y')
                     entrada["startdate"]=TiempoInicio
                     entrada["enddate"]=TiempoFin                    
                     cursos.append(entrada)                  
@@ -274,14 +274,11 @@ class CursoView(View):
         return JsonResponse(context)
 
     def crearEditarCurso(request):
-        user = Usuario.objects.filter(username__icontains=request.session['username']).values()[0]['id']
-
-        datei = request.POST['fechaInicio'].replace('/', '-')
-        init_date = datetime.strptime(datei, '%m-%d-%Y').date()
-
-        datef = request.POST['fechaFin'].replace('/', '-')
-        end_date = datetime.strptime(datef, '%m-%d-%Y').date()
-
+        user = Usuario.objects.filter(username__icontains=request.session['username']).values()[0]['id']        
+        datei = request.POST['fechaInicio'].replace('/', '-')        
+        init_date = datetime.strptime(datei, '%m-%d-%Y').date()        
+        datef = request.POST['fechaFin'].replace('/', '-')        
+        end_date = datetime.strptime(datef, '%m-%d-%Y').date()                                              
         calificacion = 0
         actividad = 0
         visibilidad = 0
@@ -307,8 +304,8 @@ class CursoView(View):
             params = {"wstoken": TOKEN_MOODLE,
                       "wsfunction": wsfunction,
                       "moodlewsrestformat": "json",
-                      "courses[0][fullname]": request.POST["fullName"],
-                      "courses[0][shortname]": request.POST["nameShort"],
+                      "courses[0][fullname]": request.POST['fullName'],
+                      "courses[0][shortname]": request.POST['nameShort'],
                       "courses[0][categoryid]": request.POST['categoria'],
                       "courses[0][summary]": request.POST['resumen'],
                       "courses[0][showgrades]": calificacion,
@@ -328,6 +325,7 @@ class CursoView(View):
                       "courses[0][lang]": "es",
                       }
         else:
+            
             fecha_inicio_edit = datetime.strptime(
                 request.POST['fechaInicio'], '%m/%d/%Y')
             fecha_fin_edit = datetime.strptime(
@@ -340,9 +338,9 @@ class CursoView(View):
             params = {"wstoken": TOKEN_MOODLE,
                       "wsfunction": wsfunction,
                       "moodlewsrestformat": "json",
-                      "courses[0][id]": request.POST["id"],
-                      "courses[0][fullname]": request.POST["fullName"],
-                      "courses[0][shortname]": request.POST["nameShort"],
+                      "courses[0][id]": request.POST['id'],
+                      "courses[0][fullname]": request.POST['fullName'],
+                      "courses[0][shortname]": request.POST['nameShort'],
                       "courses[0][categoryid]": request.POST['categoria'],
                       "courses[0][summary]": request.POST['resumen'],
                       "courses[0][showgrades]": calificacion,
@@ -361,9 +359,11 @@ class CursoView(View):
                       "courses[0][completionnotify]": notificacion,
                       "courses[0][lang]": "es",
                       }
-
+        print('paso por el params')
         try:
             response = requests.post(API_BASE, params)
+            print('paso por el response')
+            print(response)
             if response:
                 r = response.json()
                 if response.status_code == 400:
@@ -375,12 +375,16 @@ class CursoView(View):
                     print("500")
                     GeneradorAuditoria().CrearAuditoriaError(m_ProcesoCurso, "ENTRA AL IF 500 " + str(response), request.user.id)
                 if response.status_code == 200:
+                    print('paso por el response positivo')
+                    print('r[0]')
+                    print(r)
+                    print('++++++++++curso++++++++++++++++')
                     curso = r[0]['id']
-
+                    
                     courseSecoed = CoursesMoodle.objects.create(
                         moodleId = curso,
-                        fullname = request.POST["fullName"],
-                        shortname = request.POST["nameShort"],
+                        fullname = request.POST['fullName'],
+                        shortname = request.POST['nameShort'],
                         description = request.POST['resumen'],
                         startdate = init_date,
                         enddate = end_date,
@@ -396,11 +400,12 @@ class CursoView(View):
                 print("NO ENTRA al if")
                 GeneradorAuditoria().CrearAuditoriaError(m_ProcesoCurso, "NO ENTRA al if", request.user.id)
         except Exception as e:
+            print('ento por exception')
             print("error " + str(e))
             GeneradorAuditoria().CrearAuditoriaError(m_ProcesoCurso, str(e), request.user.id)
         return redirect('cursos')
 
-    def deleteCourse(request, idCourse):
+    def deleteCourse(request, idCourse):       
         params = {
             "wstoken": TOKEN_MOODLE,
             "wsfunction": "core_course_delete_courses",
@@ -408,16 +413,19 @@ class CursoView(View):
             "courseids[0]": idCourse,
         }
         try:
-            kwargs = {'pk':idCourse}
-            oldJson = GeneradorAuditoria().GenerarJSONExistente(m_NombreTablaCurso, kwargs)
+            kwargs = {'pk':idCourse}           
+            #oldJson = GeneradorAuditoria().GenerarJSONExistente(m_NombreTablaCurso, kwargs)
             respuesta = requests.post(API_BASE, params)
+            print(respuesta)
+            print(kwargs)
+            print(m_NombreTablaCurso)
             if respuesta:
                 r = respuesta.json()
             if respuesta.status_code == 400:
                 print(r.message)
-                GeneradorAuditoria().CrearAuditoriaAdvertencia(m_ProcesoCurso, str(r.message), request.user.id)
+                #GeneradorAuditoria().CrearAuditoriaAdvertencia(m_ProcesoCurso, str(r.message), request.user.id)
             else:
-                GeneradorAuditoria().GenerarAuditoriaBorrar(m_NombreTablaCurso, kwargs["pk"], oldJson, request.user.id)
+                #GeneradorAuditoria().GenerarAuditoriaBorrar(m_NombreTablaCurso, kwargs["pk"], oldJson, request.user.id)
                 print("si se borro")
         except Exception as e:
             print(e)

@@ -122,22 +122,22 @@ function  getCookie(name){
     return cookieValue;
 }
 
-// function limpiarCamposCursos(){
-//     const fecha = new Date();
-//     $("#botonesCursos").show();
-//     $("#idCurso").val("");
-//     $("#nombreCurso").val("");
-//     $("#nombreCorto").val("");
-//     $("#resumen").val("");
-//     $("#calificaciones").prop("checked", false);
-//     $("#fechaInicio").datepicker("setDate", fecha);
-//     $("#fechaFin").datepicker("setDate", fecha);
-//     $("#mostrarInforme").prop("checked", false);
-//     $("#mostrarSeccionesOcultas").prop("checked", false);
-//     $("#NotificarFinalizar").prop("checked", false);
-//     $("#visibleAlumno").prop("checked", false);
-//     $("#comboCategorias").val(0);
-// }
+function limpiarCamposCursos(){
+    const fecha = new Date();
+    $("#botonesCursos").show();
+    $("#idCurso").val("");
+    $("#nombreCurso").val("");
+    $("#nombreCorto").val("");
+    $("#resumen").val("");
+    $("#calificaciones").prop("checked", false);
+    $("#fechaInicio").datepicker("setDate", fecha);
+    $("#fechaFin").datepicker("setDate", fecha);
+    $("#mostrarInforme").prop("checked", false);
+    $("#mostrarSeccionesOcultas").prop("checked", false);
+    $("#NotificarFinalizar").prop("checked", false);
+    $("#visibleAlumno").prop("checked", false);
+    $("#comboCategorias").val(0);
+}
 
 function editarCursos(item) {
     limpiarCamposCursos();
@@ -158,7 +158,7 @@ function eliminarCurso(item) {
     })
         .then(function (result) {
             if (result.isConfirmed) {
-                window.location.href = "deleteCourse/" + item.id
+                window.location.href = "deleteCourse/" + item
             }
         })
 }

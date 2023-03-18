@@ -160,7 +160,7 @@ function eliminarCurso(item) {
     })
         .then(function (result) {
             if (result.isConfirmed) {
-                window.location.href = "deleteCourse/" + item.id
+                window.location.href = "deleteCourse/" + item
             }
         })
 }
