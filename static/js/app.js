@@ -379,6 +379,7 @@ $("#periodoAcademico").change(function () {
         headers: {"X-CSRFToken": csrftoken},
     
         success: function (data) {
+            console.log(data.context)
             var dat2 = data;
             $("#cicloAcademico").empty();
             /*$("#cicloAcademico").append('<option value="0">Seleccionar ciclo</option>');*/
@@ -439,35 +440,45 @@ $("#cicloAcademico").change(function () {
 function getPeriodos() {
     const csrftoken = getCookieMain('csrftoken');
     var url = location.protocol + '//' + location.host +  "/cursos/getPeriod";
+    console.log(url)
     $.ajax({
         url: url,
         dataType: "json",
         type: 'POST',
         headers: {"X-CSRFToken": csrftoken},
-        success: function (resp) {            
+        success: function (resp) {   
+            console.log('respuesta')         
             let options ='';
             let varios ='';
             resp.validation.forEach(listrol => {                 
             if  (listrol.es_administrador === true){
+                console.log('Ingreso al if')
                 resp.context.forEach(period => {
-                                varios+='<option value='+period.id+'>'+period.name+'</option>';
-                                $("#periodoAcademico").append('<option value='+period.id+'>'+period.name+'</option>');
+                                varios+='<option value='+ period.id +' >'+period.name+'</option>';
+                                $("#periodoAcademico").append('<option value='+period.id+' >'+period.name+'</option>');
                 });
+                document.getElementById('+period.id+').attr('selected')
+                $("#periodoAcademico").val('+period.id+').change();
             }
             else {
+                console.log('else')
                 resp.data.forEach(listcarrera => {
                     options+='<option value='+listcarrera.id+'>'+listcarrera.name+'</option>';         
                     resp.context.forEach(period => {
                             varios+='<option value='+period.id+'>'+period.name+'</option>';
-                            $("#periodoAcademico").append('<option value='+listcarrera.id+'>'+listcarrera.name+'/'+period.name+'</option>');
+                            $("#periodoAcademico").append('<option value='+listcarrera.id+' >'+listcarrera.name+'/'+period.name+'</option>');
             })
             });
+            document.getElementById('+period.id+').attr('selected')
+            $("#periodoAcademico").val('+period.id+').change();
             }
            });
-            $("#periodoAcademico").val("1").change();
+           console.log('resp')
+        
 
          
         }, error: function (xhr, status, error) {
+            console.log('ingreso al error')
             console.log(xhr);
         }
     })

@@ -38,6 +38,7 @@ class TeachersPendingEvaluationList(ListView):
 #GRUPO REPOSIOTRIO COE Y EVA 
     def get_pendings_evaluation(self):
         data = []
+        
         by_co_evaluate = []
         type_eva = Tipo.objects.filter(name='Coevaluación').first()
         cycle = Ciclo2.objects.filter(pk=self.request.session.get('ciclo_id'))[0]
@@ -74,6 +75,7 @@ class TeachersPendingEvaluationList(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        
         context['heading'] = 'Docentes pendientes de coevaluar'
         coevaluator = self.request.user.id
         docentes = self.get_pendings_evaluation()
@@ -85,6 +87,7 @@ class TeachersPendingEvaluationList(ListView):
 class AutoEvaluacionCreateView(CreateView):
     model = Usuario
     form_class = AutoEvaluacionForm
+    
     template_name = 'evaluaciones/auto-evaluation.html'
     success_url = reverse_lazy('eva:result-evaluation')
 
@@ -94,6 +97,7 @@ class AutoEvaluacionCreateView(CreateView):
 
     @transaction.atomic
     def post(self, request, *args, **kwargs):
+        
         data = {}
         n3 = 0.00
         try:
@@ -281,24 +285,42 @@ class AutoEvaluacionCreateView(CreateView):
 
 #GRUPO REPOSITORIO COE Y EVA 
     def get_context_data(self, **kwargs):
+        print('aqui evaluaciones5')
         context = super().get_context_data(**kwargs)
         context['heading'] = 'AutoEvaluación'
         tipo = Tipo.objects.filter(name='Autoevaluación').first()
         parametro = Parametro.objects.filter(name='Autoevaluación').first()
         ciclo = self.request.session.get('ciclo_id')
+        cicloprueba=context['ciclo_id']
+        cicloprueba1=context['cicloAcademico']
+        print(cicloprueba)
+        print(cicloprueba1)
+        print(context)
+        print(tipo)
+        print(parametro)
+        print(ciclo)
         if ciclo is not None:
             #context['object_list'] = Pregunta.objects.filter(type=tipo.id, ciclo__pk=ciclo, state=True)
+            print('++++++++++entro x el if+++++++++++')            
             context['object_list'] = PreguntaCiclo.objects.filter(pregunta__type=tipo.id, ciclo_id=ciclo)
+            print(context['object_list'])
         else:
             #context['object_list'] = Pregunta.objects.filter(type=tipo.id, state=True)
+            print('++++++++++entro x el else+++++++++++')
             context['object_list'] = PreguntaCiclo.objects.filter(pregunta__type=tipo.id, pregunta__state=True)
+            print(context['object_list'] )
         context['categories'] = Categoria.objects.filter(state=True)
         context['parameters'] = ParametrosGeneral.objects.filter(parameter=parametro.id)
         #cc = Ciclo2.objects.get(pk=ciclo)[0]
+        print('*********paso por aqui********')
+        print(ciclo)
         cycle = Ciclo2.objects.filter(pk=ciclo)[0]
+        print(cycle)
+        print('*****************context[cycle]************')
         context['cycle'] = cycle
-
+        print(context['cycle'])
         teacher = Usuario.objects.filter(id=self.request.user.id).first()
+        #context[teacher]
         flag = False
         if teacher is not None:
             evaluate = Respuesta.objects.filter(teacher=teacher.id,
@@ -314,7 +336,7 @@ class AutoEvaluacionCreateView(CreateView):
 
 def send_mail_notification(docente: Usuario, coevaluator:Usuario=None, course=None):
     subject = 'Matriculación Automática'
-
+    
     if coevaluator is None:
         email_template_name = "evaluaciones/enroll-email.txt"
         content = {'nombres': docente.nombres, 'apellidos': docente.apellidos, 'course': course, }
@@ -333,6 +355,7 @@ def send_mail_notification(docente: Usuario, coevaluator:Usuario=None, course=No
 
 
 def enroll_course_evaluation(user: Usuario, course):
+    
     params = {
         "wstoken": TOKEN_MOODLE,
         "wsfunction": "enrol_manual_enrol_users",
@@ -351,11 +374,11 @@ def enroll_course_evaluation(user: Usuario, course):
 
 
 class CoevaluacionCreateView(CreateView):
+    
     model = Usuario
     form_class = CoevaluacionForm
     template_name = 'evaluaciones/co-evaluation.html'
-    success_url = reverse_lazy('eva:list-coevaluation')
-
+    success_url = reverse_lazy('eva:list-coevaluation')    
     @method_decorator(csrf_exempt)
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
@@ -536,6 +559,7 @@ class CoevaluacionCreateView(CreateView):
 
 #GRUPO REPOSITORIO COE Y EVA
     def get_context_data(self, **kwargs):
+        
         context = super().get_context_data(**kwargs)
         self.request.session['docente'] = self.request.GET.get('docente')
         context['heading'] = 'Coevaluacion'
