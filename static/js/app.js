@@ -457,8 +457,8 @@ function getPeriodos() {
                                 varios+='<option value='+ period.id +' >'+period.name+'</option>';
                                 $("#periodoAcademico").append('<option value='+period.id+' >'+period.name+'</option>');
                 });
-                document.getElementById('+period.id+').attr('selected')
-                $("#periodoAcademico").val('+period.id+').change();
+                //document.getElementById('+period.id+').attr('selected');
+                //cargaciclo('+period.id+');
             }
             else {
                 console.log('else')
@@ -469,8 +469,8 @@ function getPeriodos() {
                             $("#periodoAcademico").append('<option value='+listcarrera.id+' >'+listcarrera.name+'/'+period.name+'</option>');
             })
             });
-            document.getElementById('+period.id+').attr('selected')
-            $("#periodoAcademico").val('+period.id+').change();
+          //  document.getElementById('+period.id+').attr('selected')
+           // $("#periodoAcademico").val('+period.id+').change();
             }
            });
            console.log('resp')
@@ -483,6 +483,56 @@ function getPeriodos() {
         }
     })
 } 
+
+// function cargaciclo (a) {
+//     const periodoId = $(a).val();
+//     const csrftoken = getCookieMain('csrftoken');
+//     const url = location.protocol + '//' + location.host + "/cursos/getCycle/" + periodoId;
+//     $.ajax({
+//         url: url,
+//         type: 'GET',
+//         headers: {"X-CSRFToken": csrftoken},
+    
+//         success: function (data) {
+//             console.log(data.context)
+//             var dat2 = data;
+//             $("#cicloAcademico").empty();
+//             /*$("#cicloAcademico").append('<option value="0">Seleccionar ciclo</option>');*/
+//             const url = location.protocol + '//' + location.host + "/eva/actual/ciclo/";
+//             $.ajax({
+//                 url: url,
+//                 type: 'GET',
+//                 headers: {"X-CSRFToken": csrftoken},
+//                 success: function (data2) {
+//                     //console.log(dat2.context)
+//                     $.each(dat2.context, function(indice,valor) 
+//                     {
+                      
+//                         $("#cicloAcademico").append('<option '+((parseInt(data2.ciclo_id)==valor.id)?"selected='selected'":"")+'"  value="' + valor.id + '">' + valor.nombre + '</option>');
+//                     });
+//                 }
+//             });
+//             $("#cicloAcademico").change(function(e){
+//                 const periodoId = $(this).val();
+//                 const url = location.protocol + '//' + location.host + "/eva/store/ciclo/" + periodoId;
+//                 $.ajax({
+//                     url: url,
+//                     type: 'GET',
+//                     headers: {"X-CSRFToken": csrftoken},
+//                     success: function (data) {
+//                         window.location.reload();
+//                     }
+//                 });
+            
+//             });
+         
+//         }, error: function (xhr, status, error) {
+//             console.log(xhr);
+//         }
+//     });
+
+// };
+
 function  getCookieMain(name){
     let cookieValue=null;
     if(document.cookie && document.cookie!= ''){
