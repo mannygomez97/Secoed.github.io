@@ -197,34 +197,16 @@ def getContentsCourse(request, id):
 
 def coursesSecoedView(request):
     t="Cursos" 
-    u="Cursos asignados1"
-    user = getAsesorLogin(request)
-    print('coursesSecoedView tittle')
-    print(user)
-    asesorCourses = getAsesorCourses(request, user)
-    print('***asesorCourses response****')
-    print(asesorCourses)
-    allCourses = getCourses(request)
-    print('*****allCourses response*****') 
-    print(allCourses) 
-    courseList = getCoursesByActuallyCicle(request)
-    print('****courseList response****') 
-    print(courseList) 
+    u="Cursos asignados"
+    user = getAsesorLogin(request)    
+    asesorCourses = getAsesorCourses(request, user)    
+    allCourses = getCourses(request)     
+    courseList = getCoursesByActuallyCicle(request)   
     courses = []
-    for course in allCourses:
-        #print('*******course["id"]*******')
-        #print(course["id"])   
-        #print(asesorCourses)     
-        for activeCourse in courseList:
-         #print('*******activeCourse["moodleId"]*******')
-         #print(activeCourse["moodleId"])
-         #print('*******activeCourse["id"]*******')
-         #print(activeCourse["id"])                  
-         if course["id"] ==  activeCourse["id"] in asesorCourses:
-          #print('*********grabo***********')   
-          courses.append(course)
-    #print('******courses****')
-    #print(courses)
+    for course in allCourses:           
+        for activeCourse in courseList:                             
+         if course["id"] ==  activeCourse["id"] in asesorCourses:          
+          courses.append(course)   
     context = {'context': courses, 'heading': u,'pageview': t, 'status': 'A'}
     return render(request,'asesor/seguimiento_docente/courses_list.html',context)
 

@@ -87,7 +87,7 @@ class PagesLoginView(View):
                     if user.usuario_activo:
                         Rol_user= RolUser.objects.filter(user_id=user.id).values('rol')
                         Carrera_user= FacultyUser.objects.filter(user_id=user.id).values('carrera') 
-                        if Rol_user != 2 and Carrera_user.count() == 0 :
+                        if Rol_user != 2 and  Carrera_user is None  :
                          user = None     
                          messages.error(request, 'Usuario no cuenta con carrera asignada')
                          return redirect('pages-login')                                                  
