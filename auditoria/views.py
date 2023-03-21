@@ -9,9 +9,9 @@ from django.shortcuts import render
 class AuditoriaContentView(View):
     # Carga los datos iniciales del HTML
     def get(self, request):
-        auditoria = Auditoria.objects.order_by('-fechacreacion')
+        auditoria = Auditoria.objects.order_by('-id')
 
-        paginated_filtered= Paginator(auditoria, 20)
+        paginated_filtered= Paginator(auditoria, 10)
         page_number = request.GET.get('page')
         page_obj = paginated_filtered.get_page(page_number)
 
@@ -21,9 +21,9 @@ class AuditoriaContentView(View):
 class ErrorAuditoriaContentView(View):
     # Carga los datos iniciales del HTML
     def get(self, request):
-        errores = ErrorAuditoria.objects.order_by('-fechacreacion')
+        errores = ErrorAuditoria.objects.order_by('-id')
 
-        paginated_filtered= Paginator(errores, 20)
+        paginated_filtered= Paginator(errores, 10)
         page_number = request.GET.get('page')
         page_obj = paginated_filtered.get_page(page_number)
 

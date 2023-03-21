@@ -14,6 +14,7 @@ class Auditoria(models.Model):
     class Meta:
         db_table = "tb_auditoria"
         app_label = 'auditoria'
+        ordering = ['-id']
 
     def __str__(self):
         return f'{self.tabla}'
@@ -30,6 +31,7 @@ class ErrorAuditoria(models.Model):
     class Meta:
         db_table = "tb_errores"
         app_label = 'errores'
+        ordering = ['-id']
 
     def __str__(self):
         return f'{self.tabla}'
