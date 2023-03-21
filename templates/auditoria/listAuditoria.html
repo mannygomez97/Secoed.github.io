@@ -22,65 +22,55 @@
 
 {% block contents %}
     <div class="row">
-        <div class="col-12">
+        <div class="col-lg-12">
             <div class="card">
-                <div class="text-center">
-                    <table>
-                        <tr>
-                            <td>
-                                 <button class="btn btn-success" id="btnExportar"> Exportar a Excel</button>
-                            </td>
-                            <td colspan="7"></td>
-                        </tr>
-                    </table>
-                </div>
                 <div class="card-body">
-                    <table id="tabla" class="table table-primary table-responsive table-nowrap align-middle dt-responsive nowrap w-100">
-                        <thead class="table-light">
-                        <tr>
-                            <th>N°</th>
-                            <th>Tabla</th>
-                            <th>Id Registro</th>
-                            <th>Comando</th>
-                            <th>Usuario Creación</th>
-                            <th>Fecha Creación</th>
-                            <th>Registro Anterior</th>
-                            <th>Registro Nuevo</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        {% for aud in page_obj %}
+                    <div class="tab-pane" id="profile-1" role="tabpanel">
+                         <div>
+                             <table>
+                                <tr>
+                                    <td>
+                                         <button class="btn btn-success" id="btnExportar" onclick="toExcel()"> Exportar a Excel</button>
+                                    </td>
+                                    <td colspan="7"></td>
+                                </tr>
+                            </table>
+                         </div>
+                        <div class="table-responsive">
+                            <table id="datatable-buttons" class="table table-bordered dt-responsive nowrap w-100">
+                            <thead class="table-light">
                             <tr>
-                                <td>{{ aud.id }}</td>
-                                <td>{{ aud.tabla }}</td>
-                                <td>{{ aud.idregistro }}</td>
-                                <td>{{ aud.comando }}</td>
-                                <td>{{ aud.usuario.username }} </td>
-                                <td>{{ aud.fechacreacion }}</td>
-                                <td>{{ aud.registroanterior }}</td>
-                                <td>{{ aud.registronuevo }}</td>
+                                <th>N°</th>
+                                <th>Tabla</th>
+                                <th>Id Registro</th>
+                                <th>Comando</th>
+                                <th>Usuario Creación</th>
+                                <th>Fecha Creación</th>
+                                <th>Registro Anterior</th>
+                                <th>Registro Nuevo</th>
                             </tr>
-                        {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-                <div>
-                    <span class="step-links">
-                        {% if page_obj.has_previous %}
-                        <a href="?page=1">&laquo; 1</a>
-                        <a href="?page={{ page_obj.previous_page_number }}">Previa</a>
-                        {% endif %}
+                            </thead>
+                            <tbody>
 
-                        <span class="current">
-                            Página {{ page_obj.number }} de {{ page_obj.paginator.num_pages }}.
-                        </span>
+                            {% for aud in auditoriaview %}
+                                <tr>
+                                    <td>{{ aud.id }}</td>
+                                    <td>{{ aud.tabla }}</td>
+                                    <td>{{ aud.idregistro }}</td>
+                                    <td>{{ aud.comando }}</td>
+                                    <td>{{ aud.usuario.username }} </td>
+                                    <td>{{ aud.fechacreacion }}</td>
+                                    <td>{{ aud.registroanterior }}</td>
+                                    <td>{{ aud.registronuevo }}</td>
+                                </tr>
+                            {% endfor %}
+                            </tbody>
+                        </table>
+                        </div>
+                    </div>
 
-                        {% if page_obj.has_next %}
-                        <a href="?page={{ page_obj.next_page_number }}">Próxima</a>
-                        <a href="?page={{ page_obj.paginator.num_pages }}">&raquo;Ultima</a>
-                        {% endif %}
-                    </span>
                 </div>
+
             </div>
         </div>
     </div>
@@ -139,5 +129,20 @@
     <script src="{% static 'js/pages/datatables.init.js' %}"></script>
 
     <script src="{% static 'js/app.js' %}"></script>
+    <script type="text/javascript">
+        var $ = jQuery.noConflict();
+        function toExcel(){
+            var $tabla = document.getElementById('datatable-buttons');
+            let tableExport = new TableExport($tabla, {
+                exportButtons: false, // No queremos botones
+                filename: "Reporte Auditoría" + new Date().toLocaleString(), //Nombre del archivo de Excel
+                sheetname: "Secoed", //Título de la hoja
+            });
+            let datos = tableExport.getExportData();
+            let preferenciasDocumento1 = datos["datatable-buttons"];
+            let preferenciasDocumento = preferenciasDocumento1.xlsx;
+            tableExport.export2file(preferenciasDocumento.data, preferenciasDocumento.mimeType, preferenciasDocumento.filename, preferenciasDocumento.fileExtension, preferenciasDocumento.merges, preferenciasDocumento.RTL, preferenciasDocumento.sheetname);
+        };
+    </script>
 
 {% endblock %}
