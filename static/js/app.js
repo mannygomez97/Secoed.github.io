@@ -456,9 +456,11 @@ function getPeriodos() {
                 resp.context.forEach(period => {
                                 varios+='<option value='+ period.id +' >'+period.name+'</option>';
                                 $("#periodoAcademico").append('<option value='+period.id+' >'+period.name+'</option>');
+                                
                 });
-                document.getElementById('+period.id+').attr('selected')
-                $("#periodoAcademico").val('+period.id+').change();
+                //document.getElementById('+period.id+').attr('selected');
+                //cargaciclo('+period.id+');
+               
             }
             else {
                 console.log('else')
@@ -469,12 +471,12 @@ function getPeriodos() {
                             $("#periodoAcademico").append('<option value='+listcarrera.id+' >'+listcarrera.name+'/'+period.name+'</option>');
             })
             });
-            document.getElementById('+period.id+').attr('selected')
-            $("#periodoAcademico").val('+period.id+').change();
+          //  document.getElementById('+period.id+').attr('selected')
+           // $("#periodoAcademico").val('+period.id+').change();
             }
            });
            console.log('resp')
-        
+           $("#periodoAcademico").val('1').change();
 
          
         }, error: function (xhr, status, error) {
@@ -483,6 +485,7 @@ function getPeriodos() {
         }
     })
 } 
+
 function  getCookieMain(name){
     let cookieValue=null;
     if(document.cookie && document.cookie!= ''){
