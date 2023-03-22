@@ -41,8 +41,10 @@ class TeachersPendingEvaluationList(ListView):
         
         by_co_evaluate = []
         type_eva = Tipo.objects.filter(name='Coevaluación').first()
-        cycle = Ciclo2.objects.filter(pk=self.request.session.get('ciclo_id'))[0]
-        resultado = Respuesta.objects.filter(cycle=cycle.id, type_evaluation=type_eva.id)
+        #cycle = Ciclo2.objects.filter(pk=self.request.session.get('ciclo_id'))[0]
+        cycle = 1
+        #resultado = Respuesta.objects.filter(cycle=cycle.id, type_evaluation=type_eva.id)
+        resultado = Respuesta.objects.filter(cycle=int(cycle), type_evaluation=type_eva.id)
         area = AreasConocimiento.objects.filter(docente=self.request.user.id).first()
 
         if area is not None:
@@ -551,7 +553,8 @@ class CoevaluacionCreateView(CreateView):
                 return context
         tipo = Tipo.objects.filter(name='Coevaluación').first()
         parametro = Parametro.objects.filter(name='Coevaluación').first()
-        ciclo = int(self.request.session.get('ciclo_id'))
+        #ciclo = int(self.request.session.get('ciclo_id')) #se comenta por st
+        ciclo = 1
         if ciclo is not None:
             #context['object_list'] = Pregunta.objects.filter(type=tipo.id, ciclo__pk=ciclo, state=True) #GRUPO REPOSITORIO COE Y EVA
             context['object_list'] = PreguntaCiclo.objects.filter(pregunta__type=tipo.id, ciclo_id=ciclo)
