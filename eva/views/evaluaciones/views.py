@@ -41,8 +41,7 @@ class TeachersPendingEvaluationList(ListView):
         
         by_co_evaluate = []
         type_eva = Tipo.objects.filter(name='Coevaluación').first()
-        #cycle = Ciclo2.objects.filter(pk=self.request.session.get('ciclo_id'))[0]
-        cycle = 1
+        cycle = Ciclo2.objects.filter(pk=self.request.session.get('ciclo_id'))[0]
         #resultado = Respuesta.objects.filter(cycle=cycle.id, type_evaluation=type_eva.id)
         resultado = Respuesta.objects.filter(cycle=int(cycle), type_evaluation=type_eva.id)
         area = AreasConocimiento.objects.filter(docente=self.request.user.id).first()
@@ -293,19 +292,15 @@ class AutoEvaluacionCreateView(CreateView):
         parametro = Parametro.objects.filter(name='Autoevaluación').first()
         ciclo = self.request.session.get('ciclo_id')      
         if ciclo is not None:
-            #context['object_list'] = Pregunta.objects.filter(type=tipo.id, ciclo__pk=ciclo, state=True)                     
             context['object_list'] = PreguntaCiclo.objects.filter(pregunta__type=tipo.id, ciclo_id=ciclo)
             
         else:
-            #context['object_list'] = Pregunta.objects.filter(type=tipo.id, state=True)     
             context['object_list'] = PreguntaCiclo.objects.filter(pregunta__type=tipo.id, pregunta__state=True)            
         context['categories'] = Categoria.objects.filter(state=True)
         context['parameters'] = ParametrosGeneral.objects.filter(parameter=parametro.id)
-        #cc = Ciclo2.objects.get(pk=ciclo)[0]       
         cycle = Ciclo2.objects.filter(pk=ciclo)[0]      
         context['cycle'] = cycle       
         teacher = Usuario.objects.filter(id=self.request.user.id).first()
-        #context[teacher]
         flag = False
         if teacher is not None:
             evaluate = Respuesta.objects.filter(teacher=teacher.id,
@@ -553,13 +548,10 @@ class CoevaluacionCreateView(CreateView):
                 return context
         tipo = Tipo.objects.filter(name='Coevaluación').first()
         parametro = Parametro.objects.filter(name='Coevaluación').first()
-        #ciclo = int(self.request.session.get('ciclo_id')) #se comenta por st
-        ciclo = 1
+        ciclo = int(self.request.session.get('ciclo_id')) #se comenta por st
         if ciclo is not None:
-            #context['object_list'] = Pregunta.objects.filter(type=tipo.id, ciclo__pk=ciclo, state=True) #GRUPO REPOSITORIO COE Y EVA
             context['object_list'] = PreguntaCiclo.objects.filter(pregunta__type=tipo.id, ciclo_id=ciclo)
         else:
-            #context['object_list'] = Pregunta.objects.filter(type=tipo.id, state=True)
             context['object_list'] = PreguntaCiclo.objects.filter(pregunta__type_id=tipo.id)
         context['categories'] = Categoria.objects.filter(state=True)
         context['parameters'] = ParametrosGeneral.objects.filter(parameter=parametro.id)
