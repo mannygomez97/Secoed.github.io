@@ -468,7 +468,7 @@ function getPeriodos() {
                     options+='<option value='+listcarrera.id+'>'+listcarrera.name+'</option>';         
                     resp.context.forEach(period => {
                             varios+='<option value='+period.id+'>'+period.name+'</option>';
-                            $("#periodoAcademico").append('<option value='+listcarrera.id+' >'+listcarrera.name+'/'+period.name+'</option>');
+                            $("#periodoAcademico").append('<option value='+period.id+' >'+listcarrera.name+'/'+period.name+'</option>');
             })
             });
           //  document.getElementById('+period.id+').attr('selected')

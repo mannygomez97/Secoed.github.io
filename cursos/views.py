@@ -121,18 +121,13 @@ class CursoView(View):
             print(e)
         return redirect('categoria')
 
-    def getPeriod(request):
-        print('busqueda del header')
-        variable = Usuario.objects.filter(username__icontains=request.session['username']).values()[0]['id']        
-        print(variable)
+    def getPeriod(request):        
+        variable = Usuario.objects.filter(username__icontains=request.session['username']).values()[0]['id']              
         listcarrera = []
-        carrera_id= FacultyUser.objects.filter(user=variable).values('carrera_id')    
-        print(carrera_id)
+        carrera_id= FacultyUser.objects.filter(user=variable).values('carrera_id')          
         esadm = Usuario.objects.filter(username__icontains=request.session['username']).values('usuario_administrador')        
-        period = list(Ciclo.objects.filter(is_active=True,carrera__in=carrera_id).values())
-        print(period)
-        periodoId = period[0]['id']       
-        print(periodoId)
+        period = list(Ciclo.objects.filter(is_active=True,carrera__in=carrera_id).values())       
+        periodoId = period[0]['id']              
         listrol=[]                
         for i in Usuario.objects.filter(id=variable):
             if request.is_ajax():
@@ -141,8 +136,7 @@ class CursoView(View):
                 desrol['es_administrador']= i.usuario_administrador 
                 listrol.append(desrol)                     
             if(esadm ==True):
-                return JsonResponse({'data': list(listcarrera),'context':list(period), 'periodoId' : periodoId, 'validation':list(listrol)})
-                
+                return JsonResponse({'data': list(listcarrera),'context':list(period), 'periodoId' : periodoId, 'validation':list(listrol)})                
                 #print((listrol))
                 #return JsonResponse({'context':period, 'periodoId' : periodoId,'validation':list(listrol)})
             else:
@@ -157,13 +151,17 @@ class CursoView(View):
        
 
     def getCycle(request,periodoId): 
-        print('busqueda del header2')
-        request.session['periodoId'] = periodoId       
+       
+        request.session['periodoId'] = periodoId  
+          
         ciclo = list(Ciclo2.objects.filter(periodo=periodoId).values())
+         
         ciclo_idSession = request.session.get('cicloId')
+         
         return JsonResponse({'context': ciclo, 'cicloId': ciclo_idSession})
 
     def setSessionCycle(request,cycleId):
+       
         request.session['cicloId'] = cycleId
         return JsonResponse({'context': request.session['cicloId']})
 
