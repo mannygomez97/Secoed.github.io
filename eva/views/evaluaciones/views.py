@@ -38,10 +38,12 @@ class TeachersPendingEvaluationList(ListView):
 #GRUPO REPOSIOTRIO COE Y EVA 
     def get_pendings_evaluation(self):
         data = []
+        
         by_co_evaluate = []
         type_eva = Tipo.objects.filter(name='Coevaluación').first()
         cycle = Ciclo2.objects.filter(pk=self.request.session.get('ciclo_id'))[0]
-        resultado = Respuesta.objects.filter(cycle=cycle.id, type_evaluation=type_eva.id)
+        #resultado = Respuesta.objects.filter(cycle=cycle.id, type_evaluation=type_eva.id)
+        resultado = Respuesta.objects.filter(cycle=int(cycle), type_evaluation=type_eva.id)
         area = AreasConocimiento.objects.filter(docente=self.request.user.id).first()
 
         if area is not None:
@@ -74,6 +76,7 @@ class TeachersPendingEvaluationList(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
+        
         context['heading'] = 'Docentes pendientes de coevaluar'
         coevaluator = self.request.user.id
         docentes = self.get_pendings_evaluation()
@@ -85,6 +88,7 @@ class TeachersPendingEvaluationList(ListView):
 class AutoEvaluacionCreateView(CreateView):
     model = Usuario
     form_class = AutoEvaluacionForm
+    
     template_name = 'evaluaciones/auto-evaluation.html'
     success_url = reverse_lazy('eva:result-evaluation')
 
@@ -94,6 +98,7 @@ class AutoEvaluacionCreateView(CreateView):
 
     @transaction.atomic
     def post(self, request, *args, **kwargs):
+        
         data = {}
         n3 = 0.00
         try:
@@ -280,24 +285,21 @@ class AutoEvaluacionCreateView(CreateView):
             return JsonResponse(response)
 
 #GRUPO REPOSITORIO COE Y EVA 
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, **kwargs):        
         context = super().get_context_data(**kwargs)
         context['heading'] = 'AutoEvaluación'
         tipo = Tipo.objects.filter(name='Autoevaluación').first()
         parametro = Parametro.objects.filter(name='Autoevaluación').first()
-        ciclo = self.request.session.get('ciclo_id')
+        ciclo = self.request.session.get('ciclo_id')      
         if ciclo is not None:
-            #context['object_list'] = Pregunta.objects.filter(type=tipo.id, ciclo__pk=ciclo, state=True)
             context['object_list'] = PreguntaCiclo.objects.filter(pregunta__type=tipo.id, ciclo_id=ciclo)
+            
         else:
-            #context['object_list'] = Pregunta.objects.filter(type=tipo.id, state=True)
-            context['object_list'] = PreguntaCiclo.objects.filter(pregunta__type=tipo.id, pregunta__state=True)
+            context['object_list'] = PreguntaCiclo.objects.filter(pregunta__type=tipo.id, pregunta__state=True)            
         context['categories'] = Categoria.objects.filter(state=True)
         context['parameters'] = ParametrosGeneral.objects.filter(parameter=parametro.id)
-        #cc = Ciclo2.objects.get(pk=ciclo)[0]
-        cycle = Ciclo2.objects.filter(pk=ciclo)[0]
-        context['cycle'] = cycle
-
+        cycle = Ciclo2.objects.filter(pk=ciclo)[0]      
+        context['cycle'] = cycle       
         teacher = Usuario.objects.filter(id=self.request.user.id).first()
         flag = False
         if teacher is not None:
@@ -314,7 +316,7 @@ class AutoEvaluacionCreateView(CreateView):
 
 def send_mail_notification(docente: Usuario, coevaluator:Usuario=None, course=None):
     subject = 'Matriculación Automática'
-
+    
     if coevaluator is None:
         email_template_name = "evaluaciones/enroll-email.txt"
         content = {'nombres': docente.nombres, 'apellidos': docente.apellidos, 'course': course, }
@@ -332,7 +334,7 @@ def send_mail_notification(docente: Usuario, coevaluator:Usuario=None, course=No
         emitirNotificacion(docente.id, course,False)
 
 
-def enroll_course_evaluation(user: Usuario, course):
+def enroll_course_evaluation(user: Usuario, course):    
     params = {
         "wstoken": TOKEN_MOODLE,
         "wsfunction": "enrol_manual_enrol_users",
@@ -342,7 +344,6 @@ def enroll_course_evaluation(user: Usuario, course):
         "enrolments[0][roleid]": user.rol_moodle.codigo
     }
     response = requests.post(API_BASE, params)
-
     if response.ok:
         data = 'OK'
     else:
@@ -350,12 +351,11 @@ def enroll_course_evaluation(user: Usuario, course):
     return data
 
 
-class CoevaluacionCreateView(CreateView):
+class CoevaluacionCreateView(CreateView):    
     model = Usuario
     form_class = CoevaluacionForm
     template_name = 'evaluaciones/co-evaluation.html'
-    success_url = reverse_lazy('eva:list-coevaluation')
-
+    success_url = reverse_lazy('eva:list-coevaluation')    
     @method_decorator(csrf_exempt)
     def dispatch(self, request, *args, **kwargs):
         return super().dispatch(request, *args, **kwargs)
@@ -535,7 +535,7 @@ class CoevaluacionCreateView(CreateView):
             return JsonResponse(response)
 
 #GRUPO REPOSITORIO COE Y EVA
-    def get_context_data(self, **kwargs):
+    def get_context_data(self, **kwargs):        
         context = super().get_context_data(**kwargs)
         self.request.session['docente'] = self.request.GET.get('docente')
         context['heading'] = 'Coevaluacion'
@@ -548,12 +548,10 @@ class CoevaluacionCreateView(CreateView):
                 return context
         tipo = Tipo.objects.filter(name='Coevaluación').first()
         parametro = Parametro.objects.filter(name='Coevaluación').first()
-        ciclo = int(self.request.session.get('ciclo_id'))
+        ciclo = int(self.request.session.get('ciclo_id')) #se comenta por st
         if ciclo is not None:
-            #context['object_list'] = Pregunta.objects.filter(type=tipo.id, ciclo__pk=ciclo, state=True) #GRUPO REPOSITORIO COE Y EVA
             context['object_list'] = PreguntaCiclo.objects.filter(pregunta__type=tipo.id, ciclo_id=ciclo)
         else:
-            #context['object_list'] = Pregunta.objects.filter(type=tipo.id, state=True)
             context['object_list'] = PreguntaCiclo.objects.filter(pregunta__type_id=tipo.id)
         context['categories'] = Categoria.objects.filter(state=True)
         context['parameters'] = ParametrosGeneral.objects.filter(parameter=parametro.id)
