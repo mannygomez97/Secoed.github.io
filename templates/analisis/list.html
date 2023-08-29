@@ -48,7 +48,7 @@
             <div class="modal-dialog">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h5 class="modal-title" id="staticBackdropLabel">Registra tu Pregunta de Analisis</h5>
+                        <h5 class="modal-title" id="staticBackdropLabel">Registra tu Pregunta de Análisis</h5>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
@@ -60,7 +60,7 @@
                                     placeholder="Ingresar..." name="pregunta" required>
                             </div>
                             <div class="form-group pt-3">
-                                <label for="exampleFormControlSelect1">Seleccion de Criterio</label>
+                                <label for="exampleFormControlSelect1">Selección de Criterio</label>
                                 <select class="form-control" id="exampleFormControlSelect1" name="nivel" required
                                     selected>
                                     <option value="">Elige una opción</option>
@@ -70,7 +70,7 @@
                                 </select>
                             </div>
                             <div class="form-group pt-3">
-                                <label for="exampleFormControlSelect1">Seleccion de Ciclo</label>
+                                <label for="exampleFormControlSelect1">Selección de Ciclo</label>
                                 <select class="form-control" id="exampleFormControlSelect1" name="ciclo" required
                                     selected>
                                     <option value="">Elige una opción</option>
@@ -100,44 +100,49 @@
                             {% endblock %}
                         </tr>
                     </thead>
-                    {% for data in db_data %}
                     <tbody>
+                    {% for data in db_data %}
+                    
                         {% block filas %}
-                        <th>{{ data.pregunta }}</th>
-                        <th>{{ data.nivel }}</th>
-                        <th>{{ data.ciclo }}</th>
-                        <th>
-                            <div class="btn-group" role="group" aria-label="Basic mixed styles example">
-                            <a href="{% url 'actualiza' data.id %}" class="btn btn-primary" data-toggle="tooltip" data-placement="top" title="Actualizar">   <i class="mdi mdi-pencil"></i> </a>
-                            <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#staticBackdrop{{ data.id }}" data-toggle="tooltip" data-placement="top" title="Eliminar">
-                                <i class="mdi mdi-eraser"></i>
-                            </button>
-                            </div>
-                            <!---Modal eliminar-->
-                            <div class="modal fade" id="staticBackdrop{{ data.id }}" data-bs-backdrop="static"
-                                    data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel"
-                                    aria-hidden="true">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="staticBackdropLabel">¿Estas Seguro de Eliminar la Pregunta?
-                                                </h5>
-                                                <button type="button" class="btn-close" data-bs-dismiss="modal"
-                                                    aria-label="Close"></button>
-                                            </div>
-                                            <div class="modal-body">   
-                                                <p>{{ data.pregunta }}</p>
-                                                <hr>
-                                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>  
-                                            <a href="{% url 'borrar' data.id %}" class="btn btn-danger">Borrar</a>
+                        <tr>
+                            <td>{{ data.pregunta }}</td>
+                            <td>{{ data.nivel }}</td>
+                            <td>{{ data.ciclo }}</td>
+                            <td>
+                                <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+                                <a href="{% url 'actualiza' data.id %}" class="btn btn-primary" data-toggle="tooltip" data-placement="top" title="Actualizar">   <i class="mdi mdi-pencil"></i> </a>
+                                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#staticBackdrop{{ data.id }}" data-toggle="tooltip" data-placement="top" title="Eliminar">
+                                    <i class="mdi mdi-eraser"></i>
+                                </button>
+                                </div>
+                                <!---Modal eliminar-->
+                                <div class="modal fade" id="staticBackdrop{{ data.id }}" data-bs-backdrop="static"
+                                        data-bs-keyboard="false" tabindex="-1" aria-labelledby="staticBackdropLabel"
+                                        aria-hidden="true">
+                                        <div class="modal-dialog">
+                                            <div class="modal-content">
+                                                <div class="modal-header">
+                                                    <h5 class="modal-title" id="staticBackdropLabel">¿Estas Seguro de Eliminar la Pregunta?
+                                                    </h5>
+                                                    <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                                        aria-label="Close"></button>
+                                                </div>
+                                                <div class="modal-body">   
+                                                    <p>{{ data.pregunta }}</p>
+                                                    <hr>
+                                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>  
+                                                <a href="{% url 'borrar' data.id %}" class="btn btn-danger">Borrar</a>
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                        </th>
+                            </td>
+                        </tr>
+
                         {% endblock %}
-                    </tbody>
+                    
                     {% endfor %}
+                </tbody>
                 </table>
             </div>
             <div class="card-footer">

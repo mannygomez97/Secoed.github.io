@@ -16,7 +16,7 @@ class KnowledgeAreasListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['heading'] = 'Matenimiento Áreas de Conocimiento'
+        context['heading'] = ' Áreas de Conocimiento'
         cycle = Ciclo.objects.filter(is_active=True).first()
         context['pageview'] = cycle.name
         context['object_list'] = AreasConocimiento.objects.all()

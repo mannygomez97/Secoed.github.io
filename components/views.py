@@ -211,7 +211,7 @@ def requisito(request):
     return render(request, 'components/proyecto/formrequisito.html', context)
 
 
-# Editar los datos de un modulo por su pk
+# Editar los datos de un  por su pk
 class UpdateRequisito(View):
     requisito = lambda self, id: get_object_or_404(AprobacionCurso, pk=id)
 

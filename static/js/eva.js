@@ -82,7 +82,7 @@ function notification(title, message, icon) {
 function confirmDelete(url) {
     let token = $("[name='csrfmiddlewaretoken']").val();
     Swal.fire({
-      title: '¿Estas seguro?',
+      title: '¿Está seguro?',
       text: "¡No podrás revertir esto!",
       icon: 'warning',
       showCancelButton: true,

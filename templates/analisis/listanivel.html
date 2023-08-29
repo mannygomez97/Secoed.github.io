@@ -59,21 +59,22 @@
                     <thead>
                         <tr role="row">
                             {% block cols %}
-                            <th>Criterios de Analisis</th>
+                            <th>Criterios de Análisis</th>
                             <th>Acciones</th>
                             {% endblock %}
                         </tr>
                     </thead>
+                    <tbody>                        
                     {% for niveles in db_nivel %}
-                    <tbody>
                         {% block filas %}
-                        <th>{{ niveles.nivel }}</th> 
-                        <th>
-                            <div class="btn-group" role="group" aria-label="Basic mixed styles example">
-                                <a href="{% url 'actualizanivel' niveles.id %}" class="btn btn-primary" >Actualizar</a>
-                                <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#staticBackdrop{{ niveles.id }}">
-                                    Eliminar
-                                </button>
+                        <tr>
+                            <td>{{ niveles.nivel }}</td> 
+                            <td>
+                                <div class="btn-group" role="group" aria-label="Basic mixed styles example">
+                                    <a href="{% url 'actualizanivel' niveles.id %}" class="btn btn-primary" >Actualizar</a>
+                                    <button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#staticBackdrop{{ niveles.id }}">
+                                        Eliminar
+                                    </button>
                                 </div>
                                 <!---Modal eliminar-->
                                 <div class="modal fade" id="staticBackdrop{{ niveles.id }}" data-bs-backdrop="static"
@@ -82,7 +83,7 @@
                                         <div class="modal-dialog">
                                             <div class="modal-content">
                                                 <div class="modal-header">
-                                                    <h5 class="modal-title" id="staticBackdropLabel">¿Estas Seguro de Eliminar el nivel?
+                                                    <h5 class="modal-title" id="staticBackdropLabel">¿Estás Seguro de Eliminar el nivel?
                                                     </h5>
                                                     <button type="button" class="btn-close" data-bs-dismiss="modal"
                                                         aria-label="Close"></button>
@@ -97,10 +98,12 @@
                                         </div>
                                     </div>
                                 </div>
-                        </th>
+                            </td>
+                        </tr>
+                        
                         {% endblock %}
+                        {% endfor %}
                     </tbody>
-                    {% endfor %}
                 </table>
                 </div>
             </div>

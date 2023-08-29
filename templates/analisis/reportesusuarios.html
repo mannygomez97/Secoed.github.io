@@ -28,29 +28,33 @@
                             {% endblock %}
                         </tr>
                     </thead>
-                    {% for usuario in db_data %}
                     <tbody>
-                        {% block filas %}
-                        <th>{{ usuario.username }}</th> 
-                        <th>{{ usuario.email }}</th>    
-                        <th>{{ usuario.nombres }} {{usuario.apellidos}}</th>            
-                        <th>
-                            <div class="btn-group"  aria-label="Basic mixed styles example">
-                                <a href="{% url "reporteusuariopregunta" data_id=usuario.id %}" class="btn btn-success" data-placement="top" title="Ver Respuestas">
-                                    <i class="mdi mdi-eye"></i>
-                                </a>&nbsp;
-                               
-                                <a href="{% url "reportesporusuario" data_id=usuario.id %}" class="btn btn-success" data-placement="top" title="Ver Grafico">
-                                    <i class="mdi mdi-chart-pie"></i>
-                                </a>&nbsp;
-                                <a href="{% url "reportes_pdf" data_id=usuario.id %}" class="btn btn-primary" >
-                                    Descargar Pdf
-                                </a>
-                            </div>
-                        </th>
-                        {% endblock %}
+                        {% for usuario in db_data %}
+
+                            {% block filas %}
+                            <tr>
+                                <td>{{ usuario.username }}</td> 
+                                <td>{{ usuario.email }}</td>    
+                                <td>{{ usuario.nombres }} {{usuario.apellidos}}</td>            
+                                <td>
+                                    <div class="btn-group"  aria-label="Basic mixed styles example">
+                                        <a href="{% url "reporteusuariopregunta" data_id=usuario.id %}" class="btn btn-success" data-placement="top" title="Ver Respuestas">
+                                            <i class="mdi mdi-eye"></i>
+                                        </a>&nbsp;
+                                    
+                                        <a href="{% url "reportesporusuario" data_id=usuario.id %}" class="btn btn-success" data-placement="top" title="Ver Grafico">
+                                            <i class="mdi mdi-chart-pie"></i>
+                                        </a>&nbsp;
+                                        <a href="{% url "reportes_pdf" data_id=usuario.id %}" class="btn btn-primary" >
+                                            Descargar Pdf
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endblock %}
+
+                        {% endfor %}
                     </tbody>
-                    {% endfor %}
                 </table>
             </div>
             <div class="card-footer">

@@ -11,12 +11,12 @@ function openModal(url, idModal) {
 //Delete
 function deleteMenu(id) {
     Swal.fire({
-        "title": "¿Esta seguro?",
+        "title": "¿Está seguro?",
         "text": "Esta acción no se puede revertir",
         "icon": "question",
         "showCancelButton": true,
         "cancelButtonText": "NO",
-        "confirmButtonText": "SI",
+        "confirmButtonText": "SÍ",
         "cancelButtonColor": "#f46a6a",
         "confirmButtonColor": "#34c38f",
     })

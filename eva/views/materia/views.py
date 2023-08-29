@@ -15,7 +15,7 @@ class MatterListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['heading'] = 'Matenimiento Materia'
+        context['heading'] = 'Mantenimiento Materia'
         #cycle = Ciclo.objects.filter(is_active=True).first()
         #context['pageview'] = cycle.name
         context['object_list'] = Materia.objects.all()

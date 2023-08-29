@@ -8,7 +8,7 @@ class PostForm(ModelForm):
         model = Post
         fields = '__all__'
         labels = {
-            'title': 'Titulo:',
+            'title': 'Título:',
             'image': 'Imagen:',
             'text': 'Descripción:',
             'timestamp': 'Fecha de publicación:',

@@ -290,7 +290,7 @@ def activitiesNotes(request):
     return render(request, 'asesor/valorations/course_notes_activities.html', context)
 
 def modulesByCourse(request, id, fullname):
-    u="Modulos del curso: " + fullname
+    u="Módulos del curso: " + fullname
     t="Cursos"
     try:    
         context={"context":getContentsCourse(request, id), 'heading': u,'pageview': t, 'course':id, 'fullname':fullname}                        
@@ -398,7 +398,7 @@ def calRegister(request):
     return render(request,'asesor/cronograma/cal_register.html',context)
 
 def createModule(request,course, section):
-    u="Modulos del curso: "
+    u="Módulos del curso: "
     t="Cursos"
     apiBase=API_BASE
     params={"wstoken":TOKEN_MOODLE,
@@ -420,7 +420,7 @@ def createModule(request,course, section):
 
 def usersByModule(request, course):        
     try:
-        context={"context": getStudentList(request, course), 'heading': "Modulos del curso: ", 'pageview': "Cursos", 'course':course}                       
+        context={"context": getStudentList(request, course), 'heading': "Módulos del curso: ", 'pageview': "Cursos", 'course':course}                       
     except Exception as e:
         print(e)
     return render(request,'asesor/seguimiento_docente/users_by_module.html',context)
@@ -504,7 +504,7 @@ def valModuleCourse(request, course, id):
                 res_new.append(r)
                 for nf in res_new:
                     if nf["id"] == int(id):
-                        context={"context":nf['gradeitems'], 'heading': "Modulos del curso: ", 'pageview': "Cursos", 'course':course, }
+                        context={"context":nf['gradeitems'], 'heading': "Módulos del curso: ", 'pageview': "Cursos", 'course':course, }
         context={"context":res_new}
     except Exception as e:
         print(e)

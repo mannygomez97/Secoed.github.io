@@ -18,7 +18,7 @@ class ParameterGrlListView(ListView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['heading'] = 'Matenimiento Parámetros Generales'
+        context['heading'] = 'Mantenimiento Parámetros Generales'
         cycle = Ciclo.objects.filter(is_active=True).first()
         context['pageview'] = cycle.name
         parameters = ParametrosGeneral.objects.select_related('parameter')

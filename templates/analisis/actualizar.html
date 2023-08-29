@@ -23,7 +23,7 @@
       <input type="hidden" name="id" value="{{data.id}}">
     </div>
     <div class="form-group pt-3">
-      <label for="exampleFormControlSelect1">Seleccion de Criterio</label>
+      <label for="exampleFormControlSelect1">Selección de Criterio</label>
       <select class="form-control" id="exampleFormControlSelect1" name="nivel" required selected>
         <option value="{{data.nivel.id}}"> {{data.nivel}} </option>
         {% for datanivel in db_nivel %}
@@ -32,7 +32,7 @@
       </select>
     </div>
     <div class="form-group pt-3">
-        <label for="exampleFormControlSelect1">Seleccion de Ciclo</label>
+        <label for="exampleFormControlSelect1">Selección de Ciclo</label>
         <select class="form-control" id="exampleFormControlSelect1" name="ciclo" required selected>
           <option value="{{data.ciclo.id}}"> {{data.ciclo}} </option>
           {% for dataciclo in db_ciclo %}

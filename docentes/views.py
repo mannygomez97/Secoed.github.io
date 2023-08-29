@@ -174,7 +174,7 @@ class CursosUserView(View):
         if userObj.moodle_user:
             print('entro por aqui')
             cursos_actividades = fs_cursos_actividades(userObj.moodle_user, True)
-        greeting = {'heading': 'LISTADO DE CURSOS CON SUS ACTIVIDADES1 Y CALIFICACIONES',
+        greeting = {'heading': 'LISTADO DE CURSOS CON SUS ACTIVIDADES Y CALIFICACIONES',
                     'pageview': 'Docentes',
                     'cursos_actividades': cursos_actividades}
         return render(request, 'docentes/cursos_usuario.html', greeting)
@@ -348,7 +348,7 @@ class CalificacionesCursos(View):
     def get(self, request):
         userObj = get_object_or_404(Usuario, pk=request.user.id)
         notas_cursos = ValorationsCourses.objects.order_by('course').filter(studentId=userObj.moodle_user)
-        greeting = {'heading': 'CALIFICACION DE LOS CURSOS',
+        greeting = {'heading': 'CALIFICACIÓN DE LOS CURSOS',
                     'pageview': 'Docentes',
                     'notas_cursos': notas_cursos}
         return render(request, 'docentes/calificaciones_cursos.html', greeting)

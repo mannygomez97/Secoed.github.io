@@ -25,12 +25,12 @@ class CarpetaForm(ModelForm):
 
         labels = {
             'nombre': 'NOMBRE',
-            'descripcion':'DESCRIPCION'
+            'descripcion':'DESCRIPCIÓN'
         }
 
         widgets = {
         'nombre': TextInput(attrs={'class': 'form-control mb-3', 'placeholder': 'Ingrese nombre'}),
-        'descripcion': TextInput(attrs={'class': 'form-control mb-3', 'placeholder': 'Ingrese descripcion'}),
+        'descripcion': TextInput(attrs={'class': 'form-control mb-3', 'placeholder': 'Ingrese descripción'}),
         }
 
 class ArchivoForm(ModelForm):

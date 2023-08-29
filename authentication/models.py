@@ -54,7 +54,7 @@ class Usuario(AbstractBaseUser):
     nombres = models.CharField('Nombres', max_length=200, blank=True, null=True)
     apellidos = models.CharField('Apellidos', max_length=200, blank=True, null=True)
     identificacion = models.CharField('Identificación', unique=True, max_length=10)
-    direccion = models.CharField('Direccion domiciliaria', max_length=500)
+    direccion = models.CharField('Dirección domiciliaria', max_length=500)
     telefono = models.CharField('Teléfono', max_length=50)
     usuario_activo = models.BooleanField(default=True)
     idPeriodoUltimo = models.IntegerField(db_column='idPeriodoUltimo', null=False, blank=False, default=1)
